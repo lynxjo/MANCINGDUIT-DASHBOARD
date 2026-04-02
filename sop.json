@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "judul": "Prosedur Absensi Harian",
+    "kategori": "Absensi",
+    "konten": "1. Staff wajib absen maksimal 15 menit sebelum shift dimulai.\n2. Gunakan menu 'Absensi Saya' di dashboard.\n3. Klik tombol 'SAYA MULAI BERTUGAS'.\n4. Keterlambatan lebih dari 15 menit akan dicatat sebagai Terlambat.\n5. Absensi hanya bisa dilakukan sekali per hari.",
+    "prioritas": "Tinggi",
+    "dibuat_oleh": "Admin",
+    "tanggal": "2026-04-01",
+    "timestamp": "2026-04-01T08:00:00.000Z",
+    "aktif": true
+  },
+  {
+    "id": 2,
+    "judul": "Aturan Izin Keluar",
+    "kategori": "Izin",
+    "konten": "1. Izin keluar maksimal 4 kali per hari.\n2. Durasi setiap izin maksimal 15 menit.\n3. Wajib absen terlebih dahulu sebelum bisa mengajukan izin.\n4. Tekan 'SELESAI IZIN' saat kembali.\n5. Keterlambatan kembali akan tercatat sebagai 'Melewati Batas'.",
+    "prioritas": "Tinggi",
+    "dibuat_oleh": "Admin",
+    "tanggal": "2026-04-01",
+    "timestamp": "2026-04-01T08:00:00.000Z",
+    "aktif": true
+  },
+  {
+    "id": 3,
+    "judul": "Standar Pelayanan Customer",
+    "kategori": "Pelayanan",
+    "konten": "1. Sambut customer dengan salam dan senyuman.\n2. Respon pertanyaan customer dalam waktu maks 2 menit.\n3. Gunakan bahasa yang sopan dan profesional.\n4. Eskalasi komplain ke Kapten jika tidak bisa diselesaikan.\n5. Catat setiap komplain di log harian.",
+    "prioritas": "Normal",
+    "dibuat_oleh": "Admin",
+    "tanggal": "2026-04-01",
+    "timestamp": "2026-04-01T08:00:00.000Z",
+    "aktif": true
+  }
+]

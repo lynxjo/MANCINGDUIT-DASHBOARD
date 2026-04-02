@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "nama": "Administrator",
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "jabatan": "Administrator",
+    "shift": "Pagi",
+    "shiftStartTime": "08:00",
+    "active": true,
+    "profile": {
+      "nickname": "Admin",
+      "phone": "",
+      "bio": "Pengelola dashboard.",
+      "motto": "Tetap semangat.",
+      "avatarText": "A"
+    }
+  },
+  {
+    "id": 2,
+    "nama": "Kapten Demo",
+    "username": "kapten",
+    "password": "kapten123",
+    "role": "staff",
+    "jabatan": "Kapten",
+    "shift": "Siang",
+    "shiftStartTime": "12:45",
+    "active": true,
+    "profile": {
+      "nickname": "Kapten",
+      "phone": "",
+      "bio": "Siap bertugas.",
+      "motto": "Kerja rapi, hasil terbaik.",
+      "avatarText": "K"
+    }
+  },
+  {
+    "id": 3,
+    "nama": "Faisal",
+    "username": "faisal",
+    "password": "asd123",
+    "role": "staff",
+    "jabatan": "CS LINE",
+    "shift": "Pagi",
+    "shiftStartTime": "08:15",
+    "active": true,
+    "profile": {
+      "nickname": "Faisal",
+      "phone": "",
+      "bio": "",
+      "motto": "",
+      "avatarText": "F"
+    }
+  },
+  {
+    "id": 4,
+    "nama": "Figo",
+    "username": "figo",
+    "password": "figo123",
+    "role": "staff",
+    "jabatan": "CS",
+    "shift": "Pagi",
+    "shiftStartTime": "08:30",
+    "active": true,
+    "profile": {
+      "nickname": "Figo",
+      "phone": "",
+      "bio": "",
+      "motto": "",
+      "avatarText": "G"
+    }
+  },
+  {
+    "id": 5,
+    "nama": "Yosep",
+    "username": "yosep",
+    "password": "yosep123",
+    "role": "staff",
+    "jabatan": "Kasir",
+    "shift": "Sore",
+    "shiftStartTime": "16:00",
+    "active": true,
+    "profile": {
+      "nickname": "Yosep",
+      "phone": "",
+      "bio": "",
+      "motto": "",
+      "avatarText": "Y"
+    }
+  },
+  {
+    "id": 6,
+    "nama": "Wiliam",
+    "username": "wiliam",
+    "password": "wiliam123",
+    "role": "staff",
+    "jabatan": "CS",
+    "shift": "Malam",
+    "shiftStartTime": "20:00",
+    "active": true,
+    "profile": {
+      "nickname": "Wiliam",
+      "phone": "",
+      "bio": "",
+      "motto": "",
+      "avatarText": "W"
+    }
+  },
+  {
+    "id": 7,
+    "nama": "calvin",
+    "username": "calvin",
+    "password": "asd123",
+    "role": "staff",
+    "jabatan": "CS LINE",
+    "shift": "Pagi",
+    "shiftStartTime": "08:00",
+    "active": true,
+    "profile": {
+      "nickname": "calvin",
+      "phone": "",
+      "bio": "",
+      "motto": "",
+      "avatarText": "C"
+    }
+  },
+  {
+    "id": 8,
+    "nama": "fajli",
+    "username": "fajli",
+    "password": "asd123",
+    "role": "staff",
+    "jabatan": "Kapten",
+    "shift": "Pagi",
+    "shiftStartTime": "08:00",
+    "active": true,
+    "profile": {
+      "nickname": "fajli",
+      "phone": "",
+      "bio": "",
+      "motto": "",
+      "avatarText": "F"
+    }
+  }
+]

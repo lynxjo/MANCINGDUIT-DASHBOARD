@@ -1,0 +1,9 @@
+{
+  "theme": "dark-blue",
+  "notification": {
+    "reminderEnabled": true,
+    "reminderMinutes": 15,
+    "emailEnabled": false,
+    "recipients": []
+  }
+}

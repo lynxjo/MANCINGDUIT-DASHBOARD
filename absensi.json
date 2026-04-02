@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "userId": 3,
+    "nama": "Faisal",
+    "username": "faisal",
+    "jabatan": "Kasir",
+    "shiftTerdaftar": "Pagi",
+    "shiftStartTime": "08:15",
+    "shiftAbsensi": "Sore",
+    "tanggal": "2026-04-01",
+    "jamMasuk": "16.10.45",
+    "timestamp": "2026-04-01T09:10:45.585Z",
+    "status": "Hadir"
+  },
+  {
+    "id": 2,
+    "userId": 8,
+    "nama": "fajli",
+    "username": "fajli",
+    "jabatan": "Kapten",
+    "shiftTerdaftar": "Pagi",
+    "shiftStartTime": "08:00",
+    "wajibAbsenMulai": "07:45",
+    "shiftAbsensi": "Malam",
+    "tanggal": "2026-04-01",
+    "jamMasuk": "20.00.09",
+    "timestamp": "2026-04-01T13:00:09.971Z",
+    "status": "Hadir"
+  },
+  {
+    "id": 3,
+    "userId": 3,
+    "nama": "Faisal",
+    "username": "faisal",
+    "jabatan": "CS LINE",
+    "shiftTerdaftar": "Pagi",
+    "shiftStartTime": "08:15",
+    "wajibAbsenMulai": "08:00",
+    "shiftAbsensi": "Malam",
+    "tanggal": "2026-04-02",
+    "jamMasuk": "22.21.48",
+    "timestamp": "2026-04-02T15:21:48.788Z",
+    "status": "Terlambat"
+  }
+]
