@@ -272,6 +272,21 @@ tr:hover td{background:rgba(255,255,255,.025);}
 .theme-swatch.selected .swatch-label{color:var(--primary);}
 
 .content > *{animation:fadeIn .22s ease;}
+
+/* ══ JOB DESK ════════════════════════════════════════════ */
+.jd-input-wrap{position:relative;}
+.jd-dropdown{position:absolute;left:0;right:0;background:#0d1e38;border:1px solid #1e3a5f;border-radius:0 0 10px 10px;z-index:200;max-height:240px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.jd-dropdown-item{padding:9px 14px;cursor:pointer;font-size:13px;color:#c8d8ea;display:flex;align-items:center;gap:10px;transition:.12s;}
+.jd-dropdown-item:hover{background:rgba(24,192,143,.12);color:#18e0a3;}
+.jd-dropdown-item .jd-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.jd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:4px;}
+.jd-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;}
+.jd-tag button{background:none;border:none;cursor:pointer;opacity:.7;padding:0;line-height:1;font-size:12px;}
+.jd-tag button:hover{opacity:1;}
+.jd-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px;}
+.jd-card{background:rgba(0,0,0,.25);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.06);}
+.jd-card-icon{width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.jd-card-label{font-size:11.5px;font-weight:600;line-height:1.4;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 
 @media(max-width:980px){
@@ -392,8 +407,17 @@ async function submitLogin(){
     const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
     const result=await r.json();
     if(result.status!=="success"){toast(result.message||"Login gagal",true);return;}
-    saveStoredUser(result.user);saveStoredAkses(result.hakAkses);
-    state.currentUser=result.user;state.hakAkses=result.hakAkses;
+    saveStoredUser(result.user);
+    state.currentUser=result.user;
+    try{
+      const ar=await fetch("/api/akses");const ad=await ar.json();
+      if(ad.status==="success"&&result.user.role!=="admin"){
+        const jab=result.user.jabatan;
+        const jk=Object.keys(ad.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
+        state.hakAkses=ad.data[jk]||ad.data["Staff"]||{};
+      }else{state.hakAkses=result.hakAkses;}
+    }catch{state.hakAkses=result.hakAkses;}
+    saveStoredAkses(state.hakAkses);
     state.currentMenu="dashboard";state.izinWarn14Shown=false;state.izinOverShown=false;
     // Load dan apply tema
     const settings=await fetchSettings();
@@ -425,6 +449,7 @@ function getMenusByRole(){
     {key:"kasWeb",label:"Kas Web",icon:"fa-wallet"},
     {key:"sopPage",label:"Pusat Info & SOP",icon:"fa-book-open"},
     {key:"serahTerima",label:"Serah Terima CS LINE",icon:"fa-handshake"},
+    {key:"jobDesk",label:"Job Desk Kasir",icon:"fa-list-check"},
     {key:"otoritas",label:"Otoritas Hak Akses",icon:"fa-shield-halved"},
     {key:"settings",label:"Pengaturan",icon:"fa-gear"}
   ];
@@ -437,13 +462,15 @@ function getMenusByRole(){
     {key:"sopPage",label:"Pusat Info & SOP",icon:"fa-book-open",hak:"bukaSOP"},
     {key:"serahTerima",label:"Serah Terima",icon:"fa-handshake",hak:"bukaSerahTerima"},
     {key:"historyAbsensi",label:"History Absensi",icon:"fa-clock-rotate-left",hak:"bukaLaporan"},
+    {key:"jobDeskSaya",label:"Job Desk Saya",icon:"fa-list-check",hak:null},
+    {key:"jobDeskInput",label:"Set Job Desk",icon:"fa-pen-to-square",hak:"bukaJobDesk"},
     {key:"historySaya",label:"History Saya",icon:"fa-history",hak:null},
     {key:"profilSaya",label:"Profil Saya",icon:"fa-circle-user",hak:null}
   ];
   return all.filter(m=>m.hak===null||boleh(m.hak));
 }
 function getPageTitle(){
-  const t={dashboard:state.currentUser?.role==="admin"?"Dashboard Admin":"Dashboard Staff",staff:"Data Staff",detailStaff:"Detail Staff",absensi:"Data Absensi",izin:"Izin Keluar Staff",shift:"Shift Kerja",historyAbsensi:"History Absensi",historyIzin:"History Izin",settings:"Pengaturan",kasWeb:"Manajemen Kas Web",sopPage:"Pusat Informasi & SOP",otoritas:"Otoritas Hak Akses",serahTerima:"Serah Terima CS LINE",absenSaya:"Absensi Saya",izinSaya:"Izin Keluar",shiftSaya:"Shift Saya",historySaya:"History Saya",profilSaya:"Profil Saya"};
+  const t={dashboard:state.currentUser?.role==="admin"?"Dashboard Admin":"Dashboard Staff",staff:"Data Staff",detailStaff:"Detail Staff",absensi:"Data Absensi",izin:"Izin Keluar Staff",shift:"Shift Kerja",historyAbsensi:"History Absensi",historyIzin:"History Izin",settings:"Pengaturan",kasWeb:"Manajemen Kas Web",sopPage:"Pusat Informasi & SOP",otoritas:"Otoritas Hak Akses",serahTerima:"Serah Terima CS LINE",jobDesk:"Job Desk Kasir",jobDeskSaya:"Job Desk Saya",jobDeskInput:"Set Job Desk Staff",absenSaya:"Absensi Saya",izinSaya:"Izin Keluar",shiftSaya:"Shift Saya",historySaya:"History Saya",profilSaya:"Profil Saya"};
   return t[state.currentMenu]||"Dashboard";
 }
 async function setMenu(menu){
@@ -533,6 +560,7 @@ async function renderCurrentContent(){
       case"kasWeb":return await renderKasWeb(true);
       case"sopPage":return await renderSopPage(true);
       case"serahTerima":return await renderSerahTerima(true);
+      case"jobDesk":return await renderJobDesk(true);
       case"otoritas":return await renderOtoritas();
       case"settings":return await renderSettings();
       default:return await renderAdminDashboard();
@@ -550,6 +578,8 @@ async function renderCurrentContent(){
     case"kasWeb":return await renderKasWeb(false);
     case"sopPage":return await renderSopPage(false);
     case"serahTerima":return await renderSerahTerima(false);
+    case"jobDeskSaya":return await renderJobDeskSaya();
+    case"jobDeskInput":return await renderJobDesk(false);
     case"profilSaya":return await renderProfilSaya();
     default:return await renderStaffDashboard();
   }
@@ -926,9 +956,10 @@ const ALL_HAK=[
   {grup:"Pusat Informasi & SOP",items:[{key:"bukaSOP",label:"Buka Pusat Informasi & SOP"},{key:"tambahSOP",label:"Tambah Info / SOP Baru"},{key:"hapusSOP",label:"Hapus Info / SOP"}]},
   {grup:"Laporan & Audit Log",items:[{key:"bukaLaporan",label:"Buka Menu Laporan & Rekap"},{key:"hapusLaporan",label:"Hapus History Laporan"},{key:"bukaAuditLog",label:"Buka Menu Audit Log Sistem"}]},
   {grup:"Serah Terima",items:[{key:"bukaSerahTerima",label:"Akses Menu Serah Terima CS LINE"}]},
+  {grup:"Job Desk",items:[{key:"bukaJobDesk",label:"Set Job Desk Staff (Kapten & CS LINE)"}]},
   {grup:"Fitur Ekstra",items:[{key:"aksesKirimBroadcast",label:"Akses Kirim Cyber Broadcast"}]}
 ];
-const JABATAN_OTORITAS=["KAPTEN","CS LINE","KASIR","CS"];
+const JABATAN_OTORITAS=["Kapten","CS LINE","Kasir","CS"];
 async function renderOtoritas(){
   const akses=await fetchAkses();const jabatan=state.currentAksesJabatan||"KAPTEN";const currentAkses=akses[jabatan]||{};
   const jabatanTabs=JABATAN_OTORITAS.map(j=>`<button onclick="setAksesJabatan('${j}')" style="padding:8px 16px;border-radius:10px;border:1px solid ${j===jabatan?"#1dbf97":"var(--line)"};background:${j===jabatan?"#05353a":"transparent"};color:${j===jabatan?"#18e0a3":"var(--muted)"};cursor:pointer;font-size:13px;font-weight:600;">${j}</button>`).join("");
@@ -1154,6 +1185,318 @@ function startBroadcastTimer(){
   },30000);
 }
 function stopBroadcastTimer(){if(state.broadcastTimer){clearInterval(state.broadcastTimer);state.broadcastTimer=null;}}
+
+// ══════════════════════════════════════════════════════
+// JOB DESK
+// ══════════════════════════════════════════════════════
+const JD_ITEMS=[
+  {label:"DEPO BCA",icon:"🏦",color:"#60a5fa",bg:"rgba(96,165,250,.15)"},
+  {label:"DEPO BNI",icon:"🏦",color:"#fb923c",bg:"rgba(251,146,60,.15)"},
+  {label:"DEPO BRI",icon:"🏦",color:"#4ade80",bg:"rgba(74,222,128,.15)"},
+  {label:"DEPO DANA",icon:"💙",color:"#38bdf8",bg:"rgba(56,189,248,.15)"},
+  {label:"DEPO MANUAL",icon:"✍️",color:"#f59e0b",bg:"rgba(245,158,11,.15)"},
+  {label:"BUKTI BANK",icon:"🧾",color:"#22d3ee",bg:"rgba(34,211,238,.15)"},
+  {label:"OVO, GOPAY, LINKAJA",icon:"📱",color:"#a78bfa",bg:"rgba(167,139,250,.15)"},
+  {label:"OPERATOR",icon:"🎮",color:"#18c08f",bg:"rgba(24,192,143,.15)"},
+  {label:"PINDAH DANA",icon:"🔄",color:"#f472b6",bg:"rgba(244,114,182,.15)"},
+  {label:"WD ALL BANK",icon:"💸",color:"#34d399",bg:"rgba(52,211,153,.15)"},
+  {label:"SORONG BK BCA",icon:"📤",color:"#93c5fd",bg:"rgba(147,197,253,.15)"},
+  {label:"SORONG BK BNI",icon:"📤",color:"#fdba74",bg:"rgba(253,186,116,.15)"},
+  {label:"SORONG BK BRI",icon:"📤",color:"#86efac",bg:"rgba(134,239,172,.15)"},
+  {label:"SORONG BK DANA",icon:"📤",color:"#7dd3fc",bg:"rgba(125,211,252,.15)"},
+  {label:"ALL BK DAN DURASI ANTRIAN",icon:"⏱️",color:"#fbbf24",bg:"rgba(251,191,36,.15)"},
+  {label:"BUKTI EWALLET",icon:"📲",color:"#c084fc",bg:"rgba(192,132,252,.15)"},
+  {label:"VALIDASI",icon:"✅",color:"#86efac",bg:"rgba(134,239,172,.15)"},
+  {label:"KAS DAN PENDINGAN",icon:"💰",color:"#fde68a",bg:"rgba(253,230,138,.15)"},
+  {label:"TEMBAK SCATTER",icon:"🎯",color:"#f87171",bg:"rgba(248,113,113,.15)"},
+  {label:"WD CIMB",icon:"💸",color:"#a3e635",bg:"rgba(163,230,53,.15)"}
+];
+
+const jdState={};
+function jdGetTags(uid){return jdState[uid]||[];}
+function jdSetTags(uid,tags){jdState[uid]=tags;}
+function jdInit(input){
+  const uid=input.dataset.userid;
+  if(jdState[uid]!==undefined)return;
+  const ex=input.dataset.tags||"";
+  jdState[uid]=ex?ex.split(",").map(t=>t.trim()).filter(Boolean):[];
+}
+
+function jdShowDropdown(input){
+  jdInit(input);
+  const val=input.value.trim();
+  const uid=input.dataset.userid;
+  const dd=document.getElementById("jd_dd_"+uid);
+  if(!dd)return;
+  const q=val.replace(/^#/,"").toLowerCase();
+  const filtered=q===""?JD_ITEMS:JD_ITEMS.filter(i=>i.label.toLowerCase().includes(q));
+  if(!filtered.length){dd.style.display="none";return;}
+  const cur=jdGetTags(uid);
+  dd.innerHTML=filtered.map(item=>{
+    const sel=cur.includes(item.label);
+    return`<div class="jd-dropdown-item" style="${sel?"background:rgba(24,192,143,.1);":""}">
+      <div class="jd-item-icon" style="background:${item.bg};">${item.icon}</div>
+      <span style="flex:1;">${item.label}</span>
+      ${sel?`<i class="fa-solid fa-check" style="color:#18c08f;font-size:11px;"></i>`:""}
+    </div>`;
+  }).join("");
+  dd.style.display="block";
+  // Pasang click listener ke setiap item
+  Array.from(dd.children).forEach((el,i)=>{
+    el._lbl=filtered[i].label;
+    el._uid=uid;
+    el.addEventListener("click",function(){
+      const tags=jdGetTags(this._uid);
+      if(tags.includes(this._lbl))jdSetTags(this._uid,tags.filter(t=>t!==this._lbl));
+      else jdSetTags(this._uid,[...tags,this._lbl]);
+      const inp=document.getElementById("jd_txt_"+this._uid);
+      if(inp){inp.value="";jdRefreshTags(inp);jdShowDropdown(inp);inp.focus();}
+    });
+  });
+}
+
+function jdRefreshTags(input){
+  const uid=input.dataset.userid;
+  const tags=jdGetTags(uid);
+  const c=document.getElementById("jd_tags_"+uid);
+  if(!c)return;
+  c.innerHTML=tags.map(tag=>{
+    const item=JD_ITEMS.find(i=>i.label===tag)||{icon:"📌",color:"#18c08f",bg:"rgba(24,192,143,.12)"};
+    return`<span class="jd-tag" style="background:${item.bg};color:${item.color};border:1px solid ${item.color}40;">
+      ${item.icon} ${tag}
+      <button onclick="jdRemoveTag('${uid}',${JSON.stringify(tag)})" style="color:${item.color};">✕</button>
+    </span>`;
+  }).join("");
+  input.dataset.tags=tags.join(",");
+}
+
+function jdRemoveTag(uid,label){
+  jdSetTags(uid,jdGetTags(uid).filter(t=>t!==label));
+  const inp=document.getElementById("jd_txt_"+uid);
+  if(inp)jdRefreshTags(inp);
+}
+
+function jdRenderCards(jobdesk,color){
+  if(!jobdesk)return"";
+  return jobdesk.split(",").map(t=>t.trim()).filter(Boolean).map(tag=>{
+    const item=JD_ITEMS.find(i=>i.label===tag)||{icon:"📌",color:color||"#18c08f",bg:"rgba(24,192,143,.12)"};
+    return`<div class="jd-card"><div class="jd-card-icon" style="background:${item.bg};">${item.icon}</div><div class="jd-card-label" style="color:${item.color};">${tag}</div></div>`;
+  }).join("");
+}
+
+async function fetchJobDesk(){try{const r=await fetchJson("/api/jobdesk");return r.data||[];}catch{return[];}}
+
+async function renderJobDesk(isAdmin){
+  const users=await fetchStaff();
+  const allJD=await fetchJobDesk();
+  const today=new Date().toISOString().split("T")[0];
+  const staffList=users.filter(u=>u.role==="staff"&&u.active);
+  const todayJD=allJD.filter(j=>j.tanggal===today);
+  const canEdit=isAdmin||boleh("bukaJobDesk");
+  const SHIFTS=[
+    {nama:"Pagi",icon:"fa-sun",color:"#f59e0b",bg:"rgba(245,158,11,.08)",border:"rgba(245,158,11,.25)"},
+    {nama:"Siang",icon:"fa-cloud-sun",color:"#22d3ee",bg:"rgba(34,211,238,.08)",border:"rgba(34,211,238,.25)"},
+    {nama:"Sore",icon:"fa-cloud",color:"#a78bfa",bg:"rgba(167,139,250,.08)",border:"rgba(167,139,250,.25)"},
+    {nama:"Malam",icon:"fa-moon",color:"#818cf8",bg:"rgba(129,140,248,.08)",border:"rgba(129,140,248,.25)"}
+  ];
+
+  if(!canEdit){
+    // Read-only view
+    const sections=SHIFTS.map(sh=>{
+      const ss=staffList.filter(u=>u.shift===sh.nama);
+      if(!ss.length)return"";
+      return`<div style="margin-bottom:16px;border-radius:16px;border:1px solid ${sh.border};overflow:hidden;">
+        <div style="padding:12px 18px;background:${sh.bg};display:flex;align-items:center;gap:10px;border-bottom:1px solid ${sh.border};">
+          <i class="fa-solid ${sh.icon}" style="color:${sh.color};font-size:17px;"></i>
+          <b style="color:${sh.color};font-size:15px;">Shift ${sh.nama}</b>
+          <span style="margin-left:auto;font-size:12px;color:${sh.color};opacity:.7;">${ss.length} staff</span>
+        </div>
+        ${ss.map(u=>{
+          const jd=todayJD.find(j=>Number(j.userId)===Number(u.id));
+          return`<div style="padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:12px;">
+            <div class="member-avatar" style="width:36px;height:36px;font-size:14px;flex-shrink:0;border-color:${sh.color};">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                <b style="font-size:14px;">${u.nama}</b>
+                <span class="badge badge-muted" style="font-size:11px;">${u.jabatan}</span>
+                <span style="font-size:11px;color:#6a8099;">⏰ ${u.shiftStartTime||"08:00"}</span>
+                <span class="badge ${jd?"badge-success":"badge-muted"}" style="margin-left:auto;">${jd?"✅ Ada":"⏳ Belum"}</span>
+              </div>
+              ${jd?`<div class="jd-card-grid">${jdRenderCards(jd.jobdesk,sh.color)}</div>
+                <div style="font-size:11px;color:#4a6080;margin-top:6px;">Oleh: ${jd.dibuat_oleh}</div>`
+              :`<div style="padding:8px 12px;border-radius:8px;border:1px dashed rgba(255,255,255,.08);color:#4a6080;font-size:13px;font-style:italic;">Belum ada job desk hari ini.</div>`}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>`;
+    }).join("");
+    return`<div class="card" style="margin-bottom:16px;"><h4><i class="fa-solid fa-list-check"></i>Job Desk Hari Ini — ${today}</h4></div>${sections}`;
+  }
+
+  // Edit view: summary + per shift
+  const summaryBar=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    ${SHIFTS.map(sh=>{
+      const ss=staffList.filter(u=>u.shift===sh.nama);
+      const done=ss.filter(u=>todayJD.find(j=>Number(j.userId)===Number(u.id))).length;
+      const pct=ss.length?Math.round((done/ss.length)*100):0;
+      return`<div style="background:#0b1730;border-radius:12px;padding:14px;border:1px solid ${sh.border};text-align:center;">
+        <i class="fa-solid ${sh.icon}" style="color:${sh.color};font-size:20px;margin-bottom:6px;display:block;"></i>
+        <b style="font-size:13px;color:${sh.color};">Shift ${sh.nama}</b>
+        <div style="font-size:26px;font-weight:bold;margin:5px 0;color:${pct===100?"#18c08f":pct>0?"#f59e0b":"#6a8099"};">${done}<span style="font-size:14px;color:#6a8099;">/${ss.length}</span></div>
+        <div style="height:5px;background:#1a2a40;border-radius:999px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${pct===100?"#18c08f":"#f59e0b"};border-radius:999px;"></div></div>
+        <div style="font-size:11px;color:#6a8099;margin-top:4px;">${pct}% selesai</div>
+      </div>`;
+    }).join("")}
+  </div>`;
+
+  const shiftSections=SHIFTS.map(sh=>{
+    const ss=staffList.filter(u=>u.shift===sh.nama);
+    if(!ss.length)return"";
+    const done=ss.filter(u=>todayJD.find(j=>Number(j.userId)===Number(u.id))).length;
+    return`<div style="margin-bottom:20px;border-radius:16px;border:1px solid ${sh.border};overflow:hidden;">
+      <div style="padding:13px 20px;background:${sh.bg};display:flex;align-items:center;gap:12px;border-bottom:1px solid ${sh.border};">
+        <i class="fa-solid ${sh.icon}" style="color:${sh.color};font-size:19px;"></i>
+        <div><b style="font-size:15px;color:${sh.color};">Shift ${sh.nama}</b><div style="font-size:12px;color:#6a8099;">${ss.length} staff • ${done} sudah ada job desk</div></div>
+        <button class="btn btn-xs" style="margin-left:auto;background:${sh.bg};border:1px solid ${sh.border};color:${sh.color};" onclick="saveShiftJobDesk('${sh.nama}')">
+          <i class="fa-solid fa-save"></i> Simpan Shift Ini
+        </button>
+      </div>
+      ${ss.map(u=>{
+        const jd=todayJD.find(j=>Number(j.userId)===Number(u.id));
+        return`<div style="display:grid;grid-template-columns:210px 1fr 60px;border-bottom:1px solid rgba(255,255,255,.04);">
+          <div style="padding:12px 16px;display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.12);border-right:1px solid rgba(255,255,255,.05);">
+            <div class="member-avatar" style="width:32px;height:32px;font-size:12px;flex-shrink:0;border-color:${sh.color};">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div style="min-width:0;overflow:hidden;">
+              <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.nama}</b>
+              <span style="font-size:11px;color:#6a8099;">${u.jabatan}</span><br>
+              <span style="font-size:11px;color:${sh.color};">⏰ ${u.shiftStartTime||"08:00"}</span>
+            </div>
+          </div>
+          <div style="padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:6px;">
+            <div class="jd-input-wrap">
+              <input type="text" id="jd_txt_${u.id}"
+                data-userid="${u.id}" data-nama="${u.nama.replace(/"/g,"&quot;")}"
+                data-jabatan="${u.jabatan}" data-shift="${u.shift}"
+                data-tags="${jd?jd.jobdesk.replace(/"/g,"&quot;"):""}"
+                style="width:100%;background:${jd?"rgba(24,192,143,.05)":"rgba(7,17,36,.7)"};border:1px solid ${jd?"#18c08f":"#1e3a5f"};border-radius:9px;color:white;padding:9px 12px;font-size:13px;outline:none;font-family:'Segoe UI',Arial,sans-serif;"
+                placeholder="# atau ketik tugas..." autocomplete="off"
+                oninput="jdShowDropdown(this)"
+                onfocus="jdShowDropdown(this)"
+                onblur="setTimeout(()=>{const d=document.getElementById('jd_dd_${u.id}');if(d)d.style.display='none';},200)"
+                onkeydown="if(event.key==='Escape'){const d=document.getElementById('jd_dd_${u.id}');if(d)d.style.display='none';}"
+              >
+              <div id="jd_dd_${u.id}" class="jd-dropdown" style="display:none;"></div>
+            </div>
+            <div id="jd_tags_${u.id}" class="jd-tags">${jd?jdRenderTagsInit(jd.jobdesk,u.id,sh.color):""}</div>
+          </div>
+          <div style="padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(0,0,0,.1);">
+            <span class="badge ${jd?"badge-success":"badge-muted"}" id="jd_status_${u.id}" style="font-size:14px;">${jd?"✅":"—"}</span>
+            ${jd&&isAdmin?`<button class="btn btn-danger btn-xs" onclick="deleteJobDesk(${jd.id})"><i class="fa-solid fa-trash"></i></button>`:""}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("");
+
+  return`<div class="card" style="background:linear-gradient(135deg,#071e2a,#0d2a1e);border-color:rgba(24,192,143,.2);">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+      <div><h4 style="font-size:18px;"><i class="fa-solid fa-list-check" style="color:#18c08f;"></i>Job Desk — Per Shift</h4>
+        <p style="font-size:13px;color:#7a9ab8;">Isi tugas tiap staff. Klik item dari dropdown atau ketik nama tugas.</p></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <input type="date" id="jdTanggal" class="input" style="max-width:160px;" value="${today}" onchange="renderAppPage()">
+        <button class="btn btn-primary" onclick="saveAllJobDesk()"><i class="fa-solid fa-save"></i> Simpan Semua</button>
+        <button class="btn btn-dark" onclick="document.querySelectorAll('[id^=jd_txt_]').forEach(i=>{i.value='';const uid=i.dataset.userid;jdSetTags(uid,[]);jdRefreshTags(i);})"><i class="fa-solid fa-eraser"></i> Kosongkan</button>
+      </div>
+    </div>
+    ${summaryBar}${shiftSections}
+    <div style="display:flex;justify-content:flex-end;margin-top:6px;">
+      <button class="btn btn-primary" onclick="saveAllJobDesk()"><i class="fa-solid fa-save"></i> Simpan Semua Job Desk</button>
+    </div>
+  </div>`;
+}
+
+function jdRenderTagsInit(jobdesk,uid,color){
+  // Render awal tags dari data tersimpan (sebelum user interaksi)
+  if(!jobdesk)return"";
+  jdState[uid]=jobdesk.split(",").map(t=>t.trim()).filter(Boolean);
+  return jdState[uid].map(tag=>{
+    const item=JD_ITEMS.find(i=>i.label===tag)||{icon:"📌",color:color||"#18c08f",bg:"rgba(24,192,143,.12)"};
+    return`<span class="jd-tag" style="background:${item.bg};color:${item.color};border:1px solid ${item.color}40;">
+      ${item.icon} ${tag}
+      <button onclick="jdRemoveTag('${uid}',${JSON.stringify(tag)})" style="color:${item.color};">✕</button>
+    </span>`;
+  }).join("");
+}
+
+async function renderJobDeskSaya(){
+  await refreshCurrentUser();
+  const me=state.currentUser;
+  const allJD=await fetchJobDesk();
+  const today=new Date().toISOString().split("T")[0];
+  const myJDToday=allJD.find(j=>Number(j.userId)===Number(me.id)&&j.tanggal===today);
+  const myJDHistory=allJD.filter(j=>Number(j.userId)===Number(me.id)).sort((a,b)=>b.id-a.id).slice(0,5);
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const sc=shiftColor[me.shift]||"#18c08f";
+  return`<div class="card" style="border-color:${myJDToday?"rgba(24,192,143,.4)":"rgba(100,116,139,.2)"};background:${myJDToday?"linear-gradient(135deg,#071e2a,#0a2a1a)":"var(--card-bg)"};">
+    <h4><i class="fa-solid fa-list-check" style="color:${myJDToday?"#18c08f":"#6a8099"};"></i>Job Desk Saya Hari Ini</h4>
+    <p style="font-size:13px;color:#7a9ab8;">${today} • ${me.jabatan} • <span style="color:${sc};">Shift ${me.shift} ⏰ ${me.shiftStartTime||"08:00"}</span></p>
+    ${myJDToday
+      ?`<div class="jd-card-grid" style="margin-top:14px;">${jdRenderCards(myJDToday.jobdesk,sc)}</div>
+         <div style="margin-top:10px;font-size:12px;color:#6a8099;"><i class="fa-solid fa-circle-check" style="color:#18c08f;"></i> Dibuat oleh: <b>${myJDToday.dibuat_oleh}</b></div>`
+      :`<div style="text-align:center;padding:32px 20px;">
+          <i class="fa-solid fa-clipboard" style="font-size:40px;color:#2a3e5e;margin-bottom:12px;display:block;"></i>
+          <p style="color:#6a8099;">Belum ada job desk untuk Anda hari ini.</p>
+          <p style="color:#4a6080;font-size:13px;margin-top:5px;">Hubungi Kapten / Admin.</p>
+        </div>`
+    }
+  </div>
+  ${myJDHistory.length>1?`
+    <div class="section-title" style="margin-top:18px;"><i class="fa-solid fa-clock-rotate-left"></i>Riwayat Job Desk</div>
+    <div class="grid grid-2">
+      ${myJDHistory.map(j=>`<div class="card" style="opacity:${j.tanggal===today?"1":"0.75"};">
+        <div class="between" style="margin-bottom:8px;">
+          <b style="font-size:13px;">${j.tanggal}</b>
+          ${j.tanggal===today?`<span class="badge badge-success">Hari Ini</span>`:`<span class="badge badge-muted">Lalu</span>`}
+        </div>
+        <div class="jd-card-grid">${jdRenderCards(j.jobdesk,sc)}</div>
+      </div>`).join("")}
+    </div>`:""}`;
+}
+
+async function saveAllJobDesk(){
+  const tanggal=document.getElementById("jdTanggal")?.value||new Date().toISOString().split("T")[0];
+  const inputs=document.querySelectorAll("[id^='jd_txt_']");
+  let saved=0;
+  await Promise.all(Array.from(inputs).map(async inp=>{
+    const uid=inp.dataset.userid;
+    jdInit(inp);
+    const tags=jdGetTags(uid);
+    if(!tags.length)return;
+    const r=await fetchJson("/api/jobdesk",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({userId:uid,nama:inp.dataset.nama,jabatan:inp.dataset.jabatan,jobdesk:tags.join(", "),tanggal,dibuat_oleh:state.currentUser.nama})});
+    if(r.status==="success"){saved++;const s=document.getElementById("jd_status_"+uid);if(s){s.className="badge badge-success";s.textContent="✅";}}
+  }));
+  toast(saved?`${saved} job desk tersimpan ✓`:"Tidak ada yang diisi",!saved);
+}
+
+async function saveShiftJobDesk(shiftNama){
+  const tanggal=document.getElementById("jdTanggal")?.value||new Date().toISOString().split("T")[0];
+  const inputs=document.querySelectorAll(`[data-shift="${shiftNama}"]`);
+  let saved=0;
+  await Promise.all(Array.from(inputs).map(async inp=>{
+    const uid=inp.dataset.userid;jdInit(inp);
+    const tags=jdGetTags(uid);if(!tags.length)return;
+    const r=await fetchJson("/api/jobdesk",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({userId:uid,nama:inp.dataset.nama,jabatan:inp.dataset.jabatan,jobdesk:tags.join(", "),tanggal,dibuat_oleh:state.currentUser.nama})});
+    if(r.status==="success"){saved++;const s=document.getElementById("jd_status_"+uid);if(s){s.className="badge badge-success";s.textContent="✅";}}
+  }));
+  toast(`Shift ${shiftNama}: ${saved} tersimpan ✓`);
+}
+
+async function deleteJobDesk(id){
+  if(!confirm("Hapus job desk ini?"))return;
+  try{const r=await fetchJson(`/api/jobdesk/${id}`,{method:"DELETE"});if(r.status==="success"){toast("Dihapus");await renderAppPage();}else toast(r.message,true);}catch{toast("Error",true);}
+}
 
 // ══════════════════════════════════════════════════════
 // INIT
