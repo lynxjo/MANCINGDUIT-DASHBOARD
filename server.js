@@ -19,6 +19,7 @@ const KAS_FILE        = path.join(__dirname, "kas.json");
 const AKSES_FILE      = path.join(__dirname, "akses.json");
 const SERAHTERIMA_FILE= path.join(__dirname, "serahterima.json");
 const BROADCAST_FILE  = path.join(__dirname, "broadcast.json");
+const JOBDESK_FILE    = path.join(__dirname, "jobdesk.json");
 
 function loadJson(p,fb=[]){try{return JSON.parse(fs.readFileSync(p,"utf-8"));}catch{return fb;}}
 function saveJson(p,d){fs.writeFileSync(p,JSON.stringify(d,null,2));}
@@ -37,15 +38,25 @@ function loadSerahTerima(){return loadJson(SERAHTERIMA_FILE,[]);}
 function saveSerahTerima(d){saveJson(SERAHTERIMA_FILE,d);}
 function loadBroadcast(){return loadJson(BROADCAST_FILE,{aktif:false,pesan:"",dibuat_oleh:"",timestamp:""});}
 function saveBroadcast(d){saveJson(BROADCAST_FILE,d);}
+function loadJobDesk(){return loadJson(JOBDESK_FILE,[]);}
+function saveJobDesk(d){saveJson(JOBDESK_FILE,d);}
 
 const DEFAULT_AKSES={
-  KAPTEN:{bukaDataStaff:true,tambahStaff:true,editStaff:true,hapusStaff:true,setShift:true,resetAbsen:true,bukaKas:true,inputTransaksi:true,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:true,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false},
-  "CS LINE":{bukaDataStaff:true,tambahStaff:true,editStaff:true,hapusStaff:true,setShift:true,resetAbsen:true,bukaKas:true,inputTransaksi:true,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:true},
-  KASIR:{bukaDataStaff:true,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:true,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:false,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false},
-  CS:{bukaDataStaff:false,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:true,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false},
-  Staff:{bukaDataStaff:false,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:false,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:false,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false}
+  Kapten:{bukaDataStaff:true,tambahStaff:true,editStaff:true,hapusStaff:true,setShift:true,resetAbsen:true,bukaKas:true,inputTransaksi:true,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:true,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:true},
+  "CS LINE":{bukaDataStaff:true,tambahStaff:true,editStaff:true,hapusStaff:true,setShift:true,resetAbsen:true,bukaKas:true,inputTransaksi:true,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:true,bukaJobDesk:true},
+  Kasir:{bukaDataStaff:true,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:true,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:false,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:false},
+  CS:{bukaDataStaff:false,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:true,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:false},
+  Staff:{bukaDataStaff:false,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:false,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:false,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:false}
 };
-function loadAkses(){return loadJson(AKSES_FILE,DEFAULT_AKSES);}
+function loadAkses(){
+  const saved=loadJson(AKSES_FILE,{});
+  const merged={};
+  Object.keys(DEFAULT_AKSES).forEach(jabatan=>{
+    const savedKey=Object.keys(saved).find(k=>k.toLowerCase()===jabatan.toLowerCase());
+    merged[jabatan]={...DEFAULT_AKSES[jabatan],...(savedKey?saved[savedKey]:{})};
+  });
+  return merged;
+}
 function saveAkses(d){saveJson(AKSES_FILE,d);}
 
 function loadSettings(){return loadJson(SETTINGS_FILE,{theme:"dark-blue",notification:{reminderEnabled:true,reminderMinutes:15,emailEnabled:false,recipients:[]}});}
@@ -67,7 +78,8 @@ app.post("/api/login",(req,res)=>{
   const user=loadUsers().find(u=>u.username===username&&u.password===password&&u.active===true);
   if(!user)return res.status(401).json({status:"error",message:"Username atau password salah"});
   const akses=loadAkses();
-  const hakAkses=user.role==="admin"?null:(akses[user.jabatan]||akses["Staff"]||{});
+  const jabatanKey=Object.keys(akses).find(k=>k.toLowerCase()===user.jabatan.toLowerCase())||"Staff";
+  const hakAkses=user.role==="admin"?null:(akses[jabatanKey]||akses["Staff"]||{});
   res.json({status:"success",message:"Login berhasil",user:safeUser(user),hakAkses});
 });
 
@@ -202,5 +214,29 @@ app.put("/api/akses/:jabatan",(req,res)=>{const akses=loadAkses();const jabatan=
 // SETTINGS
 app.get("/api/settings",(req,res)=>res.json({status:"success",data:loadSettings()}));
 app.put("/api/settings",(req,res)=>{const current=loadSettings();const updated={...current,...req.body};if(req.body.notification)updated.notification={...current.notification,...req.body.notification};saveSettings(updated);res.json({status:"success",message:"Pengaturan disimpan",data:updated});});
+
+// JOB DESK
+app.get("/api/jobdesk",(req,res)=>{
+  const data=loadJobDesk();
+  const{tanggal}=req.query;
+  res.json({status:"success",data:tanggal?data.filter(j=>j.tanggal===tanggal):data});
+});
+app.post("/api/jobdesk",(req,res)=>{
+  const jd=loadJobDesk();
+  const{userId,nama,jabatan,jobdesk,tanggal,dibuat_oleh}=req.body;
+  if(!userId||!jobdesk)return res.status(400).json({status:"error",message:"userId dan jobdesk wajib diisi"});
+  const tgl=tanggal||todayStr();
+  const filtered=jd.filter(j=>!(Number(j.userId)===Number(userId)&&j.tanggal===tgl));
+  const newJD={id:jd.length?Math.max(...jd.map(j=>j.id))+1:1,userId:Number(userId),nama,jabatan,jobdesk,tanggal:tgl,jam:currentTimeStr(),timestamp:new Date().toISOString(),dibuat_oleh:dibuat_oleh||"Admin"};
+  filtered.push(newJD);saveJobDesk(filtered);
+  res.json({status:"success",message:"Job desk berhasil disimpan",data:newJD});
+});
+app.delete("/api/jobdesk/:id",(req,res)=>{
+  const jd=loadJobDesk();
+  const idx=jd.findIndex(j=>j.id===Number(req.params.id));
+  if(idx===-1)return res.status(404).json({status:"error",message:"Job desk tidak ditemukan"});
+  jd.splice(idx,1);saveJobDesk(jd);
+  res.json({status:"success",message:"Job desk berhasil dihapus"});
+});
 
 app.listen(PORT,()=>console.log(`Server dashboard berjalan di http://localhost:${PORT}`));
