@@ -1,4 +1,5 @@
 const express = require("express");
+process.env.TZ = "Asia/Jakarta";
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
