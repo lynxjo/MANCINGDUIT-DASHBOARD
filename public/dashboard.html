@@ -454,23 +454,30 @@ function getMenusByRole(){
     {key:"settings",label:"Pengaturan",icon:"fa-gear"}
   ];
   const all=[
-    {key:"dashboard",label:"Dashboard",icon:"fa-house",hak:null},
-    {key:"absenSaya",label:"Absensi Saya",icon:"fa-fingerprint",hak:null},
-    {key:"izinSaya",label:"Izin Keluar",icon:"fa-person-walking-arrow-right",hak:null},
-    {key:"shiftSaya",label:"Shift Saya",icon:"fa-calendar",hak:null},
-    {key:"kasWeb",label:"Kas Web",icon:"fa-wallet",hak:"bukaKas"},
-    {key:"sopPage",label:"Pusat Info & SOP",icon:"fa-book-open",hak:"bukaSOP"},
-    {key:"serahTerima",label:"Serah Terima",icon:"fa-handshake",hak:"bukaSerahTerima"},
-    {key:"historyAbsensi",label:"History Absensi",icon:"fa-clock-rotate-left",hak:"bukaLaporan"},
-    {key:"jobDeskSaya",label:"Job Desk Saya",icon:"fa-list-check",hak:null},
-    {key:"jobDeskInput",label:"Set Job Desk",icon:"fa-pen-to-square",hak:"bukaJobDesk"},
-    {key:"historySaya",label:"History Saya",icon:"fa-history",hak:null},
-    {key:"profilSaya",label:"Profil Saya",icon:"fa-circle-user",hak:null}
+    {key:"dashboard",      label:"Dashboard",          icon:"fa-house",                    hak:null},
+    {key:"absenSaya",      label:"Absensi Saya",       icon:"fa-fingerprint",              hak:null},
+    {key:"izinSaya",       label:"Izin Keluar",         icon:"fa-person-walking-arrow-right",hak:null},
+    {key:"shiftSaya",      label:"Shift Saya",          icon:"fa-calendar",                 hak:null},
+    // Menu yang diatur via otoritas
+    {key:"staffView",      label:"Data Staff",          icon:"fa-users",                    hak:"menuDataStaff"},
+    {key:"detailStaffView",label:"Detail Staff",        icon:"fa-sitemap",                  hak:"menuDetailStaff"},
+    {key:"absensiView",    label:"Data Absensi",        icon:"fa-clipboard-list",           hak:"menuAbsensi"},
+    {key:"izinView",       label:"Izin Keluar Staff",   icon:"fa-door-open",                hak:"menuIzin"},
+    {key:"shiftView",      label:"Shift Kerja",         icon:"fa-calendar-days",            hak:"menuShift"},
+    {key:"historyAbsensiView",label:"History Absensi", icon:"fa-clock-rotate-left",        hak:"menuHistoryAbsensi"},
+    {key:"historyIzinView",label:"History Izin",        icon:"fa-file-lines",               hak:"menuHistoryIzin"},
+    {key:"kasWeb",         label:"Kas Web",             icon:"fa-wallet",                   hak:"menuKas"},
+    {key:"sopPage",        label:"Pusat Info & SOP",    icon:"fa-book-open",                hak:"menuSOP"},
+    {key:"serahTerima",    label:"Serah Terima",        icon:"fa-handshake",                hak:"menuSerahTerima"},
+    {key:"jobDeskSaya",    label:"Job Desk Saya",       icon:"fa-list-check",               hak:null},
+    {key:"jobDeskMenu",    label:"Job Desk Kasir",      icon:"fa-list-check",               hak:"menuJobDesk"},
+    {key:"historySaya",    label:"History Saya",        icon:"fa-history",                  hak:null},
+    {key:"profilSaya",     label:"Profil Saya",         icon:"fa-circle-user",              hak:null}
   ];
   return all.filter(m=>m.hak===null||boleh(m.hak));
 }
 function getPageTitle(){
-  const t={dashboard:state.currentUser?.role==="admin"?"Dashboard Admin":"Dashboard Staff",staff:"Data Staff",detailStaff:"Detail Staff",absensi:"Data Absensi",izin:"Izin Keluar Staff",shift:"Shift Kerja",historyAbsensi:"History Absensi",historyIzin:"History Izin",settings:"Pengaturan",kasWeb:"Manajemen Kas Web",sopPage:"Pusat Informasi & SOP",otoritas:"Otoritas Hak Akses",serahTerima:"Serah Terima CS LINE",jobDesk:"Job Desk Kasir",jobDeskSaya:"Job Desk Saya",jobDeskInput:"Set Job Desk Staff",absenSaya:"Absensi Saya",izinSaya:"Izin Keluar",shiftSaya:"Shift Saya",historySaya:"History Saya",profilSaya:"Profil Saya"};
+  const t={dashboard:state.currentUser?.role==="admin"?"Dashboard Admin":"Dashboard Staff",staff:"Data Staff",detailStaff:"Detail Staff",absensi:"Data Absensi",izin:"Izin Keluar Staff",shift:"Shift Kerja",historyAbsensi:"History Absensi",historyIzin:"History Izin",settings:"Pengaturan",kasWeb:"Manajemen Kas Web",sopPage:"Pusat Informasi & SOP",otoritas:"Otoritas Hak Akses",serahTerima:"Serah Terima CS LINE",jobDesk:"Job Desk Kasir",jobDeskSaya:"Job Desk Saya",jobDeskInput:"Set Job Desk Staff",absenSaya:"Absensi Saya",izinSaya:"Izin Keluar",shiftSaya:"Shift Saya",staffView:"Data Staff",detailStaffView:"Detail Staff",absensiView:"Data Absensi",izinView:"Izin Keluar Staff",shiftView:"Shift Kerja",historyAbsensiView:"History Absensi",historyIzinView:"History Izin",jobDeskMenu:"Job Desk Kasir",historyIzinView:"History Izin",absensiView:"Data Absensi",historySaya:"History Saya",profilSaya:"Profil Saya"};
   return t[state.currentMenu]||"Dashboard";
 }
 async function setMenu(menu){
@@ -573,13 +580,20 @@ async function renderCurrentContent(){
       if(!isPC())return renderIzinBlocked();
       return await renderIzinSaya();
     case"shiftSaya":return await renderShiftSaya();
-    case"historyAbsensi":return await renderHistoryAbsensiAdmin();
-    case"historySaya":return await renderHistorySaya();
-    case"kasWeb":return await renderKasWeb(false);
-    case"sopPage":return await renderSopPage(false);
+    // Menu dengan hak akses menuXxx
+    case"staffView":return await renderStaffView();
+    case"detailStaffView":return await renderDetailStaff();
+    case"absensiView":return await renderAbsensiView();
+    case"izinView":return await renderIzinView();
+    case"shiftView":return await renderShiftView();
+    case"historyAbsensiView":return await renderHistoryAbsensiAdmin();
+    case"historyIzinView":return await renderHistoryIzinView();
+    case"kasWeb":return await renderKasWeb(boleh("inputTransaksi"));
+    case"sopPage":return await renderSopPage(boleh("tambahSOP"));
     case"serahTerima":return await renderSerahTerima(false);
     case"jobDeskSaya":return await renderJobDeskSaya();
-    case"jobDeskInput":return await renderJobDesk(false);
+    case"jobDeskMenu":return await renderJobDesk(boleh("bukaJobDesk"));
+    case"historySaya":return await renderHistorySaya();
     case"profilSaya":return await renderProfilSaya();
     default:return await renderStaffDashboard();
   }
@@ -636,17 +650,37 @@ async function renderAdminDashboard(){
 // STAFF DASHBOARD
 // ══════════════════════════════════════════════════════
 async function renderStaffDashboard(){
-  await refreshCurrentUser();const staff=await fetchStaff();
+  await refreshCurrentUser();
+  const staff=await fetchStaff();
+  const absensi=await fetchAbsensi();
   const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
-  const roster=["Pagi","Siang","Sore","Malam"].map(shift=>{
-    const rows=staff.filter(u=>u.role==="staff"&&u.shift===shift);
-    return`<div class="card"><h4 style="font-size:15px;">${shift}</h4>
-      ${rows.length?rows.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--table-border);">
-        <div class="member-avatar" style="width:28px;height:28px;font-size:12px;">${r.profile?.avatarImage?`<img src="${r.profile.avatarImage}">`:r.nama.charAt(0).toUpperCase()}</div>
-        <div><b style="font-size:13px;">${r.nama}</b><br><span style="color:#b8c6d8;font-size:12px;">${r.jabatan} • ${r.shiftStartTime}</span></div>
-      </div>`).join(""):"<p>Belum ada staff.</p>"}</div>`;
-  }).join("");
-  return`<div class="staff-hero"><div class="grid grid-2">
+  const today=new Date().toISOString().split("T")[0];
+  const todayAbs=absensi.filter(a=>a.tanggal===today);
+  const activeStaff=staff.filter(u=>u.active&&u.role==="staff");
+  const totalAktif=activeStaff.length;
+  const totalHadir=todayAbs.length;
+  const totalBelum=totalAktif-totalHadir;
+  const h=new Date().getHours();
+  const shiftNow=h>=5&&h<11?"Pagi":h>=11&&h<15?"Siang":h>=15&&h<19?"Sore":"Malam";
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const shiftIcon={Pagi:"☀️",Siang:"🌤️",Sore:"🌥️",Malam:"🌙"};
+  const sc=shiftColor[shiftNow];
+
+  // Job Desk hari ini
+  let jobDeskSection="";
+  try{
+    const jdAll=await fetchJobDesk();
+    const myJD=jdAll.find(j=>Number(j.userId)===Number(me.id)&&j.tanggal===today);
+    if(myJD)jobDeskSection=`<div class="card" style="margin-bottom:0;border-color:rgba(24,192,143,.3);background:linear-gradient(135deg,#071e2a,#0a2a1a);">
+      <h4><i class="fa-solid fa-list-check" style="color:#18c08f;"></i>Job Desk Anda Hari Ini</h4>
+      <div class="jd-card-grid" style="margin-top:10px;">${jdRenderCards(myJD.jobdesk,sc)}</div>
+      <div style="font-size:11px;color:#4a6080;margin-top:8px;">Dibuat oleh: ${myJD.dibuat_oleh}</div>
+    </div>`;
+  }catch{}
+
+  return`
+  <!-- HERO LAMA (persis seperti sebelumnya) -->
+  <div class="staff-hero"><div class="grid grid-2">
     <div class="center-card">
       <div class="hero-avatar" onclick="setMenu('profilSaya')" title="Edit Profil">
         ${me.profile?.avatarImage?`<img src="${me.profile.avatarImage}">`:(me.profile?.avatarText||me.nama.charAt(0)).toUpperCase().slice(0,1)}
@@ -669,8 +703,94 @@ async function renderStaffDashboard(){
       </div>
     </div>
   </div></div>
-  <div class="section-title"><i class="fa-solid fa-users"></i>Shift Rekan Kerja</div>
-  <div class="grid grid-4">${roster}</div>`;
+
+  <!-- 4 STAT CARDS + JAM ANALOG -->
+  <div style="display:grid;grid-template-columns:1fr auto;gap:16px;margin-bottom:16px;align-items:start;">
+    <!-- 4 stat cards 2x2 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#0d1930,#13213d);border-color:#2a3e5e;">
+        <div style="font-size:28px;margin-bottom:6px;">👥</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Total Staff Aktif</div>
+        <div style="font-size:42px;font-weight:bold;color:#60a5fa;line-height:1;">${totalAktif}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#071e14,#0a2a1a);border-color:rgba(24,192,143,.35);">
+        <div style="font-size:28px;margin-bottom:6px;">✅</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Sudah Absen</div>
+        <div style="font-size:42px;font-weight:bold;color:#18c08f;line-height:1;">${totalHadir}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#1a0308,#1d1220);border-color:rgba(239,68,68,.35);">
+        <div style="font-size:28px;margin-bottom:6px;">⏳</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Belum Absen</div>
+        <div style="font-size:42px;font-weight:bold;color:#ef4444;line-height:1;">${totalBelum}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#100a1a,#18102a);border-color:${sc}55;">
+        <div style="font-size:28px;margin-bottom:6px;">${shiftIcon[shiftNow]}</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Shift Saat Ini</div>
+        <div style="font-size:30px;font-weight:bold;color:${sc};line-height:1;">${shiftNow}</div>
+      </div>
+    </div>
+    <!-- Jam Analog Elegan -->
+    <div class="card" style="padding:24px;text-align:center;background:linear-gradient(135deg,#0b1424,#0d1d30);min-width:220px;">
+      <div style="font-size:12px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Jam Sekarang</div>
+      <div style="position:relative;width:160px;height:160px;margin:0 auto;">
+        <!-- SVG Jam Analog -->
+        <svg id="analogClock" viewBox="0 0 160 160" width="160" height="160">
+          <!-- Lingkaran luar -->
+          <circle cx="80" cy="80" r="76" fill="none" stroke="${sc}" stroke-width="3" opacity=".3"/>
+          <circle cx="80" cy="80" r="70" fill="#080f1e" stroke="${sc}" stroke-width="1.5" opacity=".15"/>
+          <!-- Tanda jam (12 titik) -->
+          ${Array.from({length:12},(_,i)=>{
+            const a=(i*30-90)*Math.PI/180;
+            const r1=62,r2=i%3===0?54:58;
+            const x1=80+r1*Math.cos(a),y1=80+r1*Math.sin(a);
+            const x2=80+r2*Math.cos(a),y2=80+r2*Math.sin(a);
+            const sw=i%3===0?2.5:1.5;
+            return`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i%3===0?sc:"#3a5070"}" stroke-width="${sw}" stroke-linecap="round"/>`;
+          }).join("")}
+          <!-- Angka 12, 3, 6, 9 -->
+          <text x="80" y="20" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">12</text>
+          <text x="144" y="84" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">3</text>
+          <text x="80" y="148" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">6</text>
+          <text x="16" y="84" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">9</text>
+          <!-- Jarum jam -->
+          <line id="clockHour" x1="80" y1="80" x2="80" y2="46" stroke="${sc}" stroke-width="4" stroke-linecap="round" transform="rotate(0,80,80)"/>
+          <!-- Jarum menit -->
+          <line id="clockMin" x1="80" y1="80" x2="80" y2="36" stroke="#c8d8ea" stroke-width="2.5" stroke-linecap="round" transform="rotate(0,80,80)"/>
+          <!-- Jarum detik -->
+          <line id="clockSec" x1="80" y1="86" x2="80" y2="28" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" transform="rotate(0,80,80)"/>
+          <!-- Pusat -->
+          <circle cx="80" cy="80" r="5" fill="${sc}"/>
+          <circle cx="80" cy="80" r="2.5" fill="#080f1e"/>
+        </svg>
+      </div>
+      <div style="margin-top:12px;font-size:22px;font-weight:bold;color:#c8d8ea;letter-spacing:2px;" id="analogDigital">00:00:00</div>
+      <div style="font-size:11px;color:#4a6080;margin-top:4px;">WIB — ${new Date().toLocaleDateString("id-ID",{weekday:"long"})}</div>
+    </div>
+  </div>
+
+  <!-- Job Desk (jika ada) -->
+  ${jobDeskSection}`;
+}
+
+// Fungsi update jarum jam analog (dipanggil setiap detik)
+function updateAnalogClock(){
+  const now=new Date();
+  const H=now.getHours()%12,M=now.getMinutes(),S=now.getSeconds();
+  const hDeg=(H*30)+(M*0.5)-90;
+  const mDeg=(M*6)+(S*0.1)-90;
+  const sDeg=(S*6)-90;
+  const toXY=(deg,r)=>[80+r*Math.cos(deg*Math.PI/180),80+r*Math.sin(deg*Math.PI/180)];
+  const hHand=document.getElementById("clockHour");
+  const mHand=document.getElementById("clockMin");
+  const sHand=document.getElementById("clockSec");
+  if(hHand){const[x,y]=toXY(hDeg,34);hHand.setAttribute("x2",x.toFixed(1));hHand.setAttribute("y2",y.toFixed(1));}
+  if(mHand){const[x,y]=toXY(mDeg,44);mHand.setAttribute("x2",x.toFixed(1));mHand.setAttribute("y2",y.toFixed(1));}
+  if(sHand){
+    const[x2,y2]=toXY(sDeg,52);sHand.setAttribute("x2",x2.toFixed(1));sHand.setAttribute("y2",y2.toFixed(1));
+    const[x1,y1]=toXY(sDeg+180,8);sHand.setAttribute("x1",x1.toFixed(1));sHand.setAttribute("y1",y1.toFixed(1));
+  }
+  const dig=document.getElementById("analogDigital");
+  if(dig)dig.textContent=now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
 }
 
 // ══════════════════════════════════════════════════════
@@ -779,9 +899,103 @@ async function renderDetailStaff(){
 // ══════════════════════════════════════════════════════
 async function renderAbsensiAdmin(){
   const rows=await fetchAbsensi();
-  return`<div class="card"><h4><i class="fa-solid fa-clipboard-list"></i>Data Absensi</h4><p>Riwayat absensi staff.</p></div>
-  <div class="table-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Shift</th><th>Tanggal</th><th>Jam Masuk</th><th>Status</th></tr></thead>
-  <tbody>${rows.length?rows.map(r=>`<tr><td>${r.id}</td><td><b>${r.nama}</b></td><td>${r.jabatan}</td><td>${r.shiftTerdaftar}</td><td>${r.tanggal}</td><td>${r.jamMasuk}</td><td><span class="badge ${r.status==="Terlambat"?"badge-warning":"badge-success"}">${r.status||"Hadir"}</span></td></tr>`).join(""):`<tr><td colspan="7" style="text-align:center;color:#8ca0be;">Belum ada data absensi.</td></tr>`}</tbody></table></div>`;
+  const users=await fetchStaff();
+  const today=new Date().toISOString().split("T")[0];
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const activeStaff=users.filter(u=>u.active&&u.role==="staff");
+  const todayAbs=rows.filter(r=>r.tanggal===today);
+
+  // Tentukan shift aktif berdasarkan jam sekarang
+  const shiftRanges={Pagi:[5*60,11*60],Siang:[11*60,15*60],Sore:[15*60,19*60],Malam:[19*60,24*60]};
+  const SHIFTS=["Pagi","Siang","Sore","Malam"];
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const shiftIcon={Pagi:"fa-sun",Siang:"fa-cloud-sun",Sore:"fa-cloud",Malam:"fa-moon"};
+
+  // Hitung per shift: sudah absen & belum absen
+  const shiftCards=SHIFTS.map(sh=>{
+    const shiftStaff=activeStaff.filter(u=>u.shift===sh);
+    if(!shiftStaff.length)return"";
+    const sudah=shiftStaff.filter(u=>todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const belum=shiftStaff.filter(u=>!todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const pct=shiftStaff.length?Math.round((sudah.length/shiftStaff.length)*100):0;
+    const sc=shiftColor[sh];
+    return`<div style="border-radius:14px;border:1px solid ${sc}33;overflow:hidden;margin-bottom:14px;">
+      <div style="padding:12px 16px;background:${sc}11;display:flex;align-items:center;gap:10px;border-bottom:1px solid ${sc}22;">
+        <i class="fa-solid ${shiftIcon[sh]}" style="color:${sc};font-size:17px;"></i>
+        <b style="color:${sc};font-size:15px;">Shift ${sh}</b>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+          <span class="badge badge-success">${sudah.length} Hadir</span>
+          <span class="badge badge-danger">${belum.length} Belum</span>
+          <div style="width:80px;height:6px;background:#1a2a40;border-radius:999px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${sc};border-radius:999px;"></div>
+          </div>
+          <span style="font-size:12px;color:${sc};">${pct}%</span>
+        </div>
+      </div>
+      ${belum.length?`
+      <div style="padding:10px 16px;border-bottom:1px solid rgba(239,68,68,.15);background:rgba(239,68,68,.04);">
+        <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">⏳ Belum Absen — Perlu Dicek</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${belum.map(u=>`<div style="display:flex;align-items:center;gap:7px;background:#0b1730;border-radius:10px;padding:7px 12px;border:1px solid rgba(239,68,68,.2);">
+            <div class="member-avatar" style="width:26px;height:26px;font-size:11px;border-color:#ef4444;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div><b style="font-size:12.5px;">${u.nama}</b><br><span style="font-size:11px;color:#6a8099;">${u.jabatan} • ⏰${u.shiftStartTime||"08:00"}</span></div>
+          </div>`).join("")}
+        </div>
+      </div>`:""}
+      ${sudah.length?`
+      <div style="padding:10px 16px;">
+        <div style="font-size:11px;font-weight:700;color:#18c08f;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">✅ Sudah Absen</div>
+        <div style="overflow:auto;"><table style="width:100%;border-collapse:collapse;min-width:400px;">
+          <thead><tr style="background:#0b1730;">
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Nama</th>
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Jabatan</th>
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Jam Masuk</th>
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Status</th>
+          </tr></thead>
+          <tbody>${sudah.map(u=>{
+            const ab=todayAbs.find(a=>Number(a.userId)===Number(u.id));
+            return`<tr style="border-bottom:1px solid #1a2a40;">
+              <td style="padding:7px 10px;"><div style="display:flex;align-items:center;gap:7px;">
+                <div class="member-avatar" style="width:24px;height:24px;font-size:10px;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+                <b style="font-size:13px;">${u.nama}</b></div></td>
+              <td style="padding:7px 10px;font-size:12px;">${u.jabatan}</td>
+              <td style="padding:7px 10px;font-weight:bold;color:${ab?.status==="Terlambat"?"#ffd979":"#18c08f"};">${ab?.jamMasuk||"-"}</td>
+              <td style="padding:7px 10px;"><span class="badge ${ab?.status==="Terlambat"?"badge-warning":"badge-success"}">${ab?.status||"Hadir"}</span></td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table></div>
+      </div>`:""}
+    </div>`;
+  }).join("");
+
+  // Summary stat
+  const totalHadir=todayAbs.length;
+  const totalBelum=activeStaff.length-totalHadir;
+  const totalTelat=todayAbs.filter(r=>r.status==="Terlambat").length;
+
+  return`
+    <div class="grid grid-3" style="margin-bottom:16px;">
+      <div class="card stat" style="text-align:center;">
+        <div style="font-size:28px;">✅</div>
+        <div style="font-size:13px;color:#7a9ab8;margin-top:4px;">Sudah Absen</div>
+        <div style="font-size:32px;font-weight:bold;color:#18c08f;">${totalHadir}</div>
+      </div>
+      <div class="card stat" style="text-align:center;">
+        <div style="font-size:28px;">⏳</div>
+        <div style="font-size:13px;color:#7a9ab8;margin-top:4px;">Belum Absen</div>
+        <div style="font-size:32px;font-weight:bold;color:#ef4444;">${totalBelum}</div>
+      </div>
+      <div class="card stat" style="text-align:center;">
+        <div style="font-size:28px;">⚠️</div>
+        <div style="font-size:13px;color:#7a9ab8;margin-top:4px;">Terlambat</div>
+        <div style="font-size:32px;font-weight:bold;color:#f59e0b;">${totalTelat}</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:14px;"><h4><i class="fa-solid fa-clipboard-list"></i>Data Absensi Hari Ini — ${today}</h4>
+      <p style="font-size:13px;color:#7a9ab8;">Pantau status absensi per shift. Staff yang belum absen ditampilkan untuk memudahkan pengecekan.</p>
+    </div>
+    ${shiftCards}`;
 }
 async function renderIzinAdmin(){
   const active=await fetchIzinActive();
@@ -809,7 +1023,157 @@ async function renderHistoryAbsensiAdmin(){
 function setSubMenu(sub){state.currentSubMenu=sub;renderAppPage();}
 async function exportCSV(){const rows=await fetchAbsensi();const h=["ID","Nama","Username","Jabatan","Shift","Jam Kerja","Tanggal","Jam Masuk","Status"].join(",");const b=rows.map(r=>[r.id,r.nama,r.username,r.jabatan,r.shiftTerdaftar,r.shiftStartTime,r.tanggal,r.jamMasuk,r.status||"Hadir"].join(",")).join("\n");const blob=new Blob([h+"\n"+b],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);toast("Export CSV berhasil");}
 async function exportJSON(){const rows=await fetchAbsensi();const blob=new Blob([JSON.stringify(rows,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${new Date().toISOString().split("T")[0]}.json`;a.click();URL.revokeObjectURL(url);toast("Export JSON berhasil");}
-async function renderHistoryIzin(){const rows=await fetchIzinHistory();return`<div class="card"><h4><i class="fa-solid fa-file-lines"></i>History Izin Keluar</h4></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Tanggal</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th></tr></thead><tbody>${rows.length?rows.map(i=>`<tr><td>${i.id}</td><td><b>${i.nama}</b></td><td>${i.jabatan}</td><td>${i.tanggal}</td><td>${i.jamKeluar}</td><td>${i.jamKembali||"-"}</td><td>${i.durasiMenit||0} mnt</td><td><span class="badge ${i.status==="Melewati Batas"?"badge-danger":i.status==="Aktif"?"badge-warning":"badge-success"}">${i.status}</span></td></tr>`).join(""):`<tr><td colspan="8" style="text-align:center;color:#8ca0be;">Belum ada history.</td></tr>`}</tbody></table></div>`;}
+async function renderHistoryIzin(){
+  const rows=await fetchIzinHistory();
+  const users=await fetchStaff();
+  const filter=state.izinFilter||"harian";
+  const today=new Date().toISOString().split("T")[0];
+  const now=new Date();
+
+  // Filter tanggal
+  function getFiltered(){
+    if(filter==="harian") return rows.filter(r=>r.tanggal===today);
+    if(filter==="mingguan"){
+      const d=new Date();d.setDate(d.getDate()-7);
+      return rows.filter(r=>new Date(r.tanggal)>=d);
+    }
+    if(filter==="bulanan"){
+      const bln=today.slice(0,7);
+      return rows.filter(r=>r.tanggal.startsWith(bln));
+    }
+    if(filter==="tahunan"){
+      const thn=today.slice(0,4);
+      return rows.filter(r=>r.tanggal.startsWith(thn));
+    }
+    return rows;
+  }
+  const filtered=getFiltered().sort((a,b)=>b.id-a.id);
+
+  // Hitung sisa izin per staff (hari ini)
+  const izinPerStaff={};
+  rows.filter(r=>r.tanggal===today).forEach(r=>{
+    if(!izinPerStaff[r.userId])izinPerStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,used:0};
+    izinPerStaff[r.userId].used++;
+  });
+
+  // Kelompokkan per tanggal
+  const grouped={};
+  filtered.forEach(r=>{
+    if(!grouped[r.tanggal])grouped[r.tanggal]=[];
+    grouped[r.tanggal].push(r);
+  });
+  const sortedDates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+
+  const filterTabs=`<div class="sub-tabs" style="margin-bottom:16px;">
+    ${[{k:"harian",l:"Hari Ini"},{k:"mingguan",l:"Minggu Ini"},{k:"bulanan",l:"Bulan Ini"},{k:"tahunan",l:"Tahun Ini"},{k:"semua",l:"Semua"}].map(t=>
+      `<button class="${filter===t.k?"active":""}" onclick="state.izinFilter='${t.k}';renderAppPage()">${t.l}</button>`
+    ).join("")}
+  </div>`;
+
+  // Sisa kuota hari ini
+  const quotaCards=Object.values(izinPerStaff).length?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,#1a1000,#1d2a44);">
+      <h4><i class="fa-solid fa-gauge" style="color:#f59e0b;"></i>Sisa Kuota Izin Hari Ini</h4>
+      <p style="font-size:13px;color:#7a9ab8;">Maks 4x per hari per staff. Pantau untuk cegah manipulasi.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+        ${Object.values(izinPerStaff).map(s=>{
+          const sisa=4-s.used;
+          return`<div style="background:#0b1730;border-radius:12px;padding:12px 16px;border:1px solid ${sisa<=1?"rgba(239,68,68,.4)":"rgba(245,158,11,.3)"};">
+            <b style="font-size:13px;">${s.nama}</b><br>
+            <span style="font-size:12px;color:#7a9ab8;">${s.jabatan}</span><br>
+            <div style="margin-top:6px;display:flex;gap:6px;align-items:center;">
+              ${[1,2,3,4].map(n=>`<div style="width:16px;height:16px;border-radius:4px;background:${n<=s.used?"#ef4444":"#1a2a40"};border:1px solid ${n<=s.used?"#ef4444":"#30415d"};"></div>`).join("")}
+              <span style="font-size:12px;color:${sisa===0?"#ef4444":sisa===1?"#f59e0b":"#18c08f"};">${s.used}/4 terpakai</span>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`:"";
+
+  // Tabel per tanggal
+  const tablesByDate=sortedDates.map(tgl=>{
+    const dayRows=grouped[tgl];
+    const melewati=dayRows.filter(r=>r.status==="Melewati Batas").length;
+    return`<div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <b style="font-size:14px;color:#d6e4f7;">${tgl}</b>
+        <span class="badge badge-info">${dayRows.length} izin</span>
+        ${melewati?`<span class="badge badge-danger">${melewati} melewati batas</span>`:""}
+        <button class="btn btn-danger btn-xs" style="margin-left:auto;" onclick="hapusIzinTanggal('${tgl}')">
+          <i class="fa-solid fa-trash"></i> Hapus Tanggal Ini
+        </button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th><th>Hapus</th></tr></thead>
+        <tbody>${dayRows.map(i=>`<tr>
+          <td><b>${i.nama}</b></td>
+          <td>${i.jabatan}</td>
+          <td>${i.jamKeluar}</td>
+          <td>${i.jamKembali||"-"}</td>
+          <td>${i.durasiMenit||0} mnt</td>
+          <td><span class="badge ${i.status==="Melewati Batas"?"badge-danger":i.status==="Aktif"?"badge-warning":"badge-success"}">${i.status}</span></td>
+          <td><button class="btn btn-danger btn-xs" onclick="hapusIzin(${i.id})"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>`;
+  }).join("");
+
+  // Rekap mingguan: siapa paling sering izin & melanggar
+  const rekapStaff={};
+  filtered.forEach(r=>{
+    if(!rekapStaff[r.userId])rekapStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,total:0,melewati:0};
+    rekapStaff[r.userId].total++;
+    if(r.status==="Melewati Batas")rekapStaff[r.userId].melewati++;
+  });
+  const rekapList=Object.values(rekapStaff).sort((a,b)=>b.total-a.total);
+
+  const rekapCard=rekapList.length&&filter==="mingguan"?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(239,68,68,.2);">
+      <h4><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i>Rekap Izin Minggu Ini</h4>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Total Izin</th><th>Melewati Batas</th></tr></thead>
+        <tbody>${rekapList.map(s=>`<tr>
+          <td><b>${s.nama}</b></td><td>${s.jabatan}</td>
+          <td><span class="badge ${s.total>=8?"badge-danger":s.total>=5?"badge-warning":"badge-info"}">${s.total}x</span></td>
+          <td><span class="badge ${s.melewati>0?"badge-danger":"badge-success"}">${s.melewati}x melewati</span></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>`:"";
+
+  return`${filterTabs}${quotaCards}${rekapCard}
+    <div class="between" style="margin-bottom:12px;">
+      <b style="font-size:14px;">${filtered.length} record ditemukan</b>
+      ${rows.length?`<button class="btn btn-danger btn-small" onclick="hapusSemuaIzin()"><i class="fa-solid fa-trash"></i> Hapus Semua History</button>`:""}
+    </div>
+    ${tablesByDate||`<div class="card"><div class="placeholder">Tidak ada data untuk periode ini.</div></div>`}`;
+}
+
+async function hapusIzin(id){
+  if(!confirm("Hapus history izin ini?"))return;
+  try{
+    const r=await fetchJson(`/api/izin/${id}`,{method:"DELETE"});
+    if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
+    toast("History izin dihapus");await renderAppPage();
+  }catch{toast("Server error",true);}
+}
+
+async function hapusIzinTanggal(tgl){
+  if(!confirm(`Hapus semua history izin tanggal ${tgl}?`))return;
+  try{
+    const r=await fetchJson("/api/izin/bulk/tanggal",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({tanggal:tgl})});
+    if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
+    toast(`History izin ${tgl} dihapus`);await renderAppPage();
+  }catch{toast("Server error",true);}
+}
+
+async function hapusSemuaIzin(){
+  if(!confirm("Hapus SEMUA history izin? Tindakan ini tidak bisa dibatalkan!"))return;
+  try{
+    const r=await fetchJson("/api/izin/bulk/tanggal",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({})});
+    if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
+    toast("Semua history izin dihapus");await renderAppPage();
+  }catch{toast("Server error",true);}
+}
 
 // ══════════════════════════════════════════════════════
 // SOP
@@ -950,14 +1314,42 @@ async function deleteSerahTerima(id){if(!confirm("Hapus laporan ini?"))return;tr
 // OTORITAS HAK AKSES
 // ══════════════════════════════════════════════════════
 const ALL_HAK=[
-  {grup:"Data Staff",items:[{key:"bukaDataStaff",label:"Buka Menu Data Staff"},{key:"tambahStaff",label:"Tambah Staff Baru"},{key:"editStaff",label:"Edit Jabatan / Pass Staff"},{key:"hapusStaff",label:"Hapus Staff"}]},
-  {grup:"Absensi Shift",items:[{key:"setShift",label:"Set & Simpan Shift Staff Lain"},{key:"resetAbsen",label:"Reset Absen & Reset Shift"}]},
-  {grup:"Manajemen Kas Web",items:[{key:"bukaKas",label:"Buka Menu Kas Web"},{key:"inputTransaksi",label:"Input Transaksi (Masuk/Keluar)"},{key:"hapusTransaksiKas",label:"Hapus History Transaksi Kas"}]},
-  {grup:"Pusat Informasi & SOP",items:[{key:"bukaSOP",label:"Buka Pusat Informasi & SOP"},{key:"tambahSOP",label:"Tambah Info / SOP Baru"},{key:"hapusSOP",label:"Hapus Info / SOP"}]},
-  {grup:"Laporan & Audit Log",items:[{key:"bukaLaporan",label:"Buka Menu Laporan & Rekap"},{key:"hapusLaporan",label:"Hapus History Laporan"},{key:"bukaAuditLog",label:"Buka Menu Audit Log Sistem"}]},
-  {grup:"Serah Terima",items:[{key:"bukaSerahTerima",label:"Akses Menu Serah Terima CS LINE"}]},
-  {grup:"Job Desk",items:[{key:"bukaJobDesk",label:"Set Job Desk Staff (Kapten & CS LINE)"}]},
-  {grup:"Fitur Ekstra",items:[{key:"aksesKirimBroadcast",label:"Akses Kirim Cyber Broadcast"}]}
+  {grup:"Menu yang Dapat Diakses",items:[
+    {key:"menuDataStaff",    label:"Data Staff"},
+    {key:"menuDetailStaff",  label:"Detail Staff"},
+    {key:"menuAbsensi",      label:"Data Absensi"},
+    {key:"menuIzin",         label:"Izin Keluar Staff"},
+    {key:"menuShift",        label:"Shift Kerja"},
+    {key:"menuHistoryAbsensi",label:"History Absensi"},
+    {key:"menuHistoryIzin",  label:"History Izin"},
+    {key:"menuKas",          label:"Kas Web"},
+    {key:"menuSOP",          label:"Pusat Info & SOP"},
+    {key:"menuSerahTerima",  label:"Serah Terima CS LINE"},
+    {key:"menuJobDesk",      label:"Job Desk Kasir"}
+  ]},
+  {grup:"Aksi — Data Staff",items:[
+    {key:"tambahStaff",label:"Tambah Staff Baru"},
+    {key:"editStaff",  label:"Edit Data Staff"},
+    {key:"hapusStaff", label:"Hapus Staff"}
+  ]},
+  {grup:"Aksi — Shift & Absensi",items:[
+    {key:"setShift",   label:"Set / Ubah Shift Staff"},
+    {key:"resetAbsen", label:"Reset Absensi Staff"}
+  ]},
+  {grup:"Aksi — Kas Web",items:[
+    {key:"inputTransaksi",    label:"Input Transaksi"},
+    {key:"hapusTransaksiKas", label:"Hapus Transaksi Kas"}
+  ]},
+  {grup:"Aksi — SOP & Info",items:[
+    {key:"tambahSOP", label:"Tambah SOP / Info Baru"},
+    {key:"hapusSOP",  label:"Hapus SOP / Info"}
+  ]},
+  {grup:"Aksi — Job Desk",items:[
+    {key:"bukaJobDesk",label:"Set / Input Job Desk Staff"}
+  ]},
+  {grup:"Fitur Ekstra",items:[
+    {key:"aksesKirimBroadcast",label:"Kirim Broadcast Notifikasi"}
+  ]}
 ];
 const JABATAN_OTORITAS=["Kapten","CS LINE","Kasir","CS"];
 async function renderOtoritas(){
@@ -1154,7 +1546,7 @@ async function changeMyPassword(){
 // ══════════════════════════════════════════════════════
 // TIMERS
 // ══════════════════════════════════════════════════════
-function startLiveClock(){stopLiveClock();const update=()=>{const el=document.getElementById("liveClock");if(el)el.textContent=new Date().toLocaleTimeString("id-ID");};update();state.clockTimer=setInterval(update,1000);}
+function startLiveClock(){stopLiveClock();const update=()=>{const el=document.getElementById("liveClock");if(el)el.textContent=new Date().toLocaleTimeString("id-ID");updateAnalogClock();};update();state.clockTimer=setInterval(update,1000);}
 function stopLiveClock(){if(state.clockTimer){clearInterval(state.clockTimer);state.clockTimer=null;}}
 function startIzinStatusTimer(){
   stopIzinStatusTimer();if(!state.currentUser||state.currentUser.role==="admin")return;
@@ -1496,6 +1888,260 @@ async function saveShiftJobDesk(shiftNama){
 async function deleteJobDesk(id){
   if(!confirm("Hapus job desk ini?"))return;
   try{const r=await fetchJson(`/api/jobdesk/${id}`,{method:"DELETE"});if(r.status==="success"){toast("Dihapus");await renderAppPage();}else toast(r.message,true);}catch{toast("Error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// STAFF VIEW FUNCTIONS (view-only untuk Kasir & CS)
+// ══════════════════════════════════════════════════════
+
+// Data Staff — view sesuai aksi yang dibolehkan
+async function renderStaffView(){
+  const canAdd=boleh("tambahStaff");
+  const canEdit=boleh("editStaff");
+  const canDel=boleh("hapusStaff");
+  const users=await fetchStaff();
+  const addBtn=canAdd?`<button class="btn btn-primary" onclick="openAddStaffModal()"><i class="fa-solid fa-user-plus"></i> Tambah Staff</button>`:"";
+  return`<div class="between">
+    <div class="card" style="flex:1;"><h4><i class="fa-solid fa-users"></i>Data Staff</h4><p>Daftar semua staff terdaftar.</p></div>
+    ${addBtn}
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Foto</th><th>Nama</th><th>Jabatan</th><th>Shift</th><th>Jam</th><th>Status</th>${canEdit||canDel?"<th>Aksi</th>":""}</tr></thead>
+    <tbody>${users.map(u=>`<tr>
+      <td><div class="member-avatar" style="width:30px;height:30px;font-size:12px;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div></td>
+      <td><b>${u.nama}</b><br><span style="font-size:11px;color:#6a8099;">${u.username}</span></td>
+      <td>${u.jabatan}</td><td>${u.shift}</td><td>${u.shiftStartTime||"-"}</td>
+      <td><span class="badge ${u.active?"badge-success":"badge-danger"}">${u.active?"Aktif":"Nonaktif"}</span></td>
+      ${canEdit||canDel?`<td><div class="actions">
+        ${canEdit?`<button class="btn btn-info btn-xs" onclick="openEditStaffModal(${u.id})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-warning btn-xs" onclick="openResetPasswordModal(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-key"></i></button>`:""}
+        ${canDel?`<button class="btn btn-danger btn-xs" onclick="deleteStaff(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>`:""}
+      </div></td>`:""}
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+// Izin Keluar Staff — view only (tanpa aksi)
+async function renderIzinView(){
+  const active=await fetchIzinActive();
+  return`<div class="card"><h4><i class="fa-solid fa-door-open"></i>Staff Sedang Keluar</h4><p>Pantau real-time staff yang sedang izin keluar.</p></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Nama</th><th>Jabatan</th><th>Tanggal</th><th>Jam Keluar</th><th>Status</th></tr></thead>
+    <tbody>${active.length?active.map(i=>`<tr>
+      <td><b>${i.nama}</b></td><td>${i.jabatan}</td>
+      <td>${i.tanggal}</td><td>${i.jamKeluar}</td>
+      <td><span class="badge badge-warning">${i.status}</span></td>
+    </tr>`).join(""):`<tr><td colspan="5" style="text-align:center;color:#8ca0be;">Tidak ada staff yang sedang keluar.</td></tr>`}
+    </tbody>
+  </table></div>`;
+}
+
+// Shift Kerja — view + set jika punya setShift
+async function renderShiftView(){
+  const canSet=boleh("setShift");
+  const users=await fetchStaff();
+  return`<div class="card" style="margin-bottom:16px;"><h4><i class="fa-solid fa-calendar-days"></i>Shift Kerja Staff</h4>
+    <p style="font-size:13px;color:#7a9ab8;">${canSet?"Anda dapat mengubah shift staff.":"Tampilan shift kerja semua staff."}</p>
+  </div>
+  <div class="grid grid-2">${["Pagi","Siang","Sore","Malam"].map(shift=>{
+    const su=users.filter(u=>u.role==="staff"&&u.shift===shift);
+    const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+    const sc=shiftColor[shift];
+    return`<div class="card" style="border-color:${sc}33;">
+      <h4 style="font-size:15px;color:${sc};"><i class="fa-solid fa-clock"></i> Shift ${shift}</h4>
+      ${su.length?`<div class="table-wrap"><table style="min-width:100%;"><thead><tr><th>Nama</th><th>Jam</th>${canSet?"<th>Ubah</th>":""}</tr></thead>
+      <tbody>${su.map(u=>`<tr>
+        <td><b>${u.nama}</b><br><span style="font-size:11px;color:#6a8099;">${u.jabatan}</span></td>
+        <td>${u.shiftStartTime||"-"}</td>
+        ${canSet?`<td><div class="row">
+          <select id="sh_${u.id}" class="select" style="max-width:100px;padding:6px;">
+            ${["Pagi","Siang","Sore","Malam"].map(s=>`<option ${u.shift===s?"selected":""}>${s}</option>`).join("")}
+          </select>
+          <input id="sh_t_${u.id}" type="time" class="input" style="max-width:100px;" value="${u.shiftStartTime||"08:00"}">
+          <button class="btn btn-info btn-xs" onclick="updateShift(${u.id})"><i class="fa-solid fa-save"></i></button>
+        </div></td>`:""}
+      </tr>`).join("")}</tbody></table></div>`:`<p style="color:#6a8099;font-size:13px;">Belum ada staff.</p>`}
+    </div>`;
+  }).join("")}`;
+}
+
+// ══════════════════════════════════════════════════════
+// STAFF VIEW: HISTORY IZIN & ABSENSI (READ-ONLY)
+// ══════════════════════════════════════════════════════
+
+// History Izin — view untuk Kapten, CS LINE, Kasir, CS (read-only, tanpa hapus)
+async function renderHistoryIzinView(){
+  const rows=await fetchIzinHistory();
+  const filter=state.izinViewFilter||"harian";
+  const today=new Date().toISOString().split("T")[0];
+
+  function getFiltered(){
+    if(filter==="harian")return rows.filter(r=>r.tanggal===today);
+    if(filter==="mingguan"){const d=new Date();d.setDate(d.getDate()-7);return rows.filter(r=>new Date(r.tanggal)>=d);}
+    if(filter==="bulanan")return rows.filter(r=>r.tanggal.startsWith(today.slice(0,7)));
+    return rows;
+  }
+  const filtered=getFiltered().sort((a,b)=>b.id-a.id);
+
+  // Kuota hari ini (read-only)
+  const izinHariIni=rows.filter(r=>r.tanggal===today);
+  const perStaff={};
+  izinHariIni.forEach(r=>{
+    if(!perStaff[r.userId])perStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,used:0,melewati:0};
+    perStaff[r.userId].used++;
+    if(r.status==="Melewati Batas")perStaff[r.userId].melewati++;
+  });
+
+  const filterTabs=`<div class="sub-tabs" style="margin-bottom:16px;">
+    ${[{k:"harian",l:"Hari Ini"},{k:"mingguan",l:"Minggu Ini"},{k:"bulanan",l:"Bulan Ini"},{k:"semua",l:"Semua"}].map(t=>
+      `<button class="${filter===t.k?"active":""}" onclick="state.izinViewFilter='${t.k}';renderAppPage()">${t.l}</button>`
+    ).join("")}
+  </div>`;
+
+  const quotaSection=Object.keys(perStaff).length?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,#1a1000,#1d2a44);">
+      <h4><i class="fa-solid fa-gauge" style="color:#f59e0b;"></i>Kuota Izin Hari Ini</h4>
+      <p style="font-size:13px;color:#7a9ab8;">Pantau penggunaan izin staff — maks 4x per hari.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+        ${Object.values(perStaff).map(s=>{
+          const sisa=4-s.used;
+          return`<div style="background:#0b1730;border-radius:12px;padding:12px 16px;border:1px solid ${sisa===0?"rgba(239,68,68,.5)":sisa===1?"rgba(245,158,11,.4)":"rgba(30,58,95,.5)"};">
+            <b style="font-size:13px;">${s.nama}</b><br>
+            <span style="font-size:11px;color:#7a9ab8;">${s.jabatan}</span><br>
+            <div style="display:flex;gap:5px;align-items:center;margin-top:6px;">
+              ${[1,2,3,4].map(n=>`<div style="width:16px;height:16px;border-radius:4px;background:${n<=s.used?"#ef4444":"#1a2a40"};border:1px solid ${n<=s.used?"#ef4444":"#30415d"};"></div>`).join("")}
+              <span style="font-size:12px;color:${sisa===0?"#ef4444":sisa===1?"#f59e0b":"#18c08f"};">${s.used}/4</span>
+              ${s.melewati?`<span class="badge badge-danger" style="font-size:10px;">${s.melewati}x Lewat Batas</span>`:""}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`:"";
+
+  // Kelompokkan per tanggal (read-only)
+  const grouped={};
+  filtered.forEach(r=>{if(!grouped[r.tanggal])grouped[r.tanggal]=[];grouped[r.tanggal].push(r);});
+  const sortedDates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+
+  const tables=sortedDates.map(tgl=>{
+    const dayRows=grouped[tgl];
+    const melewati=dayRows.filter(r=>r.status==="Melewati Batas").length;
+    return`<div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <b style="font-size:14px;color:#d6e4f7;">${tgl}</b>
+        <span class="badge badge-info">${dayRows.length} izin</span>
+        ${melewati?`<span class="badge badge-danger">${melewati} melewati batas</span>`:""}
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th></tr></thead>
+        <tbody>${dayRows.map(i=>`<tr>
+          <td><b>${i.nama}</b></td><td>${i.jabatan}</td>
+          <td>${i.jamKeluar}</td><td>${i.jamKembali||"-"}</td>
+          <td>${i.durasiMenit||0} mnt</td>
+          <td><span class="badge ${i.status==="Melewati Batas"?"badge-danger":i.status==="Aktif"?"badge-warning":"badge-success"}">${i.status}</span></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>`;
+  }).join("");
+
+  return`<div class="card" style="margin-bottom:14px;">
+    <h4><i class="fa-solid fa-door-open"></i>History Izin Keluar</h4>
+    <p style="font-size:13px;color:#7a9ab8;">Pantau izin keluar staff. View only — hanya Admin yang dapat hapus data.</p>
+  </div>
+  ${filterTabs}${quotaSection}
+  <div style="margin-bottom:10px;"><b style="font-size:13px;">${filtered.length} record ditemukan</b></div>
+  ${tables||`<div class="card"><div class="placeholder">Tidak ada data untuk periode ini.</div></div>`}`;
+}
+
+// Data Absensi — view untuk staff dengan hak bukaAbsensiView (read-only)
+async function renderAbsensiView(){
+  const rows=await fetchAbsensi();
+  const users=await fetchStaff();
+  const today=new Date().toISOString().split("T")[0];
+  const activeStaff=users.filter(u=>u.active&&u.role==="staff");
+  const todayAbs=rows.filter(r=>r.tanggal===today);
+
+  const SHIFTS=["Pagi","Siang","Sore","Malam"];
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const shiftIcon={Pagi:"fa-sun",Siang:"fa-cloud-sun",Sore:"fa-cloud",Malam:"fa-moon"};
+
+  const totalHadir=todayAbs.length;
+  const totalBelum=activeStaff.length-totalHadir;
+  const totalTelat=todayAbs.filter(r=>r.status==="Terlambat").length;
+
+  const shiftCards=SHIFTS.map(sh=>{
+    const shiftStaff=activeStaff.filter(u=>u.shift===sh);
+    if(!shiftStaff.length)return"";
+    const sudah=shiftStaff.filter(u=>todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const belum=shiftStaff.filter(u=>!todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const pct=shiftStaff.length?Math.round((sudah.length/shiftStaff.length)*100):0;
+    const sc=shiftColor[sh];
+    return`<div style="border-radius:14px;border:1px solid ${sc}33;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:11px 16px;background:${sc}11;display:flex;align-items:center;gap:10px;border-bottom:1px solid ${sc}22;">
+        <i class="fa-solid ${shiftIcon[sh]}" style="color:${sc};font-size:16px;"></i>
+        <b style="color:${sc};font-size:14px;">Shift ${sh}</b>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+          <span class="badge badge-success">${sudah.length} Hadir</span>
+          <span class="badge badge-danger">${belum.length} Belum</span>
+          <div style="width:60px;height:5px;background:#1a2a40;border-radius:999px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${sc};border-radius:999px;"></div>
+          </div>
+        </div>
+      </div>
+      ${belum.length?`<div style="padding:10px 16px;border-bottom:1px solid rgba(239,68,68,.1);background:rgba(239,68,68,.03);">
+        <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:7px;">⏳ BELUM ABSEN — Perlu Dicek</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          ${belum.map(u=>`<div style="display:flex;align-items:center;gap:6px;background:#0b1730;border-radius:9px;padding:6px 11px;border:1px solid rgba(239,68,68,.2);">
+            <div class="member-avatar" style="width:24px;height:24px;font-size:10px;border-color:#ef4444;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div><b style="font-size:12px;">${u.nama}</b><br><span style="font-size:10px;color:#6a8099;">${u.jabatan} • ⏰${u.shiftStartTime||"08:00"}</span></div>
+          </div>`).join("")}
+        </div>
+      </div>`:""}
+      ${sudah.length?`<div style="padding:10px 16px;">
+        <div style="font-size:11px;font-weight:700;color:#18c08f;margin-bottom:6px;">✅ SUDAH ABSEN</div>
+        <div style="overflow:auto;"><table style="width:100%;border-collapse:collapse;min-width:350px;">
+          <thead><tr style="background:#0b1730;">
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Nama</th>
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Jabatan</th>
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Jam Masuk</th>
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Status</th>
+          </tr></thead>
+          <tbody>${sudah.map(u=>{
+            const ab=todayAbs.find(a=>Number(a.userId)===Number(u.id));
+            return`<tr style="border-bottom:1px solid #1a2a40;">
+              <td style="padding:6px 10px;"><b style="font-size:12.5px;">${u.nama}</b></td>
+              <td style="padding:6px 10px;font-size:12px;">${u.jabatan}</td>
+              <td style="padding:6px 10px;font-weight:bold;color:${ab?.status==="Terlambat"?"#ffd979":"#18c08f"};">${ab?.jamMasuk||"-"}</td>
+              <td style="padding:6px 10px;"><span class="badge ${ab?.status==="Terlambat"?"badge-warning":"badge-success"}" style="font-size:11px;">${ab?.status||"Hadir"}</span></td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table></div>
+      </div>`:""}
+    </div>`;
+  }).join("");
+
+  return`<div class="grid grid-3" style="margin-bottom:14px;">
+    <div class="card stat" style="text-align:center;">
+      <div style="font-size:26px;">✅</div>
+      <div style="font-size:12px;color:#7a9ab8;margin-top:4px;">Sudah Absen</div>
+      <div style="font-size:30px;font-weight:bold;color:#18c08f;">${totalHadir}</div>
+    </div>
+    <div class="card stat" style="text-align:center;">
+      <div style="font-size:26px;">⏳</div>
+      <div style="font-size:12px;color:#7a9ab8;margin-top:4px;">Belum Absen</div>
+      <div style="font-size:30px;font-weight:bold;color:#ef4444;">${totalBelum}</div>
+    </div>
+    <div class="card stat" style="text-align:center;">
+      <div style="font-size:26px;">⚠️</div>
+      <div style="font-size:12px;color:#7a9ab8;margin-top:4px;">Terlambat</div>
+      <div style="font-size:30px;font-weight:bold;color:#f59e0b;">${totalTelat}</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <h4><i class="fa-solid fa-clipboard-list"></i>Data Absensi Hari Ini — ${today}</h4>
+    <p style="font-size:13px;color:#7a9ab8;">View only — hanya Admin yang dapat mengelola data absensi.</p>
+  </div>
+  ${shiftCards}`;
 }
 
 // ══════════════════════════════════════════════════════
