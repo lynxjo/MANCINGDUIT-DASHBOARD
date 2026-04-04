@@ -272,21 +272,6 @@ tr:hover td{background:rgba(255,255,255,.025);}
 .theme-swatch.selected .swatch-label{color:var(--primary);}
 
 .content > *{animation:fadeIn .22s ease;}
-
-/* ══ JOB DESK ════════════════════════════════════════════ */
-.jd-input-wrap{position:relative;}
-.jd-dropdown{position:absolute;left:0;right:0;background:#0d1e38;border:1px solid #1e3a5f;border-radius:0 0 10px 10px;z-index:200;max-height:240px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
-.jd-dropdown-item{padding:9px 14px;cursor:pointer;font-size:13px;color:#c8d8ea;display:flex;align-items:center;gap:10px;transition:.12s;}
-.jd-dropdown-item:hover{background:rgba(24,192,143,.12);color:#18e0a3;}
-.jd-dropdown-item .jd-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
-.jd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:4px;}
-.jd-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;}
-.jd-tag button{background:none;border:none;cursor:pointer;opacity:.7;padding:0;line-height:1;font-size:12px;}
-.jd-tag button:hover{opacity:1;}
-.jd-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px;}
-.jd-card{background:rgba(0,0,0,.25);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.06);}
-.jd-card-icon{width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:20px;}
-.jd-card-label{font-size:11.5px;font-weight:600;line-height:1.4;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 
 @media(max-width:980px){
@@ -300,6 +285,21 @@ tr:hover td{background:rgba(255,255,255,.025);}
   .akses-grid{grid-template-columns:1fr;}
   .st-grid{grid-template-columns:1fr;}
 }
+
+/* JOB DESK */
+.jd-input-wrap{position:relative;}
+.jd-dropdown{position:absolute;left:0;right:0;background:#0d1e38;border:1px solid #1e3a5f;border-radius:0 0 10px 10px;z-index:200;max-height:240px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.jd-dropdown-item{padding:9px 14px;cursor:pointer;font-size:13px;color:#c8d8ea;display:flex;align-items:center;gap:10px;transition:.12s;}
+.jd-dropdown-item:hover{background:rgba(24,192,143,.12);color:#18e0a3;}
+.jd-dropdown-item .jd-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.jd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:4px;}
+.jd-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;}
+.jd-tag button{background:none;border:none;cursor:pointer;opacity:.7;padding:0;line-height:1;font-size:12px;}
+.jd-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px;}
+.jd-card{background:rgba(0,0,0,.25);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.06);}
+.jd-card-icon{width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.jd-card-label{font-size:11.5px;font-weight:600;line-height:1.4;}
+.jd-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -2148,9 +2148,22 @@ async function renderAbsensiView(){
 // INIT
 // ══════════════════════════════════════════════════════
 async function init(){
-  state.currentUser=getStoredUser();state.hakAkses=getStoredAkses();
+  state.currentUser=getStoredUser();
   if(state.currentUser){
-    // Terapkan tema tersimpan
+    // Selalu ambil hakAkses fresh dari server agar perubahan otoritas langsung berlaku
+    try{
+      const ar=await fetch("/api/akses");const ad=await ar.json();
+      if(ad.status==="success"&&state.currentUser.role!=="admin"){
+        const jab=state.currentUser.jabatan;
+        const jk=Object.keys(ad.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
+        state.hakAkses=ad.data[jk]||ad.data["Staff"]||{};
+        saveStoredAkses(state.hakAkses);
+      }else{
+        state.hakAkses=getStoredAkses();
+      }
+    }catch{
+      state.hakAkses=getStoredAkses();
+    }
     const settings=await fetchSettings();applyTheme(settings.theme||"dark-blue");
   }
   renderApp();
