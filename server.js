@@ -42,11 +42,54 @@ function loadJobDesk(){return loadJson(JOBDESK_FILE,[]);}
 function saveJobDesk(d){saveJson(JOBDESK_FILE,d);}
 
 const DEFAULT_AKSES={
-  Kapten:{bukaDataStaff:true,tambahStaff:true,editStaff:true,hapusStaff:true,setShift:true,resetAbsen:true,bukaKas:true,inputTransaksi:true,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:true,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:true},
-  "CS LINE":{bukaDataStaff:true,tambahStaff:true,editStaff:true,hapusStaff:true,setShift:true,resetAbsen:true,bukaKas:true,inputTransaksi:true,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:true,bukaJobDesk:true},
-  Kasir:{bukaDataStaff:true,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:true,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:false,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:false},
-  CS:{bukaDataStaff:false,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:true,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:true,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:false},
-  Staff:{bukaDataStaff:false,tambahStaff:false,editStaff:false,hapusStaff:false,setShift:false,resetAbsen:false,bukaKas:false,inputTransaksi:false,hapusTransaksiKas:false,bukaLaporan:false,hapusLaporan:false,bukaAuditLog:false,bukaSOP:true,tambahSOP:false,hapusSOP:false,aksesKirimBroadcast:false,bukaSerahTerima:false,bukaJobDesk:false}
+  Kapten:{
+    // Menu akses (tampil di sidebar)
+    menuDataStaff:true, menuDetailStaff:true, menuAbsensi:true, menuIzin:true,
+    menuShift:true, menuHistoryAbsensi:true, menuHistoryIzin:true,
+    menuKas:true, menuSOP:true, menuJobDesk:true, menuSerahTerima:false,
+    // Aksi (edit/hapus) — Kapten boleh edit tapi tidak hapus
+    setShift:true, editStaff:true, tambahStaff:true, hapusStaff:false,
+    resetAbsen:true, inputTransaksi:true, hapusTransaksiKas:false,
+    tambahSOP:true, hapusSOP:false, aksesKirimBroadcast:false,
+    bukaJobDesk:true
+  },
+  "CS LINE":{
+    menuDataStaff:true, menuDetailStaff:true, menuAbsensi:true, menuIzin:true,
+    menuShift:true, menuHistoryAbsensi:true, menuHistoryIzin:true,
+    menuKas:true, menuSOP:true, menuJobDesk:true, menuSerahTerima:true,
+    setShift:true, editStaff:true, tambahStaff:true, hapusStaff:false,
+    resetAbsen:true, inputTransaksi:true, hapusTransaksiKas:false,
+    tambahSOP:false, hapusSOP:false, aksesKirimBroadcast:false,
+    bukaJobDesk:true
+  },
+  Kasir:{
+    menuDataStaff:true, menuDetailStaff:true, menuAbsensi:true, menuIzin:true,
+    menuShift:true, menuHistoryAbsensi:true, menuHistoryIzin:true,
+    menuKas:true, menuSOP:true, menuJobDesk:true, menuSerahTerima:false,
+    // View only — tidak ada aksi edit/hapus
+    setShift:false, editStaff:false, tambahStaff:false, hapusStaff:false,
+    resetAbsen:false, inputTransaksi:false, hapusTransaksiKas:false,
+    tambahSOP:false, hapusSOP:false, aksesKirimBroadcast:false,
+    bukaJobDesk:false
+  },
+  CS:{
+    menuDataStaff:true, menuDetailStaff:true, menuAbsensi:true, menuIzin:true,
+    menuShift:true, menuHistoryAbsensi:true, menuHistoryIzin:true,
+    menuKas:true, menuSOP:true, menuJobDesk:true, menuSerahTerima:false,
+    setShift:false, editStaff:false, tambahStaff:false, hapusStaff:false,
+    resetAbsen:false, inputTransaksi:false, hapusTransaksiKas:false,
+    tambahSOP:false, hapusSOP:false, aksesKirimBroadcast:false,
+    bukaJobDesk:false
+  },
+  Staff:{
+    menuDataStaff:false, menuDetailStaff:false, menuAbsensi:false, menuIzin:false,
+    menuShift:false, menuHistoryAbsensi:false, menuHistoryIzin:false,
+    menuKas:false, menuSOP:true, menuJobDesk:false, menuSerahTerima:false,
+    setShift:false, editStaff:false, tambahStaff:false, hapusStaff:false,
+    resetAbsen:false, inputTransaksi:false, hapusTransaksiKas:false,
+    tambahSOP:false, hapusSOP:false, aksesKirimBroadcast:false,
+    bukaJobDesk:false
+  }
 };
 function loadAkses(){
   const saved=loadJson(AKSES_FILE,{});
@@ -214,6 +257,25 @@ app.put("/api/akses/:jabatan",(req,res)=>{const akses=loadAkses();const jabatan=
 // SETTINGS
 app.get("/api/settings",(req,res)=>res.json({status:"success",data:loadSettings()}));
 app.put("/api/settings",(req,res)=>{const current=loadSettings();const updated={...current,...req.body};if(req.body.notification)updated.notification={...current.notification,...req.body.notification};saveSettings(updated);res.json({status:"success",message:"Pengaturan disimpan",data:updated});});
+
+// HAPUS HISTORY IZIN (Admin)
+app.delete("/api/izin/:id",(req,res)=>{
+  let izin=loadIzin();
+  const idx=izin.findIndex(i=>i.id===Number(req.params.id));
+  if(idx===-1)return res.status(404).json({status:"error",message:"Data tidak ditemukan"});
+  izin.splice(idx,1);saveIzin(izin);
+  res.json({status:"success",message:"History izin dihapus"});
+});
+
+// HAPUS SEMUA HISTORY IZIN berdasarkan filter
+app.delete("/api/izin/bulk/tanggal",(req,res)=>{
+  const{tanggal}=req.body;
+  let izin=loadIzin();
+  if(tanggal)izin=izin.filter(i=>i.tanggal!==tanggal);
+  else izin=[];
+  saveIzin(izin);
+  res.json({status:"success",message:"History izin dihapus"});
+});
 
 // JOB DESK
 app.get("/api/jobdesk",(req,res)=>{
