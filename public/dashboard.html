@@ -2148,22 +2148,9 @@ async function renderAbsensiView(){
 // INIT
 // ══════════════════════════════════════════════════════
 async function init(){
-  state.currentUser=getStoredUser();
+  state.currentUser=getStoredUser();state.hakAkses=getStoredAkses();
   if(state.currentUser){
-    // Selalu ambil hakAkses fresh dari server agar perubahan otoritas langsung berlaku
-    try{
-      const ar=await fetch("/api/akses");const ad=await ar.json();
-      if(ad.status==="success"&&state.currentUser.role!=="admin"){
-        const jab=state.currentUser.jabatan;
-        const jk=Object.keys(ad.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
-        state.hakAkses=ad.data[jk]||ad.data["Staff"]||{};
-        saveStoredAkses(state.hakAkses);
-      }else{
-        state.hakAkses=getStoredAkses();
-      }
-    }catch{
-      state.hakAkses=getStoredAkses();
-    }
+    // Terapkan tema tersimpan
     const settings=await fetchSettings();applyTheme(settings.theme||"dark-blue");
   }
   renderApp();
