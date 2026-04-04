@@ -258,47 +258,13 @@ app.put("/api/akses/:jabatan",(req,res)=>{const akses=loadAkses();const jabatan=
 app.get("/api/settings",(req,res)=>res.json({status:"success",data:loadSettings()}));
 app.put("/api/settings",(req,res)=>{const current=loadSettings();const updated={...current,...req.body};if(req.body.notification)updated.notification={...current.notification,...req.body.notification};saveSettings(updated);res.json({status:"success",message:"Pengaturan disimpan",data:updated});});
 
-// HAPUS HISTORY IZIN (Admin)
-app.delete("/api/izin/:id",(req,res)=>{
-  let izin=loadIzin();
-  const idx=izin.findIndex(i=>i.id===Number(req.params.id));
-  if(idx===-1)return res.status(404).json({status:"error",message:"Data tidak ditemukan"});
-  izin.splice(idx,1);saveIzin(izin);
-  res.json({status:"success",message:"History izin dihapus"});
-});
-
-// HAPUS SEMUA HISTORY IZIN berdasarkan filter
-app.delete("/api/izin/bulk/tanggal",(req,res)=>{
-  const{tanggal}=req.body;
-  let izin=loadIzin();
-  if(tanggal)izin=izin.filter(i=>i.tanggal!==tanggal);
-  else izin=[];
-  saveIzin(izin);
-  res.json({status:"success",message:"History izin dihapus"});
-});
+// HAPUS HISTORY IZIN
+app.delete("/api/izin/:id",(req,res)=>{let izin=loadIzin();const idx=izin.findIndex(i=>i.id===Number(req.params.id));if(idx===-1)return res.status(404).json({status:"error",message:"Data tidak ditemukan"});izin.splice(idx,1);saveIzin(izin);res.json({status:"success",message:"History izin dihapus"});});
+app.delete("/api/izin/bulk/tanggal",(req,res)=>{const{tanggal}=req.body;let izin=loadIzin();if(tanggal)izin=izin.filter(i=>i.tanggal!==tanggal);else izin=[];saveIzin(izin);res.json({status:"success",message:"History izin dihapus"});});
 
 // JOB DESK
-app.get("/api/jobdesk",(req,res)=>{
-  const data=loadJobDesk();
-  const{tanggal}=req.query;
-  res.json({status:"success",data:tanggal?data.filter(j=>j.tanggal===tanggal):data});
-});
-app.post("/api/jobdesk",(req,res)=>{
-  const jd=loadJobDesk();
-  const{userId,nama,jabatan,jobdesk,tanggal,dibuat_oleh}=req.body;
-  if(!userId||!jobdesk)return res.status(400).json({status:"error",message:"userId dan jobdesk wajib diisi"});
-  const tgl=tanggal||todayStr();
-  const filtered=jd.filter(j=>!(Number(j.userId)===Number(userId)&&j.tanggal===tgl));
-  const newJD={id:jd.length?Math.max(...jd.map(j=>j.id))+1:1,userId:Number(userId),nama,jabatan,jobdesk,tanggal:tgl,jam:currentTimeStr(),timestamp:new Date().toISOString(),dibuat_oleh:dibuat_oleh||"Admin"};
-  filtered.push(newJD);saveJobDesk(filtered);
-  res.json({status:"success",message:"Job desk berhasil disimpan",data:newJD});
-});
-app.delete("/api/jobdesk/:id",(req,res)=>{
-  const jd=loadJobDesk();
-  const idx=jd.findIndex(j=>j.id===Number(req.params.id));
-  if(idx===-1)return res.status(404).json({status:"error",message:"Job desk tidak ditemukan"});
-  jd.splice(idx,1);saveJobDesk(jd);
-  res.json({status:"success",message:"Job desk berhasil dihapus"});
-});
+app.get("/api/jobdesk",(req,res)=>{const data=loadJobDesk();const{tanggal}=req.query;res.json({status:"success",data:tanggal?data.filter(j=>j.tanggal===tanggal):data});});
+app.post("/api/jobdesk",(req,res)=>{const jd=loadJobDesk();const{userId,nama,jabatan,jobdesk,tanggal,dibuat_oleh}=req.body;if(!userId||!jobdesk)return res.status(400).json({status:"error",message:"userId dan jobdesk wajib diisi"});const tgl=tanggal||todayStr();const filtered=jd.filter(j=>!(Number(j.userId)===Number(userId)&&j.tanggal===tgl));const newJD={id:jd.length?Math.max(...jd.map(j=>j.id))+1:1,userId:Number(userId),nama,jabatan,jobdesk,tanggal:tgl,jam:currentTimeStr(),timestamp:new Date().toISOString(),dibuat_oleh:dibuat_oleh||"Admin"};filtered.push(newJD);saveJobDesk(filtered);res.json({status:"success",message:"Job desk berhasil disimpan",data:newJD});});
+app.delete("/api/jobdesk/:id",(req,res)=>{const jd=loadJobDesk();const idx=jd.findIndex(j=>j.id===Number(req.params.id));if(idx===-1)return res.status(404).json({status:"error",message:"Job desk tidak ditemukan"});jd.splice(idx,1);saveJobDesk(jd);res.json({status:"success",message:"Job desk berhasil dihapus"});});
 
 app.listen(PORT,()=>console.log(`Server dashboard berjalan di http://localhost:${PORT}`));
