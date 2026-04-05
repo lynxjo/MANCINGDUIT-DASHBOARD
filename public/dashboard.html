@@ -272,6 +272,7 @@ tr:hover td{background:rgba(255,255,255,.025);}
 .theme-swatch.selected .swatch-label{color:var(--primary);}
 
 .content > *{animation:fadeIn .22s ease;}
+@keyframes spin{to{transform:rotate(360deg);}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 
 @media(max-width:980px){
@@ -367,22 +368,67 @@ function applyTheme(t){
   document.body.className=t&&t!=="dark-blue"?"theme-"+t:"";
 }
 async function fetchJson(url,opts={}){const r=await fetch(url,opts);return await r.json();}
-async function fetchStaff(){try{const r=await fetchJson("/api/staff");return r.data||[];}catch{return[];}}
-async function fetchAbsensi(){try{const r=await fetchJson("/api/absensi");return r.data||[];}catch{return[];}}
+async function fetchStaff(){try{const r=await fetchJsonCached("/api/staff");return r.data||[];}catch{return[];}}
+async function fetchAbsensi(){try{const r=await fetchJsonCached("/api/absensi");return r.data||[];}catch{return[];}}
 async function fetchDashboardSummary(){try{const r=await fetchJson("/api/dashboard-summary");return r.data||null;}catch{return null;}}
-async function fetchIzinActive(){try{const r=await fetchJson("/api/izin/active");return r.data||[];}catch{return[];}}
-async function fetchIzinHistory(){try{const r=await fetchJson("/api/izin/history");return r.data||[];}catch{return[];}}
+async function fetchIzinActive(){try{const r=await fetchJsonCached("/api/izin/active");return r.data||[];}catch{return[];}}
+async function fetchIzinHistory(){try{const r=await fetchJsonCached("/api/izin/history");return r.data||[];}catch{return[];}}
 async function fetchIzinStatus(userId){try{const r=await fetchJson(`/api/izin/status/${userId}`);return r.data||null;}catch{return null;}}
-async function fetchSettings(){try{const r=await fetchJson("/api/settings");return r.data||{};}catch{return{};}};
-async function fetchSop(){try{const r=await fetchJson("/api/sop");return r.data||[];}catch{return[];}}
-async function fetchKas(){try{const r=await fetchJson("/api/kas");return r.data||{saldoAwal:0,transaksi:[],saldoAkhir:0};}catch{return{saldoAwal:0,transaksi:[],saldoAkhir:0};}}
-async function fetchAkses(){try{const r=await fetchJson("/api/akses");return r.data||{};}catch{return{};}}
+async function fetchSettings(){try{const r=await fetchJsonCached("/api/settings");return r.data||{};}catch{return{};}};
+async function fetchSop(){try{const r=await fetchJsonCached("/api/sop");return r.data||[];}catch{return[];}}
+async function fetchKas(){try{const r=await fetchJsonCached("/api/kas");return r.data||{saldoAwal:0,transaksi:[],saldoAkhir:0};}catch{return{saldoAwal:0,transaksi:[],saldoAkhir:0};}}
+async function fetchAkses(){try{const r=await fetchJsonCached("/api/akses");return r.data||{};}catch{return{};}}
 async function fetchSerahTerima(q=""){try{const r=await fetchJson("/api/serahterima"+q);return r.data||[];}catch{return[];}}
-async function fetchBroadcast(){try{const r=await fetchJson("/api/broadcast");return r.data||{};}catch{return{};}}
+async function fetchBroadcast(){try{const r=await fetchJsonCached("/api/broadcast");return r.data||{};}catch{return{};}}
 async function refreshCurrentUser(){
   if(!state.currentUser)return null;
   try{const r=await fetchJson(`/api/staff/${state.currentUser.id}`);if(r.status==="success"){state.currentUser=r.data;saveStoredUser(r.data);return r.data;}}catch{}
   return state.currentUser;
+}
+
+
+// ══════════════════════════════════════════════════════
+// CACHE SYSTEM — mencegah fetch berulang
+// ══════════════════════════════════════════════════════
+const _cache={};
+const CACHE_TTL={
+  "/api/staff":30000,       // 30 detik
+  "/api/absensi":15000,     // 15 detik
+  "/api/jobdesk":15000,     // 15 detik
+  "/api/izin/history":15000,
+  "/api/izin/active":5000,  // 5 detik (real-time)
+  "/api/sop":60000,         // 1 menit
+  "/api/kas":20000,
+  "/api/serahterima":20000,
+  "/api/settings":60000,
+  "/api/broadcast":30000,
+  "/api/akses":60000
+};
+function cacheGet(url){
+  const c=_cache[url];
+  if(!c)return null;
+  if(Date.now()-c.t>( CACHE_TTL[url.split("?")[0]]||15000))return null;
+  return c.d;
+}
+function cacheSet(url,data){_cache[url]={d:data,t:Date.now()};}
+function cacheClear(prefix){Object.keys(_cache).forEach(k=>{if(k.startsWith(prefix))delete _cache[k];});}
+
+// Wrapper fetchJson dengan cache
+const _origFetchJson=fetchJson;
+async function fetchJsonCached(url,opts){
+  if(!opts||opts.method==="GET"||!opts.method){
+    const cached=cacheGet(url);
+    if(cached)return cached;
+  }
+  const result=await fetchJson(url,opts);
+  if(!opts||opts.method==="GET"||!opts.method){
+    cacheSet(url,result);
+  } else {
+    // Setelah write, clear cache yang terkait
+    const base=url.split("/").slice(0,3).join("/");
+    cacheClear(base);
+  }
+  return result;
 }
 
 // ══════════════════════════════════════════════════════
@@ -495,7 +541,12 @@ async function setMenu(menu){
 function renderApp(){
   const lp=document.getElementById("loginPage"),ap=document.getElementById("appPage");
   if(!state.currentUser){lp.classList.remove("hidden");ap.classList.add("hidden");renderLogin();return;}
-  lp.classList.add("hidden");ap.classList.remove("hidden");renderAppPage();
+  lp.classList.add("hidden");ap.classList.remove("hidden");
+  ap.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;background:var(--bg);">
+    <div style="width:44px;height:44px;border:4px solid #1e3a5f;border-top-color:#18c08f;border-radius:50%;animation:spin .7s linear infinite;"></div>
+    <div style="color:#7a9ab8;font-size:14px;font-family:'Segoe UI',Arial;">Memuat dashboard...</div>
+  </div>`;
+  renderAppPage();
 }
 async function renderAppPage(){
   const app=document.getElementById("appPage");
@@ -504,9 +555,8 @@ async function renderAppPage(){
   const menuHtml=menus.map(m=>`<button class="${state.currentMenu===m.key?"active":""}" onclick="setMenu('${m.key}')"><i class="fa-solid ${m.icon}"></i> ${m.label}</button>`).join("");
   const avatarEl=profile.avatarImage?`<img src="${profile.avatarImage}" style="width:100%;height:100%;object-fit:cover;">`:`<span style="font-size:15px;font-weight:bold;">${(profile.avatarText||me.nama.charAt(0)).slice(0,1).toUpperCase()}</span>`;
   const jabBadge=me.role==="admin"?`<span style="background:#3b1d6e;color:#d4b3ff;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;">ADMIN</span>`:`<span style="background:#0d4a47;color:#81e6d9;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;">${me.jabatan}</span>`;
-  const contentHtml=await renderCurrentContent();
-  // Broadcast bar
-  const bc=await fetchBroadcast();
+  // Parallel: content + broadcast sekaligus
+  const [contentHtml, bc]=await Promise.all([renderCurrentContent(), fetchBroadcast()]);
   const broadcastBar=bc&&bc.aktif&&bc.pesan?`<div class="broadcast-bar"><div class="broadcast-bar-label"><i class="fa-solid fa-bullhorn"></i> BROADCAST</div><div class="broadcast-bar-text"><div class="broadcast-bar-inner">📢 ${bc.pesan} 📢 ${bc.pesan} 📢 ${bc.pesan}</div></div></div>`:"";
   app.innerHTML=`
     <aside class="sidebar">
@@ -650,9 +700,7 @@ async function renderAdminDashboard(){
 // STAFF DASHBOARD
 // ══════════════════════════════════════════════════════
 async function renderStaffDashboard(){
-  await refreshCurrentUser();
-  const staff=await fetchStaff();
-  const absensi=await fetchAbsensi();
+  const [staff, absensi]=await Promise.all([fetchStaff(), fetchAbsensi()]);
   const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
   const today=new Date().toISOString().split("T")[0];
   const todayAbs=absensi.filter(a=>a.tanggal===today);
@@ -1153,7 +1201,7 @@ async function hapusIzin(id){
   try{
     const r=await fetchJson(`/api/izin/${id}`,{method:"DELETE"});
     if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
-    toast("History izin dihapus");await renderAppPage();
+    cacheClear('/api/izin');toast("History izin dihapus");await renderAppPage();
   }catch{toast("Server error",true);}
 }
 
@@ -1439,7 +1487,7 @@ async function stopBroadcast(){
 // STAFF PAGES
 // ══════════════════════════════════════════════════════
 async function renderAbsenSaya(){
-  await refreshCurrentUser();const me=state.currentUser;
+  const me=state.currentUser;
   return`<div class="staff-hero center-card">
     <div class="hero-avatar" onclick="setMenu('profilSaya')" title="Edit Profil">
       ${me.profile?.avatarImage?`<img src="${me.profile.avatarImage}">`:(me.profile?.avatarText||me.nama.charAt(0)).slice(0,1).toUpperCase()}
@@ -1485,7 +1533,7 @@ async function renderIzinSaya(){
 async function mulaiIzinKeluar(){try{const r=await fetchJson("/api/izin/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:state.currentUser.id})});if(r.status==="blocked"){showCenterAlert({title:"TIDAK BISA KELUAR",message:r.detail||"Ada staff yang sama sedang keluar.",submessage:r.subdetail||"Tunggu giliran.",confirmText:"MENGERTI",icon:"🚫",danger:true});return;}if(r.status!=="success"){showCenterAlert({title:"PERINGATAN!",message:r.message||"Gagal memulai izin.",confirmText:"MENGERTI",icon:"⚠",danger:true});return;}state.izinWarn14Shown=false;state.izinOverShown=false;toast("Izin keluar dimulai ✓");await renderAppPage();}catch(e){console.error(e);toast("Server gagal memulai izin keluar",true);}}
 async function selesaiIzinKeluar(){try{const r=await fetchJson("/api/izin/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:state.currentUser.id})});if(r.status!=="success"){toast(r.message||"Gagal menyelesaikan izin",true);return;}toast("Izin keluar selesai ✓");state.izinWarn14Shown=false;state.izinOverShown=false;await renderAppPage();}catch(e){console.error(e);toast("Server gagal menyelesaikan izin",true);}}
 async function renderShiftSaya(){
-  await refreshCurrentUser();const staff=await fetchStaff();const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
+  const staff=await fetchStaff();const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
   const roster=["Pagi","Siang","Sore","Malam"].map(shift=>{const rows=staff.filter(u=>u.role==="staff"&&u.shift===shift);return`<div class="card"><h4 style="font-size:15px;"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i>${shift}</h4>${rows.length?rows.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--table-border);"><div class="member-avatar" style="width:28px;height:28px;font-size:12px;">${r.profile?.avatarImage?`<img src="${r.profile.avatarImage}">`:r.nama.charAt(0).toUpperCase()}</div><div><b style="font-size:13px;">${r.nama}${r.id===me.id?" (Saya)":""}</b><br><span style="color:#b8c6d8;font-size:12px;">${r.jabatan} • ${r.shiftStartTime}</span></div></div>`).join(""):"<p>Belum ada staff.</p>"}</div>`;}).join("");
   return`<div class="card"><h4><i class="fa-solid fa-calendar"></i>Shift Saya</h4><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;"><span class="badge badge-info" style="font-size:14px;padding:8px 16px;"><i class="fa-solid fa-clock"></i> ${me.shift}</span><span class="badge badge-gold" style="font-size:14px;padding:8px 16px;"><i class="fa-solid fa-hourglass-start"></i> Jam Masuk: ${me.shiftStartTime}</span></div></div><div class="section-title"><i class="fa-solid fa-users"></i>Shift Rekan Kerja</div><div class="grid grid-4">${roster}</div>`;
 }
@@ -1498,7 +1546,7 @@ async function renderHistorySaya(){
   <div class="table-wrap"><table><thead><tr><th>ID</th><th>Tanggal</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th></tr></thead><tbody>${myIzin.length?myIzin.map(r=>`<tr><td>${r.id}</td><td>${r.tanggal}</td><td>${r.jamKeluar}</td><td>${r.jamKembali||"-"}</td><td>${r.durasiMenit||0} mnt</td><td><span class="badge ${r.status==="Melewati Batas"?"badge-danger":r.status==="Aktif"?"badge-warning":"badge-success"}">${r.status}</span></td></tr>`).join(""):`<tr><td colspan="6" style="text-align:center;color:#8ca0be;">Belum ada history izin.</td></tr>`}</tbody></table></div>`;
 }
 async function renderProfilSaya(){
-  await refreshCurrentUser();const me=state.currentUser;const p=me.profile||{};const avatarEl=p.avatarImage?`<img src="${p.avatarImage}">`:(p.avatarText||me.nama.charAt(0)).toUpperCase().slice(0,1);
+  const me=state.currentUser;const p=me.profile||{};const avatarEl=p.avatarImage?`<img src="${p.avatarImage}">`:(p.avatarText||me.nama.charAt(0)).toUpperCase().slice(0,1);
   return`<div class="grid grid-2">
     <div class="card">
       <h4><i class="fa-solid fa-circle-user"></i>Edit Profil Saya</h4><p>Kustomisasi profil dan avatar Anda.</p>
@@ -1676,7 +1724,7 @@ function jdRenderCards(jobdesk,color){
   }).join("");
 }
 
-async function fetchJobDesk(){try{const r=await fetchJson("/api/jobdesk");return r.data||[];}catch{return[];}}
+async function fetchJobDesk(){try{const r=await fetchJsonCached("/api/jobdesk");return r.data||[];}catch{return[];}}
 
 async function renderJobDesk(isAdmin){
   const users=await fetchStaff();
@@ -1821,7 +1869,6 @@ function jdRenderTagsInit(jobdesk,uid,color){
 }
 
 async function renderJobDeskSaya(){
-  await refreshCurrentUser();
   const me=state.currentUser;
   const allJD=await fetchJobDesk();
   const today=new Date().toISOString().split("T")[0];
@@ -2152,19 +2199,24 @@ async function init(){
   if(state.currentUser){
     // Selalu ambil hakAkses fresh dari server agar perubahan otoritas langsung berlaku
     try{
-      const ar=await fetch("/api/akses");const ad=await ar.json();
-      if(ad.status==="success"&&state.currentUser.role!=="admin"){
+      const [ar,settings]=await Promise.all([
+        fetch("/api/akses").then(r=>r.json()).catch(()=>({status:"error"})),
+        fetchSettings().catch(()=>({theme:"dark-blue"}))
+      ]);
+      applyTheme(settings.theme||"dark-blue");
+      if(ar.status==="success"&&state.currentUser.role!=="admin"){
         const jab=state.currentUser.jabatan;
-        const jk=Object.keys(ad.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
-        state.hakAkses=ad.data[jk]||ad.data["Staff"]||{};
+        const jk=Object.keys(ar.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
+        state.hakAkses=ar.data[jk]||ar.data["Staff"]||{};
         saveStoredAkses(state.hakAkses);
       }else{
         state.hakAkses=getStoredAkses();
+        try{const s=await fetchSettings();applyTheme(s.theme||"dark-blue");}catch{}
       }
     }catch{
       state.hakAkses=getStoredAkses();
+      try{const s=await fetchSettings();applyTheme(s.theme||"dark-blue");}catch{}
     }
-    const settings=await fetchSettings();applyTheme(settings.theme||"dark-blue");
   }
   renderApp();
 }
