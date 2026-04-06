@@ -105,7 +105,7 @@ function saveAkses(d){saveJson(AKSES_FILE,d);}
 function loadSettings(){return loadJson(SETTINGS_FILE,{theme:"dark-blue",notification:{reminderEnabled:true,reminderMinutes:15,emailEnabled:false,recipients:[]}});}
 function saveSettings(d){saveJson(SETTINGS_FILE,d);}
 
-function todayStr(){return new Date().toISOString().split("T")[0];}
+function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
 function currentTimeStr(){return new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});}
 function getCurrentShiftName(){const h=new Date().getHours();if(h>=5&&h<11)return"Pagi";if(h>=11&&h<15)return"Siang";if(h>=15&&h<19)return"Sore";return"Malam";}
 function shiftOrder(){return["Pagi","Siang","Sore","Malam"];}
