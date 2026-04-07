@@ -345,6 +345,8 @@ function isCsLine(){return state.currentUser&&state.currentUser.jabatan==="CS LI
 // ══════════════════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════════════════
+// Helper: tanggal lokal WIB — konsisten dengan server (tidak pakai toISOString/UTC)
+function localDateStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function toast(msg,isError=false){
   const id="t_"+Date.now();
   const icon=isError?"fa-circle-exclamation":"fa-circle-check";
@@ -702,7 +704,7 @@ async function renderAdminDashboard(){
 async function renderStaffDashboard(){
   const [staff, absensi]=await Promise.all([fetchStaff(), fetchAbsensi()]);
   const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
   const todayAbs=absensi.filter(a=>a.tanggal===today);
   const activeStaff=staff.filter(u=>u.active&&u.role==="staff");
   const totalAktif=activeStaff.length;
@@ -948,7 +950,7 @@ async function renderDetailStaff(){
 async function renderAbsensiAdmin(){
   const rows=await fetchAbsensi();
   const users=await fetchStaff();
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
   const now=new Date();
   const nowMin=now.getHours()*60+now.getMinutes();
   const activeStaff=users.filter(u=>u.active&&u.role==="staff");
@@ -1058,7 +1060,7 @@ async function renderShiftPage(){
 }
 async function updateShift(userId){const shift=document.getElementById(`sh_${userId}`).value;const shiftStartTime=document.getElementById(`sh_t_${userId}`).value;if(!shiftStartTime){toast("Jam masuk wajib diisi",true);return;}try{const r=await fetchJson(`/api/staff/${userId}/shift`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({shift,shiftStartTime})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Shift berhasil diperbarui");await refreshCurrentUser();await renderAppPage();}catch{toast("Server error",true);}}
 async function renderHistoryAbsensiAdmin(){
-  const sub=state.currentSubMenu||"harian";const rows=await fetchAbsensi();const users=await fetchStaff();const today=new Date().toISOString().split("T")[0];const bulanIni=today.slice(0,7);
+  const sub=state.currentSubMenu||"harian";const rows=await fetchAbsensi();const users=await fetchStaff();const today=localDateStr();const bulanIni=today.slice(0,7);
   const tabs=`<div class="sub-tabs">${[{k:"harian",l:"Absensi Harian",i:"fa-calendar-day"},{k:"bulanan",l:"Bulanan",i:"fa-calendar"},{k:"perRole",l:"Per Role",i:"fa-sitemap"},{k:"terlambat",l:"Keterlambatan",i:"fa-triangle-exclamation"},{k:"export",l:"Export",i:"fa-download"}].map(t=>`<button class="${sub===t.k?"active":""}" onclick="setSubMenu('${t.k}')"><i class="fa-solid ${t.i}"></i> ${t.l}</button>`).join("")}</div>`;
   let c="";
   if(sub==="harian"){const harian=rows.filter(r=>r.tanggal===today);c=`<div class="card"><h4><i class="fa-solid fa-calendar-day"></i>Hari Ini — ${today}</h4><p>${harian.length} staff telah absen.</p></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Jabatan</th><th>Shift</th><th>Jam Masuk</th><th>Status</th></tr></thead><tbody>${harian.length?harian.map(r=>`<tr><td><b>${r.nama}</b></td><td>${r.jabatan}</td><td>${r.shiftTerdaftar}</td><td>${r.jamMasuk}</td><td><span class="badge ${r.status==="Terlambat"?"badge-warning":"badge-success"}">${r.status||"Hadir"}</span></td></tr>`).join(""):`<tr><td colspan="5" style="text-align:center;color:#8ca0be;">Belum ada absensi hari ini.</td></tr>`}</tbody></table></div>`;}
@@ -1069,13 +1071,13 @@ async function renderHistoryAbsensiAdmin(){
   return tabs+c;
 }
 function setSubMenu(sub){state.currentSubMenu=sub;renderAppPage();}
-async function exportCSV(){const rows=await fetchAbsensi();const h=["ID","Nama","Username","Jabatan","Shift","Jam Kerja","Tanggal","Jam Masuk","Status"].join(",");const b=rows.map(r=>[r.id,r.nama,r.username,r.jabatan,r.shiftTerdaftar,r.shiftStartTime,r.tanggal,r.jamMasuk,r.status||"Hadir"].join(",")).join("\n");const blob=new Blob([h+"\n"+b],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);toast("Export CSV berhasil");}
-async function exportJSON(){const rows=await fetchAbsensi();const blob=new Blob([JSON.stringify(rows,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${new Date().toISOString().split("T")[0]}.json`;a.click();URL.revokeObjectURL(url);toast("Export JSON berhasil");}
+async function exportCSV(){const rows=await fetchAbsensi();const h=["ID","Nama","Username","Jabatan","Shift","Jam Kerja","Tanggal","Jam Masuk","Status"].join(",");const b=rows.map(r=>[r.id,r.nama,r.username,r.jabatan,r.shiftTerdaftar,r.shiftStartTime,r.tanggal,r.jamMasuk,r.status||"Hadir"].join(",")).join("\n");const blob=new Blob([h+"\n"+b],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${localDateStr()}.csv`;a.click();URL.revokeObjectURL(url);toast("Export CSV berhasil");}
+async function exportJSON(){const rows=await fetchAbsensi();const blob=new Blob([JSON.stringify(rows,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${localDateStr()}.json`;a.click();URL.revokeObjectURL(url);toast("Export JSON berhasil");}
 async function renderHistoryIzin(){
   const rows=await fetchIzinHistory();
   const users=await fetchStaff();
   const filter=state.izinFilter||"harian";
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
   const now=new Date();
 
   // Filter tanggal
@@ -1097,7 +1099,8 @@ async function renderHistoryIzin(){
   }
   const filtered=getFiltered().sort((a,b)=>b.id-a.id);
 
-  // Hitung sisa izin per staff (hari ini)
+  // Hitung sisa izin per staff (berdasarkan tanggal hari ini — untuk tampilan quota card)
+  const today=localDateStr();
   const izinPerStaff={};
   rows.filter(r=>r.tanggal===today).forEach(r=>{
     if(!izinPerStaff[r.userId])izinPerStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,used:0};
@@ -1502,12 +1505,39 @@ async function renderAbsenSaya(){
 }
 async function absenSekarang(){try{const r=await fetchJson("/api/absensi",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:state.currentUser.id})});if(r.status!=="success"){showCenterAlert({title:"PERINGATAN!",message:r.message||"Gagal absensi.",confirmText:"MENGERTI",icon:"⚠",danger:true});return;}showCenterAlert({title:"Mantap!",message:"Absensi berhasil dicatat ✓",submessage:"Tetap semangat dan fokus bertugas.",confirmText:"SIAP",icon:"☀",danger:false});}catch{toast("Server gagal mencatat absensi",true);}}
 async function renderIzinSaya(){
-  const status=await fetchIzinStatus(state.currentUser.id);const used=status?status.used:0;
+  const [status, winData]=await Promise.all([
+    fetchIzinStatus(state.currentUser.id),
+    fetch(`/api/izin/window/${state.currentUser.id}`).then(r=>r.json()).then(r=>r.data||{}).catch(()=>({}))
+  ]);
+  const used=status?status.used:0;
+  const hasAbsen=winData.hasAbsen||false;
+  const windowExpired=winData.windowExpired||false;
+  const usedInWindow=winData.usedInWindow||used;
+  // Tampilkan info window sesi
+  let windowInfo="";
+  if(hasAbsen&&winData.windowEnd){
+    const endTime=new Date(winData.windowEnd);
+    const endStr=endTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+    const startStr=new Date(winData.windowStart).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+    if(windowExpired){
+      windowInfo=`<div style="background:#1a0a00;border:1px solid #f59e0b;border-radius:12px;padding:12px;margin-top:12px;font-size:13px;">
+        <b style="color:#f59e0b;"><i class="fa-solid fa-rotate-right"></i> Sesi kerja sebelumnya sudah berakhir</b><br>
+        <span style="color:#9fb0c7;margin-top:4px;display:block;">Kuota izin Anda sudah direset. Absen kembali untuk memulai sesi baru.</span>
+      </div>`;
+    } else {
+      windowInfo=`<div style="background:#071124;border:1px solid #30415d;border-radius:12px;padding:12px;margin-top:12px;font-size:13px;">
+        <b style="color:#18c08f;"><i class="fa-solid fa-hourglass-half"></i> Sesi Kerja Aktif</b><br>
+        <span style="color:#9fb0c7;">Absen masuk: <b style="color:#ffd979;">${startStr}</b> &nbsp;|&nbsp; Reset kuota: <b style="color:#ffd979;">${endStr}</b></span>
+      </div>`;
+    }
+  }
+  const quotaColor=usedInWindow>=4?"#ef4444":usedInWindow>=3?"#f59e0b":"#18e0a3";
   return`<div class="grid grid-2">
     <div class="card">
       <h4><i class="fa-solid fa-person-walking-arrow-right"></i>Izin Keluar Saya</h4>
-      <p>Maks 4 kali sehari. Durasi maks 15 menit per izin.</p>
-      <div style="margin-top:14px;"><div class="between" style="margin-bottom:6px;"><b>Kuota Hari Ini</b><b style="color:${used>=4?"#ef4444":"#18e0a3"};">${used}/4</b></div><div class="quota-bar"><div class="quota-fill" style="width:${(used/4)*100}%;background:${used>=4?"#ef4444":used>=3?"#f59e0b":"linear-gradient(90deg,#18c08f,#22d3ae)"};"></div></div></div>
+      <p>Maks 4 kali per sesi kerja. Durasi maks 15 menit per izin.</p>
+      <div style="margin-top:14px;"><div class="between" style="margin-bottom:6px;"><b>Kuota Sesi Ini</b><b style="color:${quotaColor};">${usedInWindow}/4</b></div><div class="quota-bar"><div class="quota-fill" style="width:${(usedInWindow/4)*100}%;background:${usedInWindow>=4?"#ef4444":usedInWindow>=3?"#f59e0b":"linear-gradient(90deg,#18c08f,#22d3ae)"};"></div></div></div>
+      ${windowInfo}
       <div style="margin-top:16px;" class="row">
         <button class="btn btn-warning" onclick="mulaiIzinKeluar()"><i class="fa-solid fa-door-open"></i> MULAI IZIN KELUAR</button>
         <button class="btn btn-info" onclick="selesaiIzinKeluar()"><i class="fa-solid fa-door-closed"></i> SELESAI IZIN</button>
@@ -1524,7 +1554,8 @@ async function renderIzinSaya(){
       </div>
       <div style="margin-top:12px;background:#0b1730;border-radius:12px;padding:12px;">
         <p style="font-size:13px;"><i class="fa-solid fa-clock"></i> Maks durasi: <b>15 menit</b></p>
-        <p style="font-size:13px;"><i class="fa-solid fa-repeat"></i> Maks per hari: <b>4 kali</b></p>
+        <p style="font-size:13px;"><i class="fa-solid fa-repeat"></i> Maks per sesi kerja: <b>4 kali</b></p>
+        <p style="font-size:13px;"><i class="fa-solid fa-rotate-right" style="color:#18c08f;"></i> Kuota reset <b>10 jam</b> setelah absen masuk</p>
         <p style="font-size:13px;color:#ffb9c2;margin-top:8px;"><i class="fa-solid fa-desktop"></i> Menu ini hanya dapat diakses dari PC</p>
       </div>
     </div>
@@ -1729,7 +1760,7 @@ async function fetchJobDesk(){try{const r=await fetchJsonCached("/api/jobdesk");
 async function renderJobDesk(isAdmin){
   const users=await fetchStaff();
   const allJD=await fetchJobDesk();
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
   const staffList=users.filter(u=>u.role==="staff"&&u.active);
   const todayJD=allJD.filter(j=>j.tanggal===today);
   const canEdit=isAdmin||boleh("bukaJobDesk");
@@ -1871,7 +1902,7 @@ function jdRenderTagsInit(jobdesk,uid,color){
 async function renderJobDeskSaya(){
   const me=state.currentUser;
   const allJD=await fetchJobDesk();
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
   const myJDToday=allJD.find(j=>Number(j.userId)===Number(me.id)&&j.tanggal===today);
   const myJDHistory=allJD.filter(j=>Number(j.userId)===Number(me.id)).sort((a,b)=>b.id-a.id).slice(0,5);
   const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
@@ -1903,7 +1934,7 @@ async function renderJobDeskSaya(){
 }
 
 async function saveAllJobDesk(){
-  const tanggal=document.getElementById("jdTanggal")?.value||new Date().toISOString().split("T")[0];
+  const tanggal=document.getElementById("jdTanggal")?.value||localDateStr();
   const inputs=document.querySelectorAll("[id^='jd_txt_']");
   let saved=0;
   await Promise.all(Array.from(inputs).map(async inp=>{
@@ -1919,7 +1950,7 @@ async function saveAllJobDesk(){
 }
 
 async function saveShiftJobDesk(shiftNama){
-  const tanggal=document.getElementById("jdTanggal")?.value||new Date().toISOString().split("T")[0];
+  const tanggal=document.getElementById("jdTanggal")?.value||localDateStr();
   const inputs=document.querySelectorAll(`[data-shift="${shiftNama}"]`);
   let saved=0;
   await Promise.all(Array.from(inputs).map(async inp=>{
@@ -2020,7 +2051,7 @@ async function renderShiftView(){
 async function renderHistoryIzinView(){
   const rows=await fetchIzinHistory();
   const filter=state.izinViewFilter||"harian";
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
 
   function getFiltered(){
     if(filter==="harian")return rows.filter(r=>r.tanggal===today);
@@ -2104,7 +2135,7 @@ async function renderHistoryIzinView(){
 async function renderAbsensiView(){
   const rows=await fetchAbsensi();
   const users=await fetchStaff();
-  const today=new Date().toISOString().split("T")[0];
+  const today=localDateStr();
   const activeStaff=users.filter(u=>u.active&&u.role==="staff");
   const todayAbs=rows.filter(r=>r.tanggal===today);
 
