@@ -363,7 +363,7 @@ function saveStoredUser(u){localStorage.setItem("currentUser",JSON.stringify(u))
 function saveStoredAkses(a){localStorage.setItem("hakAkses",JSON.stringify(a));}
 function clearStoredUser(){localStorage.removeItem("currentUser");localStorage.removeItem("hakAkses");}
 function handleLoginEnter(e){if(e.key==="Enter")submitLogin();}
-function formatRp(n){return"Rp "+Number(n).toLocaleString("id-ID");}
+function formatRp(n){return"฿ "+Number(n).toLocaleString("id-ID");}
 function applyTheme(t){
   document.body.className=t&&t!=="dark-blue"?"theme-"+t:"";
 }
