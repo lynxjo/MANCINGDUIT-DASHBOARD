@@ -105,7 +105,33 @@ function saveAkses(d){saveJson(AKSES_FILE,d);}
 function loadSettings(){return loadJson(SETTINGS_FILE,{theme:"dark-blue",notification:{reminderEnabled:true,reminderMinutes:15,emailEnabled:false,recipients:[]}});}
 function saveSettings(d){saveJson(SETTINGS_FILE,d);}
 
-function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+// Sesi izin window: aktif sejak absen masuk, berlaku 12 jam (cover shift 10 jam + extend 2 jam).
+// Cari absen paling baru yang window-nya masih aktif saat ini.
+// Jika semua window sudah expired → kuota reset, perlu absen baru.
+function getIzinWindow(userId,absensiList){
+  const now=Date.now();
+  const WINDOW_MS=12*60*60*1000; // 12 jam
+  const absenSaya=absensiList
+    .filter(a=>Number(a.userId)===Number(userId))
+    .sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  if(!absenSaya.length)return{start:null,end:null,tanggal:todayStr(),absenTimestamp:null,windowExpired:false};
+  // Cari absen yang window-nya masih aktif sekarang
+  const activeAbsen=absenSaya.find(a=>{
+    const t=new Date(a.timestamp).getTime();
+    return now>=t&&now<=(t+WINDOW_MS);
+  });
+  if(activeAbsen){
+    const start=new Date(activeAbsen.timestamp);
+    const end=new Date(start.getTime()+WINDOW_MS);
+    return{start,end,tanggal:activeAbsen.tanggal,absenTimestamp:activeAbsen.timestamp,windowExpired:false};
+  }
+  // Tidak ada window aktif — semua sudah expired, return info absen terbaru
+  const last=absenSaya[0];
+  const start=new Date(last.timestamp);
+  const end=new Date(start.getTime()+WINDOW_MS);
+  return{start,end,tanggal:last.tanggal,absenTimestamp:last.timestamp,windowExpired:true};
+}
 function currentTimeStr(){return new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});}
 function getCurrentShiftName(){const h=new Date().getHours();if(h>=5&&h<11)return"Pagi";if(h>=11&&h<15)return"Siang";if(h>=15&&h<19)return"Sore";return"Malam";}
 function shiftOrder(){return["Pagi","Siang","Sore","Malam"];}
@@ -173,18 +199,52 @@ app.get("/api/dashboard-summary",(req,res)=>{
 // IZIN KELUAR
 const ROLE_LIMIT={Kasir:2,Kapten:1,CS:1,"CS LINE":1};const MAX_IZIN=4,MAX_DURASI=15;
 app.get("/api/izin/active",(req,res)=>{const today=todayStr();res.json({status:"success",data:loadIzin().filter(i=>i.tanggal===today&&i.status==="Aktif")});});
+app.get("/api/izin/window/:userId",(req,res)=>{
+  const userId=Number(req.params.userId);
+  const absensi=loadAbsensi(),izin=loadIzin();
+  const win=getIzinWindow(userId,absensi);
+  let myWindow=[];
+  if(win.start&&!win.windowExpired){
+    myWindow=izin.filter(i=>Number(i.userId)===userId&&new Date(i.timestamp)>=win.start&&new Date(i.timestamp)<=win.end);
+  }
+  res.json({status:"success",data:{hasAbsen:!!win.start,windowStart:win.start,windowEnd:win.end,windowExpired:win.windowExpired,usedInWindow:myWindow.length,maxIzin:MAX_IZIN}});
+});
 app.get("/api/izin/history",(req,res)=>res.json({status:"success",data:loadIzin().sort((a,b)=>b.id-a.id)}));
-app.get("/api/izin/status/:userId",(req,res)=>{const userId=Number(req.params.userId);const izin=loadIzin(),today=todayStr();const myToday=izin.filter(i=>Number(i.userId)===userId&&i.tanggal===today);const active=myToday.find(i=>i.status==="Aktif");let info=null;if(active){const dur=Math.floor((Date.now()-new Date(active.timestamp).getTime())/60000);info={id:active.id,jamKeluar:active.jamKeluar,durasiMenit:dur,remainingMinutes:Math.max(0,MAX_DURASI-dur),nearLimit:dur>=MAX_DURASI-1,overLimit:dur>=MAX_DURASI};}res.json({status:"success",data:{active:!!active,used:myToday.length,izin:info}});});
+app.get("/api/izin/status/:userId",(req,res)=>{
+  const userId=Number(req.params.userId);
+  const izin=loadIzin(),absensi=loadAbsensi();
+  const win=getIzinWindow(userId,absensi);
+  let myWindow=[];
+  if(win.start&&!win.windowExpired){
+    myWindow=izin.filter(i=>Number(i.userId)===userId&&new Date(i.timestamp)>=win.start&&new Date(i.timestamp)<=win.end);
+  } else {
+    // Window expired atau belum pernah absen — kuota dianggap 0 (sudah reset)
+    myWindow=[];
+  }
+  const active=myWindow.find(i=>i.status==="Aktif");
+  let info=null;
+  if(active){const dur=Math.floor((Date.now()-new Date(active.timestamp).getTime())/60000);info={id:active.id,jamKeluar:active.jamKeluar,durasiMenit:dur,remainingMinutes:Math.max(0,MAX_DURASI-dur),nearLimit:dur>=MAX_DURASI-1,overLimit:dur>=MAX_DURASI};}
+  res.json({status:"success",data:{active:!!active,used:myWindow.length,izin:info,windowStart:win.start,windowEnd:win.end,windowExpired:win.windowExpired}});
+});
 app.post("/api/izin/start",(req,res)=>{
   const{userId}=req.body;if(!userId)return res.status(400).json({status:"error",message:"User ID wajib diisi"});
-  const users=loadUsers(),absensi=loadAbsensi(),izin=loadIzin(),today=todayStr();const user=users.find(u=>u.id===Number(userId));
+  const users=loadUsers(),absensi=loadAbsensi(),izin=loadIzin();
+  const user=users.find(u=>u.id===Number(userId));
   if(!user)return res.status(404).json({status:"error",message:"User tidak ditemukan"});
-  if(!absensi.find(a=>Number(a.userId)===Number(userId)&&a.tanggal===today))return res.status(400).json({status:"error",message:"Anda harus absen bertugas terlebih dahulu sebelum izin keluar"});
-  if(izin.find(i=>Number(i.userId)===Number(userId)&&i.tanggal===today&&i.status==="Aktif"))return res.status(400).json({status:"error",message:"Anda masih memiliki izin aktif. Selesaikan terlebih dahulu."});
-  if(izin.filter(i=>Number(i.userId)===Number(userId)&&i.tanggal===today).length>=MAX_IZIN)return res.status(400).json({status:"error",message:`Kuota izin hari ini sudah habis (maks ${MAX_IZIN}x)`});
+  // Cek: harus sudah absen dan window sesi masih aktif (belum lewat 12 jam)
+  const win=getIzinWindow(userId,absensi);
+  if(!win.start)return res.status(400).json({status:"error",message:"Anda harus absen bertugas terlebih dahulu sebelum izin keluar"});
+  if(win.windowExpired)return res.status(400).json({status:"error",message:"Sesi kerja Anda sudah berakhir. Silakan absen kembali untuk shift berikutnya."});
+  // Hitung kuota dalam window sesi ini
+  const myWindow=izin.filter(i=>Number(i.userId)===Number(userId)&&new Date(i.timestamp)>=win.start&&new Date(i.timestamp)<=win.end);
+  if(myWindow.find(i=>i.status==="Aktif"))return res.status(400).json({status:"error",message:"Anda masih memiliki izin aktif. Selesaikan terlebih dahulu."});
+  if(myWindow.length>=MAX_IZIN)return res.status(400).json({status:"error",message:`Kuota izin sesi ini sudah habis (maks ${MAX_IZIN}x per sesi kerja)`});
+  // Cek batas per jabatan (bersamaan keluar)
   const jabatan=user.jabatan,limit=ROLE_LIMIT[jabatan];
+  const today=todayStr();
   if(limit!==undefined){const byRole=izin.filter(i=>i.tanggal===today&&i.status==="Aktif"&&i.jabatan===jabatan);if(byRole.length>=limit)return res.json({status:"blocked",detail:`Sudah ada ${jabatan} yang sedang keluar: ${byRole.map(i=>i.nama).join(", ")}`,subdetail:`Maksimal ${limit} ${jabatan} boleh keluar bersamaan.`});}
-  const now=new Date();const record={id:izin.length?Math.max(...izin.map(i=>i.id))+1:1,userId:user.id,nama:user.nama,username:user.username,jabatan:user.jabatan,tanggal:today,jamKeluar:currentTimeStr(),jamKembali:null,durasiMenit:0,timestamp:now.toISOString(),status:"Aktif"};
+  const now=new Date();
+  const record={id:izin.length?Math.max(...izin.map(i=>i.id))+1:1,userId:user.id,nama:user.nama,username:user.username,jabatan:user.jabatan,tanggal:todayStr(),jamKeluar:currentTimeStr(),jamKembali:null,durasiMenit:0,timestamp:now.toISOString(),status:"Aktif"};
   izin.push(record);saveIzin(izin);res.json({status:"success",message:"Izin keluar dimulai",data:record});
 });
 app.post("/api/izin/end",(req,res)=>{
