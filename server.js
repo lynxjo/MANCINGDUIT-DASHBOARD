@@ -198,7 +198,7 @@ app.get("/api/dashboard-summary",(req,res)=>{
 
 // IZIN KELUAR
 const ROLE_LIMIT={Kasir:2,Kapten:1,CS:1,"CS LINE":1};const MAX_IZIN=4,MAX_DURASI=15;
-app.get("/api/izin/active",(req,res)=>{const today=todayStr();res.json({status:"success",data:loadIzin().filter(i=>i.tanggal===today&&i.status==="Aktif")});});
+app.get("/api/izin/active",(req,res)=>{res.json({status:"success",data:loadIzin().filter(i=>i.status==="Aktif")});});
 app.get("/api/izin/window/:userId",(req,res)=>{
   const userId=Number(req.params.userId);
   const absensi=loadAbsensi(),izin=loadIzin();
@@ -249,7 +249,9 @@ app.post("/api/izin/start",(req,res)=>{
 });
 app.post("/api/izin/end",(req,res)=>{
   const{userId}=req.body;if(!userId)return res.status(400).json({status:"error",message:"User ID wajib diisi"});
-  let izin=loadIzin();const today=todayStr();const idx=izin.findIndex(i=>Number(i.userId)===Number(userId)&&i.tanggal===today&&i.status==="Aktif");
+  let izin=loadIzin();
+  // Cari izin aktif berdasarkan userId + status saja (tidak pakai tanggal agar lintas tengah malam tetap bisa)
+  const idx=izin.findIndex(i=>Number(i.userId)===Number(userId)&&i.status==="Aktif");
   if(idx===-1)return res.status(400).json({status:"error",message:"Tidak ada izin aktif"});
   const dur=Math.round((Date.now()-new Date(izin[idx].timestamp).getTime())/60000);izin[idx].jamKembali=currentTimeStr();izin[idx].durasiMenit=dur;izin[idx].status=dur>MAX_DURASI?"Melewati Batas":"Selesai";
   saveIzin(izin);res.json({status:"success",message:"Izin keluar selesai",data:izin[idx]});
