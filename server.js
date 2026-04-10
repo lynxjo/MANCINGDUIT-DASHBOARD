@@ -106,30 +106,31 @@ function loadSettings(){return loadJson(SETTINGS_FILE,{theme:"dark-blue",notific
 function saveSettings(d){saveJson(SETTINGS_FILE,d);}
 
 function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-// Sesi izin window: aktif sejak absen masuk, berlaku 12 jam (cover shift 10 jam + extend 2 jam).
-// Cari absen paling baru yang window-nya masih aktif saat ini.
-// Jika semua window sudah expired → kuota reset, perlu absen baru.
+// ══ SHIFT-BASED IZIN WINDOW ══════════════════════════════
+// Logic: 1 absen = 1 sesi shift (10 jam kerja + 2 jam toleransi = 12 jam).
+// Reset HANYA saat staff absen baru (shift baru), BUKAN saat jam 00:00.
+// Shift melewati tengah malam tetap dihitung 1 sesi yang sama.
 function getIzinWindow(userId,absensiList){
   const now=Date.now();
-  const WINDOW_MS=12*60*60*1000; // 12 jam
+  const SHIFT_DURATION_MS=12*60*60*1000; // 10 jam shift + 2 jam toleransi
   const absenSaya=absensiList
     .filter(a=>Number(a.userId)===Number(userId))
     .sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-  if(!absenSaya.length)return{start:null,end:null,tanggal:todayStr(),absenTimestamp:null,windowExpired:false};
-  // Cari absen yang window-nya masih aktif sekarang
+  if(!absenSaya.length)return{start:null,end:null,tanggal:null,absenTimestamp:null,windowExpired:false};
+  // Cari absen yang sesi-nya masih aktif sekarang (tidak peduli tanggal)
   const activeAbsen=absenSaya.find(a=>{
     const t=new Date(a.timestamp).getTime();
-    return now>=t&&now<=(t+WINDOW_MS);
+    return now>=t&&now<=(t+SHIFT_DURATION_MS);
   });
   if(activeAbsen){
     const start=new Date(activeAbsen.timestamp);
-    const end=new Date(start.getTime()+WINDOW_MS);
+    const end=new Date(start.getTime()+SHIFT_DURATION_MS);
     return{start,end,tanggal:activeAbsen.tanggal,absenTimestamp:activeAbsen.timestamp,windowExpired:false};
   }
-  // Tidak ada window aktif — semua sudah expired, return info absen terbaru
+  // Tidak ada sesi aktif → shift sudah selesai, kuota reset untuk shift berikutnya
   const last=absenSaya[0];
   const start=new Date(last.timestamp);
-  const end=new Date(start.getTime()+WINDOW_MS);
+  const end=new Date(start.getTime()+SHIFT_DURATION_MS);
   return{start,end,tanggal:last.tanggal,absenTimestamp:last.timestamp,windowExpired:true};
 }
 function currentTimeStr(){return new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});}
@@ -250,7 +251,7 @@ app.post("/api/izin/start",(req,res)=>{
 app.post("/api/izin/end",(req,res)=>{
   const{userId}=req.body;if(!userId)return res.status(400).json({status:"error",message:"User ID wajib diisi"});
   let izin=loadIzin();
-  // Cari izin aktif berdasarkan userId + status saja (tidak pakai tanggal agar lintas tengah malam tetap bisa)
+  // Cari berdasarkan userId + status Aktif saja — tidak pakai tanggal agar lintas tengah malam tetap bisa
   const idx=izin.findIndex(i=>Number(i.userId)===Number(userId)&&i.status==="Aktif");
   if(idx===-1)return res.status(400).json({status:"error",message:"Tidak ada izin aktif"});
   const dur=Math.round((Date.now()-new Date(izin[idx].timestamp).getTime())/60000);izin[idx].jamKembali=currentTimeStr();izin[idx].durasiMenit=dur;izin[idx].status=dur>MAX_DURASI?"Melewati Batas":"Selesai";
