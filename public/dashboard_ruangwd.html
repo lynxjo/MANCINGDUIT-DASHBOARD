@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DASHBOARD RUANGWD</title>
+  <link rel="icon" type="image/png" href="https://cdn.areabermain.club/assets/cdn/az4/2026/04/10/20260410/62c750117eb82b1b76fc0e9c547e2aca/fav-rw.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ══ TEMA VARIABEL ══════════════════════════════════════ */
+:root{
+  --bg-body:linear-gradient(90deg,#1a0205,#2a0408);
+  --sidebar-bg:#110103;--sidebar-border:#3d1018;
+  --card-bg:#2a0d12;--card-border:#5c1a24;
+  --line:#4a1520;--text:#f8fafc;--muted:#c9a0a8;
+  --primary:#e03050;--danger:#ef4444;--warning:#f59e0b;--info:#3b82f6;--gold:#f2d27a;
+  --topbar-bg:rgba(26,2,5,.75);--content-bg:transparent;
+  --table-bg:#150306;--table-head:#200509;--table-border:#3a0e16;
+  --input-bg:#0e0204;--input-border:#4a1520;
+  --btn-dark-bg:#2a0d12;
+}
+body.theme-dark-green{
+  --bg-body:linear-gradient(90deg,#021a08,#04280f);
+  --sidebar-bg:#011208;--sidebar-border:#1a3d20;
+  --card-bg:#0f2e18;--card-border:#1a5c28;
+  --primary:#22d37a;--topbar-bg:rgba(2,22,8,.8);
+  --table-bg:#071a0e;--table-head:#0d2914;--table-border:#14391d;
+  --input-bg:#030f06;
+}
+body.theme-dark-purple{
+  --bg-body:linear-gradient(90deg,#120820,#1a0a30);
+  --sidebar-bg:#0a0518;--sidebar-border:#2d1255;
+  --card-bg:#1a1030;--card-border:#3d1f7a;
+  --primary:#9d6fff;--topbar-bg:rgba(18,8,32,.8);
+  --table-bg:#0e0820;--table-head:#180f38;--table-border:#2a1660;
+  --input-bg:#0a0518;
+}
+body.theme-midnight{
+  --bg-body:linear-gradient(90deg,#080808,#111111);
+  --sidebar-bg:#050505;--sidebar-border:#252525;
+  --card-bg:#141414;--card-border:#2a2a2a;
+  --primary:#e8c547;--topbar-bg:rgba(5,5,5,.9);
+  --table-bg:#0a0a0a;--table-head:#111;--table-border:#222;
+  --input-bg:#0a0a0a;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;}
+body{background:var(--bg-body);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.hidden{display:none!important;}
+
+/* ══ LOGIN ══════════════════════════════════════════════ */
+.login-page{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background-image:linear-gradient(rgba(3,18,44,.66),rgba(3,18,44,.82)),url('https://cdn.areabermain.club/assets/cdn/az9/2026/04/03/20260403/7a6a3f517cc6606d429ff866db330260/background-web-ruangwd.jpg');background-size:cover;background-position:center;}
+.login-box{width:100%;max-width:430px;background:linear-gradient(180deg,rgba(47,4,10,.92),rgba(30,2,6,.92));border:1px solid rgba(197,76,92,.25);border-radius:28px;padding:28px;box-shadow:0 18px 40px rgba(0,0,0,.38);backdrop-filter:blur(10px);}
+.login-logo{display:block;width:180px;max-width:80%;margin:0 auto 12px;}
+.login-title{text-align:center;font-size:20px;font-weight:bold;color:#ff8fa0;letter-spacing:1px;margin-bottom:2px;}
+.login-sub{text-align:center;color:#d3a0a8;margin-bottom:18px;font-size:14px;letter-spacing:2px;}
+.login-box h2{font-size:18px;margin-bottom:4px;}
+.login-box p{color:var(--muted);margin-bottom:18px;}
+
+/* ══ FORM ════════════════════════════════════════════════ */
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#c8d8ea;}
+.input,.select,.textarea{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--input-border);background:var(--input-bg);color:var(--text);outline:none;font-size:14px;}
+.textarea{min-height:90px;resize:vertical;}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(24,192,143,.15);}
+.select option{background:#071124;color:white;}
+
+/* ══ BUTTONS ═════════════════════════════════════════════ */
+.btn{border:none;cursor:pointer;padding:11px 16px;border-radius:12px;font-weight:700;transition:.2s;font-size:14px;display:inline-flex;align-items:center;gap:7px;}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1);}
+.btn:active{transform:translateY(0);}
+.btn-primary{background:var(--primary);color:#052218;}
+.btn-danger{background:var(--danger);color:white;}
+.btn-warning{background:var(--warning);color:#281900;}
+.btn-dark{background:var(--btn-dark-bg);color:white;border:1px solid var(--line);}
+.btn-info{background:var(--info);color:white;}
+.btn-gold{background:var(--gold);color:#2a1c00;}
+.btn-success{background:#16a34a;color:white;}
+.btn-purple{background:#7c3aed;color:white;}
+.btn-teal{background:#0d9488;color:white;}
+.btn-orange{background:#ea580c;color:white;}
+.btn-block{width:100%;}
+.btn-small{padding:7px 12px;font-size:12px;}
+.btn-xs{padding:5px 9px;font-size:11px;}
+
+/* ══ LAYOUT ══════════════════════════════════════════════ */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:252px;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);padding:18px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.brand{padding-bottom:16px;border-bottom:1px solid var(--sidebar-border);margin-bottom:18px;}
+.brand h2{color:#ff4060;font-size:21px;margin-bottom:4px;}
+.brand p{color:#a9b9d0;font-size:12px;}
+.menu-title{font-size:11px;letter-spacing:1px;color:#6a8099;margin-bottom:8px;margin-top:6px;text-transform:uppercase;padding:0 4px;}
+.menu{flex:1;overflow-y:auto;}
+.menu button{width:100%;text-align:left;padding:10px 14px;background:transparent;color:#c8d8ea;border:none;border-radius:10px;margin-bottom:3px;cursor:pointer;font-weight:600;font-size:13px;display:flex;align-items:center;gap:9px;transition:.18s;}
+.menu button:hover{background:rgba(255,255,255,.06);color:white;}
+.menu button.active{background:linear-gradient(90deg,#3d0510,#3a0810);border:1px solid rgba(224,48,80,.4);color:var(--primary);}
+.menu button i{width:17px;text-align:center;font-size:13px;opacity:.8;}
+.menu button.active i{opacity:1;}
+.sidebar-footer{margin-top:auto;padding-top:14px;border-top:1px solid var(--sidebar-border);}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#0a1a32;}
+.sidebar-avatar{width:36px;height:36px;border-radius:50%;border:2px solid #d7b24d;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:bold;background:#061227;color:#f9d97e;overflow:hidden;flex-shrink:0;}
+.sidebar-avatar img{width:100%;height:100%;object-fit:cover;}
+.sidebar-info{min-width:0;}
+.sidebar-info b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar-info span{font-size:11px;color:#7a9ab8;}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+
+/* ══ BROADCAST BAR ═══════════════════════════════════════ */
+.broadcast-bar{background:linear-gradient(90deg,#1a0c00,#2a1500,#1a0c00);border-bottom:1px solid #f59e0b;padding:8px 0;overflow:hidden;display:flex;align-items:center;}
+.broadcast-bar-label{flex-shrink:0;padding:0 14px;display:flex;align-items:center;gap:6px;color:#f59e0b;font-weight:700;font-size:12px;border-right:1px solid #5c3d00;}
+.broadcast-bar-text{flex:1;overflow:hidden;padding:0 10px;}
+.broadcast-bar-inner{display:inline-block;white-space:nowrap;padding-left:100%;animation:broadcastScroll 60s linear infinite;color:#ffd46b;font-weight:600;font-size:13px;}
+@keyframes broadcastScroll{0%{transform:translateX(0);}100%{transform:translateX(-100%);}}
+
+/* ══ TOPBAR ══════════════════════════════════════════════ */
+.topbar{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:15px;background:var(--topbar-bg);}
+.topbar h3{font-size:20px;margin-bottom:3px;}
+.topbar p{color:var(--muted);font-size:13px;}
+.user-box{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.user-badge{border:1px solid #36517f;border-radius:12px;padding:8px 14px;background:#12213d;min-width:140px;}
+.content{padding:18px 20px;flex:1;}
+
+/* ══ GRID & CARD ════════════════════════════════════════ */
+.grid{display:grid;gap:16px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;}
+.card h4{font-size:17px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.card h4 i{color:var(--primary);font-size:16px;}
+.card p{color:var(--muted);line-height:1.6;font-size:14px;}
+.stat .label{color:#b9c8dc;margin-bottom:8px;font-size:13px;}
+.stat .value{font-size:36px;font-weight:bold;}
+.stat .stat-icon{font-size:28px;margin-bottom:8px;}
+
+/* ══ TABLE ═══════════════════════════════════════════════ */
+.table-wrap{overflow:auto;margin-top:14px;border:1px solid #2e4260;border-radius:12px;}
+table{width:100%;border-collapse:collapse;min-width:600px;background:var(--table-bg);}
+th,td{padding:11px 13px;border-bottom:1px solid var(--table-border);text-align:left;font-size:13.5px;vertical-align:middle;}
+th{background:var(--table-head);color:#d6e1ef;font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.025);}
+
+/* ══ BADGES ══════════════════════════════════════════════ */
+.actions{display:flex;gap:7px;flex-wrap:wrap;}
+.badge{padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:4px;}
+.badge-success{background:#194f43;color:#89f2d4;}
+.badge-danger{background:#63202b;color:#ffb9c2;}
+.badge-warning{background:#5e4b18;color:#ffe07a;}
+.badge-info{background:#244c8e;color:#b9d7ff;}
+.badge-gold{background:#6a5620;color:#ffe49a;}
+.badge-purple{background:#3b1d6e;color:#d4b3ff;}
+.badge-muted{background:#1a2740;color:#8ca0be;}
+.badge-teal{background:#0d4a47;color:#81e6d9;}
+.badge-orange{background:#4a2200;color:#ffb366;}
+
+/* ══ MODAL ═══════════════════════════════════════════════ */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:1000;}
+.modal-box{width:100%;max-width:560px;background:linear-gradient(180deg,#1d2a44,#18253c);border:1px solid #3d5b87;border-radius:20px;padding:22px;box-shadow:0 20px 40px rgba(0,0,0,.35);max-height:90vh;overflow-y:auto;}
+.modal-box-lg{max-width:800px;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal-head h3{display:flex;align-items:center;gap:8px;}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.between{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+.toast{position:fixed;right:20px;bottom:20px;background:#0d1930;border:1px solid #385177;border-radius:12px;padding:13px 16px;z-index:2000;min-width:210px;box-shadow:0 10px 25px rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;animation:slideUp .25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.placeholder{text-align:center;padding:50px 20px;color:#b8c6d8;font-size:16px;}
+.section-title{font-size:16px;font-weight:700;margin:18px 0 10px;display:flex;align-items:center;gap:8px;color:#d6e4f7;}
+.section-title i{color:var(--primary);}
+
+/* ══ STAFF HERO ══════════════════════════════════════════ */
+.staff-hero{background:radial-gradient(circle at top left,rgba(224,48,80,.15),transparent 28%),radial-gradient(circle at bottom right,rgba(192,40,60,.12),transparent 30%),linear-gradient(180deg,#150306,#0e0204);border:1px solid #4a1520;border-radius:24px;padding:24px;overflow:hidden;}
+.clock-box{font-size:42px;font-weight:bold;color:#ffd979;letter-spacing:2px;text-shadow:0 0 20px rgba(255,217,121,.15);}
+.marquee-wrap{overflow:hidden;white-space:nowrap;border-radius:12px;border:1px solid #2b415f;background:#0d1a35;padding:9px 0;margin-top:12px;}
+.marquee-inner{display:inline-block;white-space:nowrap;padding-left:100%;animation:marquee 40s linear infinite;color:#ffd979;font-weight:bold;}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-100%);}}
+.hero-avatar{width:100px;height:100px;border-radius:50%;border:3px solid #d7b24d;display:flex;align-items:center;justify-content:center;font-size:46px;color:#f9d97e;background:#061227;margin:auto auto 14px;box-shadow:0 0 30px rgba(255,217,121,.12);overflow:hidden;cursor:pointer;transition:.2s;}
+.hero-avatar:hover{transform:scale(1.04);}
+.hero-avatar img{width:100%;height:100%;object-fit:cover;}
+.center-card{max-width:460px;margin:auto;text-align:center;}
+.quota-bar{height:9px;border-radius:999px;background:#0b1730;overflow:hidden;border:1px solid #274160;}
+.quota-fill{height:100%;background:linear-gradient(90deg,#e03050,#ff6b42);width:0%;transition:.5s;}
+.izin-warning-box{background:#3a1116;border:1px solid #8a2836;border-radius:14px;padding:14px;color:#ffd4dc;font-size:14px;}
+
+/* ══ SUPER ALERT ════════════════════════════════════════ */
+.super-alert{width:100%;max-width:430px;border-radius:24px;border:2px solid #ff3b4d;background:radial-gradient(circle at top,rgba(255,0,25,.12),rgba(48,0,6,.96));box-shadow:0 0 40px rgba(255,0,30,.28);padding:26px;text-align:center;color:#ffd5da;}
+.super-alert .icon{width:80px;height:80px;border-radius:50%;border:3px solid #ff3348;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:38px;color:#ff5d6d;}
+.super-alert h2{font-size:26px;margin-bottom:10px;color:#ffb8c2;}
+.super-alert p{color:#ffd7dc;line-height:1.6;font-size:14px;}
+.super-alert .sub{margin-top:14px;background:rgba(255,255,255,.06);border-radius:14px;padding:12px;color:#ffd0d7;}
+.super-alert .confirm{margin-top:16px;width:100%;padding:13px;background:#ff0018;border:none;border-radius:14px;color:white;font-weight:bold;font-size:17px;cursor:pointer;}
+
+/* ══ AVATAR UPLOAD ════════════════════════════════════════ */
+.avatar-upload-zone{position:relative;width:100px;height:100px;margin:0 auto 16px;cursor:pointer;}
+.avatar-upload-zone .avatar-preview{width:100%;height:100%;border-radius:50%;border:3px solid #d7b24d;display:flex;align-items:center;justify-content:center;font-size:42px;color:#f9d97e;background:#061227;overflow:hidden;}
+.avatar-upload-zone .avatar-preview img{width:100%;height:100%;object-fit:cover;}
+.avatar-upload-zone .upload-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s;color:white;font-size:22px;}
+.avatar-upload-zone:hover .upload-overlay{opacity:1;}
+.avatar-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;border-radius:50%;}
+
+/* ══ SETTINGS TABS ════════════════════════════════════════ */
+.settings-tab{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.settings-tab button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:.2s;}
+.settings-tab button.active{background:#3a0510;border-color:#c0283a;color:#ff6b80;}
+.settings-tab button:hover:not(.active){background:rgba(255,255,255,.05);}
+.sub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:12px;}
+.sub-tabs button{padding:7px 14px;border-radius:8px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;transition:.15s;}
+.sub-tabs button.active{background:#13213d;color:var(--primary);}
+.sub-tabs button:hover:not(.active){color:white;}
+
+/* ══ ROLE GROUP ═══════════════════════════════════════════ */
+.role-group-card{background:#101e36;border:1px solid #2a3e5e;border-radius:14px;overflow:hidden;}
+.role-group-header{padding:12px 16px;display:flex;align-items:center;gap:10px;background:#0d1930;}
+.member-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid var(--table-border);}
+.member-avatar{width:36px;height:36px;border-radius:50%;border:2px solid #2e4260;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;background:#061227;color:#f9d97e;overflow:hidden;flex-shrink:0;}
+.member-avatar img{width:100%;height:100%;object-fit:cover;}
+
+/* ══ SOP ══════════════════════════════════════════════════ */
+.sop-card{background:#101e36;border:1px solid #2a3e5e;border-radius:14px;overflow:hidden;margin-bottom:14px;transition:.2s;}
+.sop-card:hover{border-color:#3a5580;}
+.sop-header{padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.sop-header-info{flex:1;min-width:0;}
+.sop-body{padding:0 18px 16px;border-top:1px solid var(--table-border);white-space:pre-wrap;font-size:14px;color:#c8d8ea;line-height:1.8;}
+.sop-body.hidden{display:none;}
+
+/* ══ KAS ══════════════════════════════════════════════════ */
+.kas-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+.kas-stat{background:#0d1930;border:1px solid #2a3e5e;border-radius:14px;padding:16px;text-align:center;}
+.kas-stat .ks-val{font-size:20px;font-weight:bold;margin-top:4px;}
+.kas-stat .ks-lbl{font-size:12px;color:#7a9ab8;}
+.trx-masuk td:first-child{border-left:3px solid #18c08f;}
+.trx-keluar td:first-child{border-left:3px solid #ef4444;}
+.bukti-thumb{width:60px;height:44px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #2e4260;}
+
+/* ══ OTORITAS ════════════════════════════════════════════ */
+.akses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:16px;}
+.akses-group{background:#0d1930;border:1px solid #2a3e5e;border-radius:14px;padding:14px;}
+.akses-group h5{font-size:13px;color:#6dd5c8;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.akses-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1a2e46;}
+.akses-item:last-child{border-bottom:none;}
+.akses-item label{font-size:13px;color:#c8d8ea;cursor:pointer;flex:1;}
+.toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-slider{position:absolute;inset:0;background:#1a2e46;border-radius:999px;cursor:pointer;transition:.3s;}
+.toggle-slider:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#8ca0be;border-radius:50%;transition:.3s;}
+.toggle-switch input:checked + .toggle-slider{background:var(--primary);}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(18px);background:white;}
+
+/* ══ SERAH TERIMA ════════════════════════════════════════ */
+.st-card{background:linear-gradient(135deg,#0a1e36,#0d2240);border:1px solid #1e4080;border-radius:16px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.st-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--primary);}
+.st-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.st-field{margin-bottom:10px;}
+.st-field label{font-size:12px;color:#7a9ab8;display:block;margin-bottom:4px;}
+.st-field p{font-size:13.5px;color:#c8d8ea;line-height:1.6;}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ══ PC-ONLY BLOCKER ════════════════════════════════════ */
+.pc-only-block{text-align:center;padding:40px 20px;}
+.pc-only-block .pc-icon{font-size:60px;margin-bottom:16px;color:#ef4444;}
+.pc-only-block h3{font-size:22px;color:#ffb9c2;margin-bottom:10px;}
+.pc-only-block p{color:#ff8fa0;font-size:15px;line-height:1.6;}
+
+/* ══ THEME PREVIEW SWATCHES ════════════════════════════ */
+.theme-swatch-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;}
+.theme-swatch{width:80px;cursor:pointer;border-radius:12px;overflow:hidden;border:2px solid transparent;transition:.2s;}
+.theme-swatch.selected{border-color:var(--primary);box-shadow:0 0 14px rgba(24,192,143,.3);}
+.theme-swatch:hover{transform:scale(1.05);}
+.swatch-preview{height:44px;display:flex;}
+.swatch-sidebar{width:30%;background:#020d22;}
+.swatch-main{flex:1;background:#071634;}
+.swatch-label{text-align:center;font-size:11px;font-weight:700;padding:5px 4px;background:#0d1a32;color:#b9c8dc;}
+.theme-swatch.selected .swatch-label{color:var(--primary);}
+
+.content > *{animation:fadeIn .22s ease;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:980px){
+  .app{flex-direction:column;}
+  .sidebar{width:100%;position:relative;height:auto;}
+  .menu{display:flex;flex-wrap:wrap;gap:5px;}
+  .menu button{width:auto;margin-bottom:0;padding:8px 12px;font-size:12px;}
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}
+  .topbar{flex-direction:column;align-items:flex-start;}
+  .kas-stat-row{grid-template-columns:1fr;}
+  .akses-grid{grid-template-columns:1fr;}
+  .st-grid{grid-template-columns:1fr;}
+}
+
+/* JOB DESK */
+.jd-input-wrap{position:relative;}
+.jd-dropdown{position:absolute;left:0;right:0;background:#0d1e38;border:1px solid #1e3a5f;border-radius:0 0 10px 10px;z-index:200;max-height:240px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.jd-dropdown-item{padding:9px 14px;cursor:pointer;font-size:13px;color:#c8d8ea;display:flex;align-items:center;gap:10px;transition:.12s;}
+.jd-dropdown-item:hover{background:rgba(24,192,143,.12);color:#18e0a3;}
+.jd-dropdown-item .jd-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.jd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:4px;}
+.jd-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;}
+.jd-tag button{background:none;border:none;cursor:pointer;opacity:.7;padding:0;line-height:1;font-size:12px;}
+.jd-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px;}
+.jd-card{background:rgba(0,0,0,.25);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.06);}
+.jd-card-icon{width:42px;height:42px;border-radius:11px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.jd-card-label{font-size:11.5px;font-weight:600;line-height:1.4;}
+.jd-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div id="loginPage" class="login-page"></div>
+<div id="appPage" class="app hidden"></div>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+<script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let state={
+  currentUser:null,hakAkses:null,
+  currentMenu:"dashboard",currentSubMenu:null,
+  currentSettingsTab:"tema",currentAksesJabatan:"KAPTEN",
+  sopKatFilter:"Semua",
+  clockTimer:null,izinStatusTimer:null,broadcastTimer:null,
+  izinWarn14Shown:false,izinOverShown:false
+};
+
+// ══════════════════════════════════════════════════════
+// PC / MOBILE DETECTION
+// ══════════════════════════════════════════════════════
+function isPC(){
+  const w=window.innerWidth||document.documentElement.clientWidth||screen.width;
+  const ua=navigator.userAgent||navigator.vendor||window.opera;
+  const mobileUA=/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua.toLowerCase());
+  return !mobileUA && w>=1024;
+}
+
+// ══════════════════════════════════════════════════════
+// HAK AKSES
+// ══════════════════════════════════════════════════════
+function boleh(hak){
+  if(!state.currentUser)return false;
+  if(state.currentUser.role==="admin")return true;
+  if(!state.hakAkses)return false;
+  return !!state.hakAkses[hak];
+}
+function isCsLine(){return state.currentUser&&state.currentUser.jabatan==="CS LINE";}
+
+// ══════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════
+function toast(msg,isError=false){
+  const id="t_"+Date.now();
+  const icon=isError?"fa-circle-exclamation":"fa-circle-check";
+  const color=isError?"#a33448":"#1dbf97";
+  document.getElementById("toastRoot").innerHTML+=`<div id="${id}" class="toast" style="border-color:${color};"><i class="fa-solid ${icon}" style="color:${color};"></i><span>${msg}</span></div>`;
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.remove();},2800);
+}
+function closeModal(){document.getElementById("modalRoot").innerHTML="";}
+function showCenterAlert({title="PERINGATAN!",message="",submessage="",confirmText="MENGERTI",icon="⚠",danger=true}){
+  const gold=!danger;
+  document.getElementById("modalRoot").innerHTML=`<div class="modal"><div class="super-alert" style="${gold?"border-color:#d7b24d;background:radial-gradient(circle at top,rgba(242,210,122,.12),rgba(34,24,0,.94));":""}"><div class="icon" style="${gold?"border-color:#d7b24d;color:#ffd979;":""}">${icon}</div><h2>${title}</h2><p>${message}</p>${submessage?`<div class="sub">${submessage}</div>`:""}<button class="confirm" style="${gold?"background:#d7b24d;color:#281b00;":""}" onclick="closeModal()">${confirmText}</button></div></div>`;
+}
+function getStoredUser(){try{return JSON.parse(localStorage.getItem("currentUser"));}catch{return null;}}
+function getStoredAkses(){try{return JSON.parse(localStorage.getItem("hakAkses"));}catch{return null;}}
+function saveStoredUser(u){localStorage.setItem("currentUser",JSON.stringify(u));}
+function saveStoredAkses(a){localStorage.setItem("hakAkses",JSON.stringify(a));}
+function clearStoredUser(){localStorage.removeItem("currentUser");localStorage.removeItem("hakAkses");}
+function handleLoginEnter(e){if(e.key==="Enter")submitLogin();}
+function formatRp(n){return"฿ "+Number(n).toLocaleString("id-ID");}
+function applyTheme(t){
+  document.body.className=t&&t!=="dark-blue"?"theme-"+t:"";
+}
+async function fetchJson(url,opts={}){const r=await fetch(url,opts);return await r.json();}
+async function fetchStaff(){try{const r=await fetchJsonCached("/api/staff");return r.data||[];}catch{return[];}}
+async function fetchAbsensi(){try{const r=await fetchJsonCached("/api/absensi");return r.data||[];}catch{return[];}}
+async function fetchDashboardSummary(){try{const r=await fetchJson("/api/dashboard-summary");return r.data||null;}catch{return null;}}
+async function fetchIzinActive(){try{const r=await fetchJsonCached("/api/izin/active");return r.data||[];}catch{return[];}}
+async function fetchIzinHistory(){try{const r=await fetchJsonCached("/api/izin/history");return r.data||[];}catch{return[];}}
+async function fetchIzinStatus(userId){try{const r=await fetchJson(`/api/izin/status/${userId}`);return r.data||null;}catch{return null;}}
+async function fetchSettings(){try{const r=await fetchJsonCached("/api/settings");return r.data||{};}catch{return{};}};
+async function fetchSop(){try{const r=await fetchJsonCached("/api/sop");return r.data||[];}catch{return[];}}
+async function fetchKas(){try{const r=await fetchJsonCached("/api/kas");return r.data||{saldoAwal:0,transaksi:[],saldoAkhir:0};}catch{return{saldoAwal:0,transaksi:[],saldoAkhir:0};}}
+async function fetchAkses(){try{const r=await fetchJsonCached("/api/akses");return r.data||{};}catch{return{};}}
+async function fetchSerahTerima(q=""){try{const r=await fetchJson("/api/serahterima"+q);return r.data||[];}catch{return[];}}
+async function fetchBroadcast(){try{const r=await fetchJsonCached("/api/broadcast");return r.data||{};}catch{return{};}}
+async function refreshCurrentUser(){
+  if(!state.currentUser)return null;
+  try{const r=await fetchJson(`/api/staff/${state.currentUser.id}`);if(r.status==="success"){state.currentUser=r.data;saveStoredUser(r.data);return r.data;}}catch{}
+  return state.currentUser;
+}
+
+
+// ══════════════════════════════════════════════════════
+// CACHE SYSTEM — mencegah fetch berulang
+// ══════════════════════════════════════════════════════
+const _cache={};
+const CACHE_TTL={
+  "/api/staff":30000,       // 30 detik
+  "/api/absensi":15000,     // 15 detik
+  "/api/jobdesk":15000,     // 15 detik
+  "/api/izin/history":15000,
+  "/api/izin/active":5000,  // 5 detik (real-time)
+  "/api/sop":60000,         // 1 menit
+  "/api/kas":20000,
+  "/api/serahterima":20000,
+  "/api/settings":60000,
+  "/api/broadcast":30000,
+  "/api/akses":60000
+};
+function cacheGet(url){
+  const c=_cache[url];
+  if(!c)return null;
+  if(Date.now()-c.t>( CACHE_TTL[url.split("?")[0]]||15000))return null;
+  return c.d;
+}
+function cacheSet(url,data){_cache[url]={d:data,t:Date.now()};}
+function cacheClear(prefix){Object.keys(_cache).forEach(k=>{if(k.startsWith(prefix))delete _cache[k];});}
+
+// Wrapper fetchJson dengan cache
+const _origFetchJson=fetchJson;
+async function fetchJsonCached(url,opts){
+  if(!opts||opts.method==="GET"||!opts.method){
+    const cached=cacheGet(url);
+    if(cached)return cached;
+  }
+  const result=await fetchJson(url,opts);
+  if(!opts||opts.method==="GET"||!opts.method){
+    cacheSet(url,result);
+  } else {
+    // Setelah write, clear cache yang terkait
+    const base=url.split("/").slice(0,3).join("/");
+    cacheClear(base);
+  }
+  return result;
+}
+
+// ══════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════
+function renderLogin(){
+  document.getElementById("loginPage").innerHTML=`<div class="login-box">
+    <img class="login-logo" src="https://cdn.areabermain.club/assets/cdn/az4/2026/04/07/20260407/f4927c773a4efde0b274a4df87b1d536/logo-8.png" alt="Logo">
+    <div class="login-title">DASHBOARD RUANGWD</div>
+    <div class="login-sub">SISTEM OPERASIONAL STAFF</div>
+    <h2>Selamat Datang</h2><p>Masuk untuk memulai aktivitas Anda</p>
+    <div class="form-group"><label><i class="fa-solid fa-user" style="color:#18c08f;margin-right:5px;"></i>Username</label><input id="loginUsername" class="input" placeholder="Masukkan username" onkeydown="handleLoginEnter(event)"></div>
+    <div class="form-group"><label><i class="fa-solid fa-lock" style="color:#18c08f;margin-right:5px;"></i>Password</label><input id="loginPassword" type="password" class="input" placeholder="Masukkan password" onkeydown="handleLoginEnter(event)"></div>
+    <button class="btn btn-primary btn-block" onclick="submitLogin()"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
+  </div>`;
+}
+async function submitLogin(){
+  const username=document.getElementById("loginUsername").value.trim();
+  const password=document.getElementById("loginPassword").value.trim();
+  if(!username||!password){toast("Username dan password wajib diisi",true);return;}
+  try{
+    const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+    const result=await r.json();
+    if(result.status!=="success"){toast(result.message||"Login gagal",true);return;}
+    saveStoredUser(result.user);
+    state.currentUser=result.user;
+    try{
+      const ar=await fetch("/api/akses");const ad=await ar.json();
+      if(ad.status==="success"&&result.user.role!=="admin"){
+        const jab=result.user.jabatan;
+        const jk=Object.keys(ad.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
+        state.hakAkses=ad.data[jk]||ad.data["Staff"]||{};
+      }else{state.hakAkses=result.hakAkses;}
+    }catch{state.hakAkses=result.hakAkses;}
+    saveStoredAkses(state.hakAkses);
+    state.currentMenu="dashboard";state.izinWarn14Shown=false;state.izinOverShown=false;
+    // Load dan apply tema
+    const settings=await fetchSettings();
+    applyTheme(settings.theme||"dark-blue");
+    renderApp();toast("Login berhasil ✓");
+  }catch{toast("Gagal terhubung ke server",true);}
+}
+function logout(){
+  clearStoredUser();state.currentUser=null;state.hakAkses=null;state.currentMenu="dashboard";
+  stopLiveClock();stopIzinStatusTimer();stopBroadcastTimer();
+  document.body.className="";
+  renderApp();toast("Logout berhasil");
+}
+
+// ══════════════════════════════════════════════════════
+// MENU CONFIG
+// ══════════════════════════════════════════════════════
+function getMenusByRole(){
+  if(!state.currentUser)return[];
+  if(state.currentUser.role==="admin")return[
+    {key:"dashboard",label:"Dashboard",icon:"fa-chart-line"},
+    {key:"staff",label:"Data Staff",icon:"fa-users"},
+    {key:"detailStaff",label:"Detail Staff",icon:"fa-sitemap"},
+    {key:"absensi",label:"Data Absensi",icon:"fa-clipboard-list"},
+    {key:"izin",label:"Izin Keluar Staff",icon:"fa-door-open"},
+    {key:"shift",label:"Shift Kerja",icon:"fa-calendar-days"},
+    {key:"historyAbsensi",label:"History Absensi",icon:"fa-clock-rotate-left"},
+    {key:"historyIzin",label:"History Izin",icon:"fa-file-lines"},
+    {key:"kasWeb",label:"Kas Web",icon:"fa-wallet"},
+    {key:"sopPage",label:"Pusat Info & SOP",icon:"fa-book-open"},
+    {key:"serahTerima",label:"Serah Terima CS LINE",icon:"fa-handshake"},
+    {key:"jobDesk",label:"Job Desk Kasir",icon:"fa-list-check"},
+    {key:"otoritas",label:"Otoritas Hak Akses",icon:"fa-shield-halved"},
+    {key:"settings",label:"Pengaturan",icon:"fa-gear"}
+  ];
+  const all=[
+    {key:"dashboard",      label:"Dashboard",          icon:"fa-house",                    hak:null},
+    {key:"absenSaya",      label:"Absensi Saya",       icon:"fa-fingerprint",              hak:null},
+    {key:"izinSaya",       label:"Izin Keluar",         icon:"fa-person-walking-arrow-right",hak:null},
+    {key:"shiftSaya",      label:"Shift Saya",          icon:"fa-calendar",                 hak:null},
+    // Menu yang diatur via otoritas
+    {key:"staffView",      label:"Data Staff",          icon:"fa-users",                    hak:"menuDataStaff"},
+    {key:"detailStaffView",label:"Detail Staff",        icon:"fa-sitemap",                  hak:"menuDetailStaff"},
+    {key:"absensiView",    label:"Data Absensi",        icon:"fa-clipboard-list",           hak:"menuAbsensi"},
+    {key:"izinView",       label:"Izin Keluar Staff",   icon:"fa-door-open",                hak:"menuIzin"},
+    {key:"shiftView",      label:"Shift Kerja",         icon:"fa-calendar-days",            hak:"menuShift"},
+    {key:"historyAbsensiView",label:"History Absensi", icon:"fa-clock-rotate-left",        hak:"menuHistoryAbsensi"},
+    {key:"historyIzinView",label:"History Izin",        icon:"fa-file-lines",               hak:"menuHistoryIzin"},
+    {key:"kasWeb",         label:"Kas Web",             icon:"fa-wallet",                   hak:"menuKas"},
+    {key:"sopPage",        label:"Pusat Info & SOP",    icon:"fa-book-open",                hak:"menuSOP"},
+    {key:"serahTerima",    label:"Serah Terima",        icon:"fa-handshake",                hak:"menuSerahTerima"},
+    {key:"jobDeskSaya",    label:"Job Desk Saya",       icon:"fa-list-check",               hak:null},
+    {key:"jobDeskMenu",    label:"Job Desk Kasir",      icon:"fa-list-check",               hak:"menuJobDesk"},
+    {key:"historySaya",    label:"History Saya",        icon:"fa-history",                  hak:null},
+    {key:"profilSaya",     label:"Profil Saya",         icon:"fa-circle-user",              hak:null}
+  ];
+  return all.filter(m=>m.hak===null||boleh(m.hak));
+}
+function getPageTitle(){
+  const t={dashboard:state.currentUser?.role==="admin"?"Dashboard Admin":"Dashboard Staff",staff:"Data Staff",detailStaff:"Detail Staff",absensi:"Data Absensi",izin:"Izin Keluar Staff",shift:"Shift Kerja",historyAbsensi:"History Absensi",historyIzin:"History Izin",settings:"Pengaturan",kasWeb:"Manajemen Kas Web",sopPage:"Pusat Informasi & SOP",otoritas:"Otoritas Hak Akses",serahTerima:"Serah Terima CS LINE",jobDesk:"Job Desk Kasir",jobDeskSaya:"Job Desk Saya",jobDeskInput:"Set Job Desk Staff",absenSaya:"Absensi Saya",izinSaya:"Izin Keluar",shiftSaya:"Shift Saya",staffView:"Data Staff",detailStaffView:"Detail Staff",absensiView:"Data Absensi",izinView:"Izin Keluar Staff",shiftView:"Shift Kerja",historyAbsensiView:"History Absensi",historyIzinView:"History Izin",jobDeskMenu:"Job Desk Kasir",historyIzinView:"History Izin",absensiView:"Data Absensi",historySaya:"History Saya",profilSaya:"Profil Saya"};
+  return t[state.currentMenu]||"Dashboard";
+}
+async function setMenu(menu){
+  // Blokir izinSaya di HP
+  if(menu==="izinSaya"&&!isPC()){
+    showCenterAlert({title:"🚫 AKSES DITOLAK!",message:"AKSES DARI PC BUKAN HP, JANGAN COBA COBA MANIPULASI !",submessage:"Menu Izin Keluar hanya dapat diakses melalui komputer/PC untuk mencegah manipulasi.",confirmText:"MENGERTI",icon:"🚫",danger:true});
+    return;
+  }
+  state.currentMenu=menu;state.currentSubMenu=null;await renderAppPage();
+}
+
+// ══════════════════════════════════════════════════════
+// APP RENDER
+// ══════════════════════════════════════════════════════
+function renderApp(){
+  const lp=document.getElementById("loginPage"),ap=document.getElementById("appPage");
+  if(!state.currentUser){lp.classList.remove("hidden");ap.classList.add("hidden");renderLogin();return;}
+  lp.classList.add("hidden");ap.classList.remove("hidden");
+  ap.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;background:var(--bg);">
+    <div style="width:44px;height:44px;border:4px solid #1e3a5f;border-top-color:#18c08f;border-radius:50%;animation:spin .7s linear infinite;"></div>
+    <div style="color:#7a9ab8;font-size:14px;font-family:'Segoe UI',Arial;">Memuat dashboard...</div>
+  </div>`;
+  renderAppPage();
+}
+async function renderAppPage(){
+  const app=document.getElementById("appPage");
+  const menus=getMenusByRole();
+  const me=state.currentUser;const profile=me.profile||{};
+  const menuHtml=menus.map(m=>`<button class="${state.currentMenu===m.key?"active":""}" onclick="setMenu('${m.key}')"><i class="fa-solid ${m.icon}"></i> ${m.label}</button>`).join("");
+  const avatarEl=profile.avatarImage?`<img src="${profile.avatarImage}" style="width:100%;height:100%;object-fit:cover;">`:`<span style="font-size:15px;font-weight:bold;">${(profile.avatarText||me.nama.charAt(0)).slice(0,1).toUpperCase()}</span>`;
+  const jabBadge=me.role==="admin"?`<span style="background:#3b1d6e;color:#d4b3ff;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;">ADMIN</span>`:`<span style="background:#0d4a47;color:#81e6d9;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;">${me.jabatan}</span>`;
+  // Parallel: content + broadcast sekaligus
+  const [contentHtml, bc]=await Promise.all([renderCurrentContent(), fetchBroadcast()]);
+  const broadcastBar=bc&&bc.aktif&&bc.pesan?`<div class="broadcast-bar"><div class="broadcast-bar-label"><i class="fa-solid fa-bullhorn"></i> BROADCAST</div><div class="broadcast-bar-text"><div class="broadcast-bar-inner">📢 ${bc.pesan} 📢 ${bc.pesan} 📢 ${bc.pesan}</div></div></div>`:"";
+  app.innerHTML=`
+    <aside class="sidebar">
+      <div class="brand"><h2 style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+  letter-spacing:1px;
+">
+  <img src="https://cdn.areabermain.club/assets/cdn/az4/2026/04/10/20260410/973d63b41266f339d2c7f71e0dbbb33c/690814115833547-60e65d2f5dda3.gif"
+       style="
+         width:38px;
+         border-radius:8px;
+         box-shadow:0 0 15px rgba(224,48,80,0.6);
+       ">
+  <span style="
+    background: linear-gradient(45deg,#ff4060,#ff8c42);
+    -webkit-background-clip:text;
+    color:transparent;
+  ">
+    RuangWD
+  </span>
+</h2><p>Sistem Operasional Staff</p></div>
+      <div class="menu-title">Menu</div>
+      <div class="menu">${menuHtml}</div>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">${avatarEl}</div>
+          <div class="sidebar-info"><b>${profile.nickname||me.nama}</b><span>${me.jabatan||me.role}</span></div>
+        </div>
+        <button class="btn btn-danger btn-block" style="margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </div>
+    </aside>
+    <section class="main">
+      ${broadcastBar}
+      <div class="topbar">
+        <div><h3>${getPageTitle()}</h3><p>${me.role==="admin"?"Kelola operasional staff dari satu dashboard":"Pantau aktivitas dan absensi Anda"}</p></div>
+        <div class="user-box"><div class="user-badge"><b style="font-size:13px;">${me.nama}</b><br><div style="margin-top:3px;">${jabBadge}</div></div></div>
+      </div>
+      <div class="content">${contentHtml}</div>
+    </section>`;
+  if(me.role!=="admin"){startLiveClock();startIzinStatusTimer();}
+  else{stopLiveClock();stopIzinStatusTimer();}
+  startBroadcastTimer();
+}
+async function renderCurrentContent(){
+  if(state.currentUser.role==="admin"){
+    switch(state.currentMenu){
+      case"dashboard":return await renderAdminDashboard();
+      case"staff":return await renderStaffPage();
+      case"detailStaff":return await renderDetailStaff();
+      case"absensi":return await renderAbsensiAdmin();
+      case"izin":return await renderIzinAdmin();
+      case"shift":return await renderShiftPage();
+      case"historyAbsensi":return await renderHistoryAbsensiAdmin();
+      case"historyIzin":return await renderHistoryIzin();
+      case"kasWeb":return await renderKasWeb(true);
+      case"sopPage":return await renderSopPage(true);
+      case"serahTerima":return await renderSerahTerima(true);
+      case"jobDesk":return await renderJobDesk(true);
+      case"otoritas":return await renderOtoritas();
+      case"settings":return await renderSettings();
+      default:return await renderAdminDashboard();
+    }
+  }
+  switch(state.currentMenu){
+    case"dashboard":return await renderStaffDashboard();
+    case"absenSaya":return await renderAbsenSaya();
+    case"izinSaya":
+      if(!isPC())return renderIzinBlocked();
+      return await renderIzinSaya();
+    case"shiftSaya":return await renderShiftSaya();
+    // Menu dengan hak akses menuXxx
+    case"staffView":return await renderStaffView();
+    case"detailStaffView":return await renderDetailStaff();
+    case"absensiView":return await renderAbsensiView();
+    case"izinView":return await renderIzinView();
+    case"shiftView":return await renderShiftView();
+    case"historyAbsensiView":return await renderHistoryAbsensiAdmin();
+    case"historyIzinView":return await renderHistoryIzinView();
+    case"kasWeb":return await renderKasWeb(boleh("inputTransaksi"));
+    case"sopPage":return await renderSopPage(boleh("tambahSOP"));
+    case"serahTerima":return await renderSerahTerima(false);
+    case"jobDeskSaya":return await renderJobDeskSaya();
+    case"jobDeskMenu":return await renderJobDesk(boleh("bukaJobDesk"));
+    case"historySaya":return await renderHistorySaya();
+    case"profilSaya":return await renderProfilSaya();
+    default:return await renderStaffDashboard();
+  }
+}
+function renderIzinBlocked(){
+  return`<div class="card" style="border-color:#ef4444;background:linear-gradient(135deg,#1a0308,#1d2a44);">
+    <div class="pc-only-block">
+      <div class="pc-icon"><i class="fa-solid fa-ban"></i></div>
+      <h3>🚫 AKSES DITOLAK!</h3>
+      <p><b>AKSES DARI PC BUKAN HP, JANGAN COBA COBA MANIPULASI !</b></p>
+      <p style="margin-top:12px;">Menu Izin Keluar hanya dapat diakses melalui komputer/PC untuk mencegah manipulasi data.</p>
+      <div style="margin-top:20px;padding:14px;background:rgba(239,68,68,.1);border-radius:12px;border:1px solid rgba(239,68,68,.3);">
+        <p style="color:#fca5a5;">Jika Anda sedang di PC dan melihat pesan ini, pastikan browser dalam mode desktop.</p>
+      </div>
+    </div>
+  </div>`;
+}
+function renderPlaceholder(msg){return`<div class="card"><div class="placeholder"><i class="fa-solid fa-circle-info" style="font-size:32px;margin-bottom:12px;display:block;color:#3b82f6;"></i>${msg}</div></div>`;}
+
+// ══════════════════════════════════════════════════════
+// ADMIN DASHBOARD
+// ══════════════════════════════════════════════════════
+async function renderAdminDashboard(){
+  const summary=await fetchDashboardSummary();
+  if(!summary)return renderPlaceholder("Gagal memuat dashboard.");
+  const iconMap={Pagi:"fa-sun",Siang:"fa-cloud-sun",Sore:"fa-cloud",Malam:"fa-moon"};
+  const shiftSections=["Pagi","Siang","Sore","Malam"].map(shift=>{
+    const d=summary.shiftData[shift]||{totalStaff:0,hadir:[],belum:[]};
+    return`<div class="card"><h4><i class="fa-solid ${iconMap[shift]}" style="color:#f59e0b;"></i>Shift ${shift}</h4>
+      <div class="row" style="margin-bottom:12px;">
+        <span class="badge badge-info"><i class="fa-solid fa-users"></i> ${d.totalStaff}</span>
+        <span class="badge badge-success"><i class="fa-solid fa-check"></i> ${d.hadir.length} Hadir</span>
+        <span class="badge badge-danger"><i class="fa-solid fa-clock"></i> ${d.belum.length} Belum</span>
+      </div>
+      ${d.hadir.length?`<div style="font-size:12px;color:#89f2d4;font-weight:700;margin-bottom:6px;">✓ SUDAH ABSEN</div>
+        <div class="table-wrap"><table style="min-width:100%;"><thead><tr><th>Nama</th><th>Jabatan</th><th>Jam Masuk</th><th>Status</th></tr></thead>
+        <tbody>${d.hadir.map(s=>`<tr><td>${s.nama}</td><td>${s.jabatan}</td><td>${s.jamMasuk}</td><td><span class="badge ${s.status==="Terlambat"?"badge-warning":"badge-success"}">${s.status||"Hadir"}</span></td></tr>`).join("")}</tbody></table></div>`:""}
+      ${d.belum.length?`<div style="font-size:12px;color:#ffb9c2;font-weight:700;margin:10px 0 6px;">⏳ BELUM ABSEN</div>
+        <div class="table-wrap"><table style="min-width:100%;"><thead><tr><th>Nama</th><th>Jabatan</th><th>Jam Kerja</th></tr></thead>
+        <tbody>${d.belum.map(s=>`<tr><td>${s.nama}</td><td>${s.jabatan}</td><td>${s.shiftStartTime}</td></tr>`).join("")}</tbody></table></div>`:""}
+    </div>`;
+  }).join("");
+  return`<div class="grid grid-4">
+    <div class="card stat"><div class="stat-icon">👥</div><div class="label">Total Staff Aktif</div><div class="value" style="color:#18e0a3;">${summary.totalStaffAktif}</div></div>
+    <div class="card stat"><div class="stat-icon">✅</div><div class="label">Sudah Absen</div><div class="value" style="color:#22c55e;">${summary.totalAbsenHariIni}</div></div>
+    <div class="card stat"><div class="stat-icon">⏰</div><div class="label">Belum Absen</div><div class="value" style="color:#ef4444;">${summary.totalBelumAbsen}</div></div>
+    <div class="card stat"><div class="stat-icon">🌙</div><div class="label">Shift Saat Ini</div><div class="value" style="font-size:24px;color:#f59e0b;">${summary.shiftSaatIni}</div></div>
+  </div>
+  <div class="section-title"><i class="fa-solid fa-calendar-day"></i>Zona Shift Kerja Hari Ini</div>
+  <div class="grid grid-2">${shiftSections}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// STAFF DASHBOARD
+// ══════════════════════════════════════════════════════
+async function renderStaffDashboard(){
+  const [staff, absensi]=await Promise.all([fetchStaff(), fetchAbsensi()]);
+  const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
+  const today=new Date().toISOString().split("T")[0];
+  const todayAbs=absensi.filter(a=>a.tanggal===today);
+  const activeStaff=staff.filter(u=>u.active&&u.role==="staff");
+  const totalAktif=activeStaff.length;
+  const totalHadir=todayAbs.length;
+  const totalBelum=totalAktif-totalHadir;
+  const h=new Date().getHours();
+  const shiftNow=h>=5&&h<11?"Pagi":h>=11&&h<15?"Siang":h>=15&&h<19?"Sore":"Malam";
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const shiftIcon={Pagi:"☀️",Siang:"🌤️",Sore:"🌥️",Malam:"🌙"};
+  const sc=shiftColor[shiftNow];
+
+  // Job Desk hari ini
+  let jobDeskSection="";
+  try{
+    const jdAll=await fetchJobDesk();
+    const myJD=jdAll.find(j=>Number(j.userId)===Number(me.id)&&j.tanggal===today);
+    if(myJD)jobDeskSection=`<div class="card" style="margin-bottom:0;border-color:rgba(24,192,143,.3);background:linear-gradient(135deg,#071e2a,#0a2a1a);">
+      <h4><i class="fa-solid fa-list-check" style="color:#18c08f;"></i>Job Desk Anda Hari Ini</h4>
+      <div class="jd-card-grid" style="margin-top:10px;">${jdRenderCards(myJD.jobdesk,sc)}</div>
+      <div style="font-size:11px;color:#4a6080;margin-top:8px;">Dibuat oleh: ${myJD.dibuat_oleh}</div>
+    </div>`;
+  }catch{}
+
+  return`
+  <!-- HERO LAMA (persis seperti sebelumnya) -->
+  <div class="staff-hero"><div class="grid grid-2">
+    <div class="center-card">
+      <div class="hero-avatar" onclick="setMenu('profilSaya')" title="Edit Profil">
+        ${me.profile?.avatarImage?`<img src="${me.profile.avatarImage}">`:(me.profile?.avatarText||me.nama.charAt(0)).toUpperCase().slice(0,1)}
+      </div>
+      <h4 style="font-size:28px;">Selamat Datang 👋</h4>
+      <p style="font-size:20px;color:#f5e4af;font-weight:bold;">${me.profile?.nickname||me.nama}</p>
+      <p style="font-size:13px;">${me.profile?.motto||"Siap bertugas hari ini?"}</p>
+      <p style="margin-top:8px;font-size:13px;color:#9fb0c7;">${new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</p>
+      <div style="margin-top:10px;"><span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${me.shift} • ${me.shiftStartTime}</span></div>
+      <div style="margin-top:16px;"><button class="btn btn-gold" style="font-size:17px;min-width:230px;" onclick="absenSekarang()"><i class="fa-solid fa-play"></i> MULAI BERTUGAS</button></div>
+    </div>
+    <div>
+      <div class="clock-box" id="liveClock">00:00:00</div>
+      <div style="color:#c8d6ea;margin-top:6px;font-size:13px;">⏱ Jam berjalan real-time</div>
+      <div class="marquee-wrap"><div class="marquee-inner">💪 Orang Hebat Bukan Yang Tak Pernah Jatuh, Tapi Yang Selalu Bangkit Lagi ✨ 🚀 Semangat Bertugas! 🔥 💪 Orang Hebat Bukan Yang Tak Pernah Jatuh, Tapi Yang Selalu Bangkit Lagi ✨</div></div>
+      <div class="card" style="margin-top:14px;"><h4 style="font-size:15px;"><i class="fa-solid fa-id-card"></i>Profil Ringkas</h4>
+        <p style="font-size:13px;"><b>Jabatan:</b> ${me.jabatan} &nbsp;|&nbsp; <b>Shift:</b> ${me.shift} • ${me.shiftStartTime}</p>
+        ${me.profile?.phone?`<p style="font-size:13px;"><b>Telp:</b> ${me.profile.phone}</p>`:""}
+        ${me.profile?.bio?`<p style="font-size:13px;margin-top:4px;color:#b8c6d8;">${me.profile.bio}</p>`:""}
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 4 STAT CARDS + JAM ANALOG -->
+  <div style="display:grid;grid-template-columns:1fr auto;gap:16px;margin-bottom:16px;align-items:start;">
+    <!-- 4 stat cards 2x2 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#0d1930,#13213d);border-color:#2a3e5e;">
+        <div style="font-size:28px;margin-bottom:6px;">👥</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Total Staff Aktif</div>
+        <div style="font-size:42px;font-weight:bold;color:#60a5fa;line-height:1;">${totalAktif}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#071e14,#0a2a1a);border-color:rgba(24,192,143,.35);">
+        <div style="font-size:28px;margin-bottom:6px;">✅</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Sudah Absen</div>
+        <div style="font-size:42px;font-weight:bold;color:#18c08f;line-height:1;">${totalHadir}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#1a0308,#1d1220);border-color:rgba(239,68,68,.35);">
+        <div style="font-size:28px;margin-bottom:6px;">⏳</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Belum Absen</div>
+        <div style="font-size:42px;font-weight:bold;color:#ef4444;line-height:1;">${totalBelum}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px 12px;background:linear-gradient(135deg,#100a1a,#18102a);border-color:${sc}55;">
+        <div style="font-size:28px;margin-bottom:6px;">${shiftIcon[shiftNow]}</div>
+        <div style="font-size:11px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Shift Saat Ini</div>
+        <div style="font-size:30px;font-weight:bold;color:${sc};line-height:1;">${shiftNow}</div>
+      </div>
+    </div>
+    <!-- Jam Analog Elegan -->
+    <div class="card" style="padding:24px;text-align:center;background:linear-gradient(135deg,#0b1424,#0d1d30);min-width:220px;">
+      <div style="font-size:12px;color:#7a9ab8;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Jam Sekarang</div>
+      <div style="position:relative;width:160px;height:160px;margin:0 auto;">
+        <!-- SVG Jam Analog -->
+        <svg id="analogClock" viewBox="0 0 160 160" width="160" height="160">
+          <!-- Lingkaran luar -->
+          <circle cx="80" cy="80" r="76" fill="none" stroke="${sc}" stroke-width="3" opacity=".3"/>
+          <circle cx="80" cy="80" r="70" fill="#080f1e" stroke="${sc}" stroke-width="1.5" opacity=".15"/>
+          <!-- Tanda jam (12 titik) -->
+          ${Array.from({length:12},(_,i)=>{
+            const a=(i*30-90)*Math.PI/180;
+            const r1=62,r2=i%3===0?54:58;
+            const x1=80+r1*Math.cos(a),y1=80+r1*Math.sin(a);
+            const x2=80+r2*Math.cos(a),y2=80+r2*Math.sin(a);
+            const sw=i%3===0?2.5:1.5;
+            return`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i%3===0?sc:"#3a5070"}" stroke-width="${sw}" stroke-linecap="round"/>`;
+          }).join("")}
+          <!-- Angka 12, 3, 6, 9 -->
+          <text x="80" y="20" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">12</text>
+          <text x="144" y="84" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">3</text>
+          <text x="80" y="148" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">6</text>
+          <text x="16" y="84" text-anchor="middle" fill="${sc}" font-size="11" font-weight="bold" font-family="'Segoe UI',Arial">9</text>
+          <!-- Jarum jam -->
+          <line id="clockHour" x1="80" y1="80" x2="80" y2="46" stroke="${sc}" stroke-width="4" stroke-linecap="round" transform="rotate(0,80,80)"/>
+          <!-- Jarum menit -->
+          <line id="clockMin" x1="80" y1="80" x2="80" y2="36" stroke="#c8d8ea" stroke-width="2.5" stroke-linecap="round" transform="rotate(0,80,80)"/>
+          <!-- Jarum detik -->
+          <line id="clockSec" x1="80" y1="86" x2="80" y2="28" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" transform="rotate(0,80,80)"/>
+          <!-- Pusat -->
+          <circle cx="80" cy="80" r="5" fill="${sc}"/>
+          <circle cx="80" cy="80" r="2.5" fill="#080f1e"/>
+        </svg>
+      </div>
+      <div style="margin-top:12px;font-size:22px;font-weight:bold;color:#c8d8ea;letter-spacing:2px;" id="analogDigital">00:00:00</div>
+      <div style="font-size:11px;color:#4a6080;margin-top:4px;">WIB — ${new Date().toLocaleDateString("id-ID",{weekday:"long"})}</div>
+    </div>
+  </div>
+
+  <!-- Job Desk (jika ada) -->
+  ${jobDeskSection}`;
+}
+
+// Fungsi update jarum jam analog (dipanggil setiap detik)
+function updateAnalogClock(){
+  const now=new Date();
+  const H=now.getHours()%12,M=now.getMinutes(),S=now.getSeconds();
+  const hDeg=(H*30)+(M*0.5)-90;
+  const mDeg=(M*6)+(S*0.1)-90;
+  const sDeg=(S*6)-90;
+  const toXY=(deg,r)=>[80+r*Math.cos(deg*Math.PI/180),80+r*Math.sin(deg*Math.PI/180)];
+  const hHand=document.getElementById("clockHour");
+  const mHand=document.getElementById("clockMin");
+  const sHand=document.getElementById("clockSec");
+  if(hHand){const[x,y]=toXY(hDeg,34);hHand.setAttribute("x2",x.toFixed(1));hHand.setAttribute("y2",y.toFixed(1));}
+  if(mHand){const[x,y]=toXY(mDeg,44);mHand.setAttribute("x2",x.toFixed(1));mHand.setAttribute("y2",y.toFixed(1));}
+  if(sHand){
+    const[x2,y2]=toXY(sDeg,52);sHand.setAttribute("x2",x2.toFixed(1));sHand.setAttribute("y2",y2.toFixed(1));
+    const[x1,y1]=toXY(sDeg+180,8);sHand.setAttribute("x1",x1.toFixed(1));sHand.setAttribute("y1",y1.toFixed(1));
+  }
+  const dig=document.getElementById("analogDigital");
+  if(dig)dig.textContent=now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+
+// ══════════════════════════════════════════════════════
+// DATA STAFF
+// ══════════════════════════════════════════════════════
+const JABATAN_LIST=["Kapten","Kasir","CS","CS LINE","Staff","Administrator"];
+async function renderStaffPage(){
+  const users=await fetchStaff();
+  return`<div class="between">
+    <div class="card" style="flex:1;"><h4><i class="fa-solid fa-users"></i>Data Staff</h4><p>Tambah, edit, reset password, dan kelola status staff.</p></div>
+    <button class="btn btn-primary" onclick="openAddStaffModal()"><i class="fa-solid fa-user-plus"></i> Tambah Staff</button>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>ID</th><th>Foto</th><th>Nama</th><th>Username</th><th>Role</th><th>Jabatan</th><th>Shift</th><th>Jam</th><th>Status</th><th>Aksi</th></tr></thead>
+    <tbody>${users.map(u=>`<tr>
+      <td>${u.id}</td>
+      <td><div class="member-avatar" style="width:30px;height:30px;font-size:12px;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div></td>
+      <td><b>${u.nama}</b></td><td>${u.username}</td>
+      <td><span class="badge ${u.role==="admin"?"badge-purple":"badge-info"}">${u.role}</span></td>
+      <td>${u.jabatan}</td><td>${u.shift}</td><td>${u.shiftStartTime||"-"}</td>
+      <td><span class="badge ${u.active?"badge-success":"badge-danger"}">${u.active?"Aktif":"Nonaktif"}</span></td>
+      <td><div class="actions">
+        <button class="btn btn-info btn-xs" onclick="openEditStaffModal(${u.id})" title="Edit"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-warning btn-xs" onclick="openResetPasswordModal(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-key"></i></button>
+        <button class="btn ${u.active?"btn-dark":"btn-success"} btn-xs" onclick="toggleStaffActive(${u.id},${u.active})">${u.active?'<i class="fa-solid fa-ban"></i>':'<i class="fa-solid fa-check"></i>'}</button>
+        <button class="btn btn-danger btn-xs" onclick="deleteStaff(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
+      </div></td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+function jabatanOptions(selected=""){return JABATAN_LIST.map(j=>`<option ${selected===j?"selected":""}>${j}</option>`).join("");}
+function openAddStaffModal(){
+  document.getElementById("modalRoot").innerHTML=`<div class="modal"><div class="modal-box">
+    <div class="modal-head"><h3><i class="fa-solid fa-user-plus" style="color:#18c08f;"></i>Tambah Staff</h3><button class="btn btn-dark btn-small" onclick="closeModal()">✕</button></div>
+    <div class="grid grid-2">
+      <div class="form-group"><label>Nama Lengkap</label><input id="sNama" class="input" placeholder="Nama staff"></div>
+      <div class="form-group"><label>Username</label><input id="sUser" class="input" placeholder="Username login"></div>
+      <div class="form-group"><label>Password</label><input id="sPass" class="input" placeholder="Password"></div>
+      <div class="form-group"><label>Role</label><select id="sRole" class="select"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
+      <div class="form-group"><label>Jabatan</label><select id="sJabatan" class="select">${jabatanOptions()}</select></div>
+      <div class="form-group"><label>Shift</label><select id="sShift" class="select"><option>Pagi</option><option>Siang</option><option>Sore</option><option>Malam</option></select></div>
+      <div class="form-group"><label>Jam Masuk</label><input id="sTime" type="time" class="input" value="08:00"></div>
+    </div>
+    <div class="row" style="margin-top:12px;"><button class="btn btn-primary" onclick="saveStaff()"><i class="fa-solid fa-save"></i> Simpan</button><button class="btn btn-dark" onclick="closeModal()">Batal</button></div>
+  </div></div>`;
+}
+async function saveStaff(){
+  const nama=document.getElementById("sNama").value.trim(),username=document.getElementById("sUser").value.trim(),password=document.getElementById("sPass").value.trim(),role=document.getElementById("sRole").value,jabatan=document.getElementById("sJabatan").value,shift=document.getElementById("sShift").value,shiftStartTime=document.getElementById("sTime").value;
+  if(!nama||!username||!password||!shiftStartTime){toast("Semua data wajib diisi",true);return;}
+  try{const r=await fetchJson("/api/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nama,username,password,role,jabatan,shift,shiftStartTime})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}closeModal();toast("Staff berhasil ditambahkan");await renderAppPage();}catch{toast("Server error",true);}
+}
+async function openEditStaffModal(userId){
+  const users=await fetchStaff();const u=users.find(x=>x.id===userId);if(!u)return;
+  document.getElementById("modalRoot").innerHTML=`<div class="modal"><div class="modal-box">
+    <div class="modal-head"><h3><i class="fa-solid fa-pen" style="color:#3b82f6;"></i>Edit Staff: ${u.nama}</h3><button class="btn btn-dark btn-small" onclick="closeModal()">✕</button></div>
+    <div class="grid grid-2">
+      <div class="form-group"><label>Nama Lengkap</label><input id="eNama" class="input" value="${u.nama}"></div>
+      <div class="form-group"><label>Jabatan</label><select id="eJabatan" class="select">${jabatanOptions(u.jabatan)}</select></div>
+      <div class="form-group"><label>Role</label><select id="eRole" class="select"><option value="staff" ${u.role==="staff"?"selected":""}>Staff</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option></select></div>
+      <div class="form-group"><label>Shift</label><select id="eShift" class="select">${["Pagi","Siang","Sore","Malam"].map(s=>`<option ${u.shift===s?"selected":""}>${s}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Jam Masuk</label><input id="eTime" type="time" class="input" value="${u.shiftStartTime||"08:00"}"></div>
+    </div>
+    <div class="row" style="margin-top:12px;"><button class="btn btn-primary" onclick="submitEditStaff(${u.id})"><i class="fa-solid fa-save"></i> Simpan</button><button class="btn btn-dark" onclick="closeModal()">Batal</button></div>
+  </div></div>`;
+}
+async function submitEditStaff(userId){
+  const nama=document.getElementById("eNama").value.trim(),jabatan=document.getElementById("eJabatan").value,role=document.getElementById("eRole").value,shift=document.getElementById("eShift").value,shiftStartTime=document.getElementById("eTime").value;
+  if(!nama){toast("Nama wajib diisi",true);return;}
+  try{const r=await fetchJson(`/api/staff/${userId}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({nama,jabatan,role,shift,shiftStartTime})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}closeModal();toast("Data staff berhasil diperbarui");await renderAppPage();}catch{toast("Server error",true);}
+}
+async function toggleStaffActive(userId,cur){
+  if(!confirm(cur?"Nonaktifkan staff ini?":"Aktifkan kembali staff ini?"))return;
+  try{const r=await fetchJson(`/api/staff/${userId}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({active:!cur})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast(cur?"Staff dinonaktifkan":"Staff diaktifkan");await renderAppPage();}catch{toast("Server error",true);}
+}
+async function deleteStaff(userId,nama){
+  if(!confirm(`Hapus staff "${nama}" secara permanen?`))return;
+  try{const r=await fetchJson(`/api/staff/${userId}`,{method:"DELETE"});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Staff berhasil dihapus");await renderAppPage();}catch{toast("Server error",true);}
+}
+function openResetPasswordModal(userId,nama){
+  document.getElementById("modalRoot").innerHTML=`<div class="modal"><div class="modal-box">
+    <div class="modal-head"><h3><i class="fa-solid fa-key" style="color:#f59e0b;"></i>Reset Password</h3><button class="btn btn-dark btn-small" onclick="closeModal()">✕</button></div>
+    <div class="card" style="margin-bottom:14px;padding:12px;"><p style="margin:0;">Reset password untuk: <b>${nama}</b></p></div>
+    <div class="form-group"><label>Password Baru</label><input id="rpNew" type="password" class="input" placeholder="Minimal 4 karakter"></div>
+    <div class="form-group"><label>Konfirmasi Password</label><input id="rpConfirm" type="password" class="input" placeholder="Ulangi password"></div>
+    <div class="row" style="margin-top:12px;"><button class="btn btn-warning" onclick="submitResetPassword(${userId})"><i class="fa-solid fa-save"></i> Simpan</button><button class="btn btn-dark" onclick="closeModal()">Batal</button></div>
+  </div></div>`;
+}
+async function submitResetPassword(userId){
+  const np=document.getElementById("rpNew").value.trim(),cp=document.getElementById("rpConfirm").value.trim();
+  if(!np||!cp){toast("Wajib diisi",true);return;}if(np.length<4){toast("Minimal 4 karakter",true);return;}if(np!==cp){toast("Konfirmasi tidak sama",true);return;}
+  try{const r=await fetchJson(`/api/staff/${userId}/reset-password`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({newPassword:np})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}closeModal();toast("Password berhasil direset");}catch{toast("Server error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// DETAIL STAFF
+// ══════════════════════════════════════════════════════
+async function renderDetailStaff(){
+  const users=await fetchStaff();
+  const roleConfig=[{role:"Kapten",icon:"fa-star",color:"#ffd979",bg:"rgba(255,217,121,.1)",border:"rgba(255,217,121,.3)"},{role:"Kasir",icon:"fa-cash-register",color:"#89f2d4",bg:"rgba(24,192,143,.1)",border:"rgba(24,192,143,.3)"},{role:"CS",icon:"fa-headset",color:"#b9d7ff",bg:"rgba(59,130,246,.1)",border:"rgba(59,130,246,.3)"},{role:"CS LINE",icon:"fa-phone-volume",color:"#81e6d9",bg:"rgba(13,148,136,.1)",border:"rgba(13,148,136,.3)"},{role:"Staff",icon:"fa-user",color:"#d4b3ff",bg:"rgba(124,58,237,.1)",border:"rgba(124,58,237,.3)"},{role:"Administrator",icon:"fa-shield-halved",color:"#ffb9c2",bg:"rgba(239,68,68,.1)",border:"rgba(239,68,68,.3)"}];
+  const sections=roleConfig.map(cfg=>{const members=users.filter(u=>u.jabatan===cfg.role);if(!members.length)return"";return`<div class="role-group-card" style="border-color:${cfg.border};"><div class="role-group-header" style="background:${cfg.bg};"><i class="fa-solid ${cfg.icon}" style="color:${cfg.color};"></i><b style="color:${cfg.color};">${cfg.role}</b><span class="badge badge-muted" style="margin-left:auto;">${members.length} orang</span></div>${members.map(m=>`<div class="member-row"><div class="member-avatar">${m.profile?.avatarImage?`<img src="${m.profile.avatarImage}">`:m.nama.charAt(0).toUpperCase()}</div><div style="flex:1;min-width:0;"><b style="font-size:13.5px;">${m.nama}</b><div style="font-size:12px;color:#8ca0be;">${m.username} • Shift ${m.shift} • ${m.shiftStartTime}</div></div><span class="badge ${m.active?"badge-success":"badge-danger"}" style="flex-shrink:0;">${m.active?"Aktif":"Nonaktif"}</span></div>`).join("")}</div>`;}).join("");
+  return`<div class="card"><h4><i class="fa-solid fa-sitemap"></i>Pengelompokan Staff per Role</h4><p>Daftar staff dikelompokkan berdasarkan jabatan/role.</p></div><div class="grid grid-2" style="margin-top:16px;">${sections||"<p>Belum ada staff.</p>"}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// ABSENSI & IZIN ADMIN
+// ══════════════════════════════════════════════════════
+async function renderAbsensiAdmin(){
+  const rows=await fetchAbsensi();
+  const users=await fetchStaff();
+  const today=new Date().toISOString().split("T")[0];
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const activeStaff=users.filter(u=>u.active&&u.role==="staff");
+  const todayAbs=rows.filter(r=>r.tanggal===today);
+
+  // Tentukan shift aktif berdasarkan jam sekarang
+  const shiftRanges={Pagi:[5*60,11*60],Siang:[11*60,15*60],Sore:[15*60,19*60],Malam:[19*60,24*60]};
+  const SHIFTS=["Pagi","Siang","Sore","Malam"];
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const shiftIcon={Pagi:"fa-sun",Siang:"fa-cloud-sun",Sore:"fa-cloud",Malam:"fa-moon"};
+
+  // Hitung per shift: sudah absen & belum absen
+  const shiftCards=SHIFTS.map(sh=>{
+    const shiftStaff=activeStaff.filter(u=>u.shift===sh);
+    if(!shiftStaff.length)return"";
+    const sudah=shiftStaff.filter(u=>todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const belum=shiftStaff.filter(u=>!todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const pct=shiftStaff.length?Math.round((sudah.length/shiftStaff.length)*100):0;
+    const sc=shiftColor[sh];
+    return`<div style="border-radius:14px;border:1px solid ${sc}33;overflow:hidden;margin-bottom:14px;">
+      <div style="padding:12px 16px;background:${sc}11;display:flex;align-items:center;gap:10px;border-bottom:1px solid ${sc}22;">
+        <i class="fa-solid ${shiftIcon[sh]}" style="color:${sc};font-size:17px;"></i>
+        <b style="color:${sc};font-size:15px;">Shift ${sh}</b>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+          <span class="badge badge-success">${sudah.length} Hadir</span>
+          <span class="badge badge-danger">${belum.length} Belum</span>
+          <div style="width:80px;height:6px;background:#1a2a40;border-radius:999px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${sc};border-radius:999px;"></div>
+          </div>
+          <span style="font-size:12px;color:${sc};">${pct}%</span>
+        </div>
+      </div>
+      ${belum.length?`
+      <div style="padding:10px 16px;border-bottom:1px solid rgba(239,68,68,.15);background:rgba(239,68,68,.04);">
+        <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">⏳ Belum Absen — Perlu Dicek</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${belum.map(u=>`<div style="display:flex;align-items:center;gap:7px;background:#0b1730;border-radius:10px;padding:7px 12px;border:1px solid rgba(239,68,68,.2);">
+            <div class="member-avatar" style="width:26px;height:26px;font-size:11px;border-color:#ef4444;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div><b style="font-size:12.5px;">${u.nama}</b><br><span style="font-size:11px;color:#6a8099;">${u.jabatan} • ⏰${u.shiftStartTime||"08:00"}</span></div>
+          </div>`).join("")}
+        </div>
+      </div>`:""}
+      ${sudah.length?`
+      <div style="padding:10px 16px;">
+        <div style="font-size:11px;font-weight:700;color:#18c08f;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">✅ Sudah Absen</div>
+        <div style="overflow:auto;"><table style="width:100%;border-collapse:collapse;min-width:400px;">
+          <thead><tr style="background:#0b1730;">
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Nama</th>
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Jabatan</th>
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Jam Masuk</th>
+            <th style="padding:7px 10px;text-align:left;font-size:11px;color:#6a8099;">Status</th>
+          </tr></thead>
+          <tbody>${sudah.map(u=>{
+            const ab=todayAbs.find(a=>Number(a.userId)===Number(u.id));
+            return`<tr style="border-bottom:1px solid #1a2a40;">
+              <td style="padding:7px 10px;"><div style="display:flex;align-items:center;gap:7px;">
+                <div class="member-avatar" style="width:24px;height:24px;font-size:10px;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+                <b style="font-size:13px;">${u.nama}</b></div></td>
+              <td style="padding:7px 10px;font-size:12px;">${u.jabatan}</td>
+              <td style="padding:7px 10px;font-weight:bold;color:${ab?.status==="Terlambat"?"#ffd979":"#18c08f"};">${ab?.jamMasuk||"-"}</td>
+              <td style="padding:7px 10px;"><span class="badge ${ab?.status==="Terlambat"?"badge-warning":"badge-success"}">${ab?.status||"Hadir"}</span></td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table></div>
+      </div>`:""}
+    </div>`;
+  }).join("");
+
+  // Summary stat
+  const totalHadir=todayAbs.length;
+  const totalBelum=activeStaff.length-totalHadir;
+  const totalTelat=todayAbs.filter(r=>r.status==="Terlambat").length;
+
+  return`
+    <div class="grid grid-3" style="margin-bottom:16px;">
+      <div class="card stat" style="text-align:center;">
+        <div style="font-size:28px;">✅</div>
+        <div style="font-size:13px;color:#7a9ab8;margin-top:4px;">Sudah Absen</div>
+        <div style="font-size:32px;font-weight:bold;color:#18c08f;">${totalHadir}</div>
+      </div>
+      <div class="card stat" style="text-align:center;">
+        <div style="font-size:28px;">⏳</div>
+        <div style="font-size:13px;color:#7a9ab8;margin-top:4px;">Belum Absen</div>
+        <div style="font-size:32px;font-weight:bold;color:#ef4444;">${totalBelum}</div>
+      </div>
+      <div class="card stat" style="text-align:center;">
+        <div style="font-size:28px;">⚠️</div>
+        <div style="font-size:13px;color:#7a9ab8;margin-top:4px;">Terlambat</div>
+        <div style="font-size:32px;font-weight:bold;color:#f59e0b;">${totalTelat}</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:14px;"><h4><i class="fa-solid fa-clipboard-list"></i>Data Absensi Hari Ini — ${today}</h4>
+      <p style="font-size:13px;color:#7a9ab8;">Pantau status absensi per shift. Staff yang belum absen ditampilkan untuk memudahkan pengecekan.</p>
+    </div>
+    ${shiftCards}`;
+}
+async function renderIzinAdmin(){
+  const active=await fetchIzinActive();
+  return`<div class="card"><h4><i class="fa-solid fa-door-open"></i>Staff Sedang Keluar</h4><p>Pantau real-time. Menu ini khusus PC.</p></div>
+  <div class="table-wrap"><table><thead><tr><th>Nama</th><th>Jabatan</th><th>Tanggal</th><th>Jam Keluar</th><th>Status</th></tr></thead>
+  <tbody>${active.length?active.map(i=>`<tr><td><b>${i.nama}</b></td><td>${i.jabatan}</td><td>${i.tanggal}</td><td>${i.jamKeluar}</td><td><span class="badge badge-warning">${i.status}</span></td></tr>`).join(""):`<tr><td colspan="5" style="text-align:center;color:#8ca0be;">Tidak ada staff yang sedang keluar.</td></tr>`}</tbody></table></div>`;
+}
+async function renderShiftPage(){
+  const users=await fetchStaff();
+  return`<div class="card"><h4><i class="fa-solid fa-calendar-days"></i>Shift Kerja Staff</h4><p>Set shift dan jam masuk.</p></div>
+  <div class="grid grid-2" style="margin-top:16px;">${["Pagi","Siang","Sore","Malam"].map(shift=>{const su=users.filter(u=>u.role==="staff"&&u.shift===shift);return`<div class="card"><h4 style="font-size:15px;"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i>Shift ${shift}</h4>${su.length?`<div class="table-wrap"><table style="min-width:100%;"><thead><tr><th>Nama</th><th>Jam</th><th>Ubah</th></tr></thead><tbody>${su.map(u=>`<tr><td><b>${u.nama}</b></td><td>${u.shiftStartTime||"-"}</td><td><div class="row"><select id="sh_${u.id}" class="select" style="max-width:110px;padding:7px;">${["Pagi","Siang","Sore","Malam"].map(s=>`<option ${u.shift===s?"selected":""}>${s}</option>`).join("")}</select><input id="sh_t_${u.id}" type="time" class="input" style="max-width:110px;" value="${u.shiftStartTime||"08:00"}"><button class="btn btn-info btn-xs" onclick="updateShift(${u.id})"><i class="fa-solid fa-save"></i></button></div></td></tr>`).join("")}</tbody></table></div>`:`<p>Belum ada staff di shift ini.</p>`}</div>`;}).join("")}</div>`;
+}
+async function updateShift(userId){const shift=document.getElementById(`sh_${userId}`).value;const shiftStartTime=document.getElementById(`sh_t_${userId}`).value;if(!shiftStartTime){toast("Jam masuk wajib diisi",true);return;}try{const r=await fetchJson(`/api/staff/${userId}/shift`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({shift,shiftStartTime})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Shift berhasil diperbarui");await refreshCurrentUser();await renderAppPage();}catch{toast("Server error",true);}}
+async function renderHistoryAbsensiAdmin(){
+  const sub=state.currentSubMenu||"harian";const rows=await fetchAbsensi();const users=await fetchStaff();const today=new Date().toISOString().split("T")[0];const bulanIni=today.slice(0,7);
+  const tabs=`<div class="sub-tabs">${[{k:"harian",l:"Absensi Harian",i:"fa-calendar-day"},{k:"bulanan",l:"Bulanan",i:"fa-calendar"},{k:"perRole",l:"Per Role",i:"fa-sitemap"},{k:"terlambat",l:"Keterlambatan",i:"fa-triangle-exclamation"},{k:"export",l:"Export",i:"fa-download"}].map(t=>`<button class="${sub===t.k?"active":""}" onclick="setSubMenu('${t.k}')"><i class="fa-solid ${t.i}"></i> ${t.l}</button>`).join("")}</div>`;
+  let c="";
+  if(sub==="harian"){const harian=rows.filter(r=>r.tanggal===today);c=`<div class="card"><h4><i class="fa-solid fa-calendar-day"></i>Hari Ini — ${today}</h4><p>${harian.length} staff telah absen.</p></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Jabatan</th><th>Shift</th><th>Jam Masuk</th><th>Status</th></tr></thead><tbody>${harian.length?harian.map(r=>`<tr><td><b>${r.nama}</b></td><td>${r.jabatan}</td><td>${r.shiftTerdaftar}</td><td>${r.jamMasuk}</td><td><span class="badge ${r.status==="Terlambat"?"badge-warning":"badge-success"}">${r.status||"Hadir"}</span></td></tr>`).join(""):`<tr><td colspan="5" style="text-align:center;color:#8ca0be;">Belum ada absensi hari ini.</td></tr>`}</tbody></table></div>`;}
+  else if(sub==="bulanan"){const bln=rows.filter(r=>r.tanggal.startsWith(bulanIni));const grp={};bln.forEach(r=>{if(!grp[r.userId])grp[r.userId]={nama:r.nama,jabatan:r.jabatan,hadir:0,terlambat:0};grp[r.userId].hadir++;if(r.status==="Terlambat")grp[r.userId].terlambat++;});c=`<div class="card"><h4><i class="fa-solid fa-calendar"></i>Bulan ${bulanIni}</h4><p>${bln.length} record.</p></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Jabatan</th><th>Hari Hadir</th><th>Terlambat</th></tr></thead><tbody>${Object.values(grp).map(g=>`<tr><td><b>${g.nama}</b></td><td>${g.jabatan}</td><td><span class="badge badge-success">${g.hadir} hari</span></td><td><span class="badge ${g.terlambat>0?"badge-warning":"badge-muted"}">${g.terlambat}x</span></td></tr>`).join("")||`<tr><td colspan="4" style="text-align:center;color:#8ca0be;">Belum ada data.</td></tr>`}</tbody></table></div>`;}
+  else if(sub==="perRole"){c=`<div class="card"><h4><i class="fa-solid fa-sitemap"></i>Rekap Per Role — ${bulanIni}</h4></div><div class="grid grid-3" style="margin-top:14px;">${JABATAN_LIST.map(jab=>{const st=users.filter(u=>u.jabatan===jab&&u.active&&u.role==="staff");const ab=rows.filter(r=>r.tanggal.startsWith(bulanIni)&&st.some(s=>s.id===r.userId));return`<div class="card"><h4 style="font-size:14px;">${jab} (${st.length})</h4><p>Hadir: <b style="color:#18e0a3;">${ab.length}</b></p><p>Terlambat: <b style="color:#f59e0b;">${ab.filter(a=>a.status==="Terlambat").length}x</b></p></div>`;}).join("")}</div>`;}
+  else if(sub==="terlambat"){const telat=rows.filter(r=>r.status==="Terlambat").sort((a,b)=>b.id-a.id);c=`<div class="card"><h4><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i>Keterlambatan (${telat.length})</h4></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Shift</th><th>Jam Kerja</th><th>Jam Masuk</th></tr></thead><tbody>${telat.length?telat.map(r=>`<tr><td>${r.tanggal}</td><td><b>${r.nama}</b></td><td>${r.jabatan}</td><td>${r.shiftTerdaftar}</td><td>${r.shiftStartTime||"-"}</td><td style="color:#ffd979;font-weight:bold;">${r.jamMasuk}</td></tr>`).join(""):`<tr><td colspan="6" style="text-align:center;color:#8ca0be;">Tidak ada keterlambatan.</td></tr>`}</tbody></table></div>`;}
+  else if(sub==="export"){c=`<div class="card"><h4><i class="fa-solid fa-download"></i>Export Data Absensi</h4><p>Download data absensi.</p><div class="row" style="margin-top:16px;"><button class="btn btn-success" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button><button class="btn btn-info" onclick="exportJSON()"><i class="fa-solid fa-file-code"></i> Export JSON</button></div></div>`;}
+  return tabs+c;
+}
+function setSubMenu(sub){state.currentSubMenu=sub;renderAppPage();}
+async function exportCSV(){const rows=await fetchAbsensi();const h=["ID","Nama","Username","Jabatan","Shift","Jam Kerja","Tanggal","Jam Masuk","Status"].join(",");const b=rows.map(r=>[r.id,r.nama,r.username,r.jabatan,r.shiftTerdaftar,r.shiftStartTime,r.tanggal,r.jamMasuk,r.status||"Hadir"].join(",")).join("\n");const blob=new Blob([h+"\n"+b],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);toast("Export CSV berhasil");}
+async function exportJSON(){const rows=await fetchAbsensi();const blob=new Blob([JSON.stringify(rows,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`absensi_${new Date().toISOString().split("T")[0]}.json`;a.click();URL.revokeObjectURL(url);toast("Export JSON berhasil");}
+async function renderHistoryIzin(){
+  const rows=await fetchIzinHistory();
+  const users=await fetchStaff();
+  const filter=state.izinFilter||"harian";
+  const today=new Date().toISOString().split("T")[0];
+  const now=new Date();
+
+  // Filter tanggal
+  function getFiltered(){
+    if(filter==="harian") return rows.filter(r=>r.tanggal===today);
+    if(filter==="mingguan"){
+      const d=new Date();d.setDate(d.getDate()-7);
+      return rows.filter(r=>new Date(r.tanggal)>=d);
+    }
+    if(filter==="bulanan"){
+      const bln=today.slice(0,7);
+      return rows.filter(r=>r.tanggal.startsWith(bln));
+    }
+    if(filter==="tahunan"){
+      const thn=today.slice(0,4);
+      return rows.filter(r=>r.tanggal.startsWith(thn));
+    }
+    return rows;
+  }
+  const filtered=getFiltered().sort((a,b)=>b.id-a.id);
+
+  // Hitung sisa izin per staff (hari ini)
+  const izinPerStaff={};
+  rows.filter(r=>r.tanggal===today).forEach(r=>{
+    if(!izinPerStaff[r.userId])izinPerStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,used:0};
+    izinPerStaff[r.userId].used++;
+  });
+
+  // Kelompokkan per tanggal
+  const grouped={};
+  filtered.forEach(r=>{
+    if(!grouped[r.tanggal])grouped[r.tanggal]=[];
+    grouped[r.tanggal].push(r);
+  });
+  const sortedDates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+
+  const filterTabs=`<div class="sub-tabs" style="margin-bottom:16px;">
+    ${[{k:"harian",l:"Hari Ini"},{k:"mingguan",l:"Minggu Ini"},{k:"bulanan",l:"Bulan Ini"},{k:"tahunan",l:"Tahun Ini"},{k:"semua",l:"Semua"}].map(t=>
+      `<button class="${filter===t.k?"active":""}" onclick="state.izinFilter='${t.k}';renderAppPage()">${t.l}</button>`
+    ).join("")}
+  </div>`;
+
+  // Sisa kuota hari ini
+  const quotaCards=Object.values(izinPerStaff).length?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,#1a1000,#1d2a44);">
+      <h4><i class="fa-solid fa-gauge" style="color:#f59e0b;"></i>Sisa Kuota Izin Hari Ini</h4>
+      <p style="font-size:13px;color:#7a9ab8;">Maks 4x per hari per staff. Pantau untuk cegah manipulasi.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+        ${Object.values(izinPerStaff).map(s=>{
+          const sisa=4-s.used;
+          return`<div style="background:#0b1730;border-radius:12px;padding:12px 16px;border:1px solid ${sisa<=1?"rgba(239,68,68,.4)":"rgba(245,158,11,.3)"};">
+            <b style="font-size:13px;">${s.nama}</b><br>
+            <span style="font-size:12px;color:#7a9ab8;">${s.jabatan}</span><br>
+            <div style="margin-top:6px;display:flex;gap:6px;align-items:center;">
+              ${[1,2,3,4].map(n=>`<div style="width:16px;height:16px;border-radius:4px;background:${n<=s.used?"#ef4444":"#1a2a40"};border:1px solid ${n<=s.used?"#ef4444":"#30415d"};"></div>`).join("")}
+              <span style="font-size:12px;color:${sisa===0?"#ef4444":sisa===1?"#f59e0b":"#18c08f"};">${s.used}/4 terpakai</span>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`:"";
+
+  // Tabel per tanggal
+  const tablesByDate=sortedDates.map(tgl=>{
+    const dayRows=grouped[tgl];
+    const melewati=dayRows.filter(r=>r.status==="Melewati Batas").length;
+    return`<div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <b style="font-size:14px;color:#d6e4f7;">${tgl}</b>
+        <span class="badge badge-info">${dayRows.length} izin</span>
+        ${melewati?`<span class="badge badge-danger">${melewati} melewati batas</span>`:""}
+        <button class="btn btn-danger btn-xs" style="margin-left:auto;" onclick="hapusIzinTanggal('${tgl}')">
+          <i class="fa-solid fa-trash"></i> Hapus Tanggal Ini
+        </button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th><th>Hapus</th></tr></thead>
+        <tbody>${dayRows.map(i=>`<tr>
+          <td><b>${i.nama}</b></td>
+          <td>${i.jabatan}</td>
+          <td>${i.jamKeluar}</td>
+          <td>${i.jamKembali||"-"}</td>
+          <td>${i.durasiMenit||0} mnt</td>
+          <td><span class="badge ${i.status==="Melewati Batas"?"badge-danger":i.status==="Aktif"?"badge-warning":"badge-success"}">${i.status}</span></td>
+          <td><button class="btn btn-danger btn-xs" onclick="hapusIzin(${i.id})"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>`;
+  }).join("");
+
+  // Rekap mingguan: siapa paling sering izin & melanggar
+  const rekapStaff={};
+  filtered.forEach(r=>{
+    if(!rekapStaff[r.userId])rekapStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,total:0,melewati:0};
+    rekapStaff[r.userId].total++;
+    if(r.status==="Melewati Batas")rekapStaff[r.userId].melewati++;
+  });
+  const rekapList=Object.values(rekapStaff).sort((a,b)=>b.total-a.total);
+
+  const rekapCard=rekapList.length&&filter==="mingguan"?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(239,68,68,.2);">
+      <h4><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i>Rekap Izin Minggu Ini</h4>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Total Izin</th><th>Melewati Batas</th></tr></thead>
+        <tbody>${rekapList.map(s=>`<tr>
+          <td><b>${s.nama}</b></td><td>${s.jabatan}</td>
+          <td><span class="badge ${s.total>=8?"badge-danger":s.total>=5?"badge-warning":"badge-info"}">${s.total}x</span></td>
+          <td><span class="badge ${s.melewati>0?"badge-danger":"badge-success"}">${s.melewati}x melewati</span></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>`:"";
+
+  return`${filterTabs}${quotaCards}${rekapCard}
+    <div class="between" style="margin-bottom:12px;">
+      <b style="font-size:14px;">${filtered.length} record ditemukan</b>
+      ${rows.length?`<button class="btn btn-danger btn-small" onclick="hapusSemuaIzin()"><i class="fa-solid fa-trash"></i> Hapus Semua History</button>`:""}
+    </div>
+    ${tablesByDate||`<div class="card"><div class="placeholder">Tidak ada data untuk periode ini.</div></div>`}`;
+}
+
+async function hapusIzin(id){
+  if(!confirm("Hapus history izin ini?"))return;
+  try{
+    const r=await fetchJson(`/api/izin/${id}`,{method:"DELETE"});
+    if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
+    cacheClear('/api/izin');toast("History izin dihapus");await renderAppPage();
+  }catch{toast("Server error",true);}
+}
+
+async function hapusIzinTanggal(tgl){
+  if(!confirm(`Hapus semua history izin tanggal ${tgl}?`))return;
+  try{
+    const r=await fetchJson("/api/izin/bulk/tanggal",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({tanggal:tgl})});
+    if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
+    toast(`History izin ${tgl} dihapus`);await renderAppPage();
+  }catch{toast("Server error",true);}
+}
+
+async function hapusSemuaIzin(){
+  if(!confirm("Hapus SEMUA history izin? Tindakan ini tidak bisa dibatalkan!"))return;
+  try{
+    const r=await fetchJson("/api/izin/bulk/tanggal",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({})});
+    if(r.status!=="success"){toast(r.message||"Gagal",true);return;}
+    toast("Semua history izin dihapus");await renderAppPage();
+  }catch{toast("Server error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// SOP
+// ══════════════════════════════════════════════════════
+const KATEGORI_SOP=["Umum","Absensi","Izin","Pelayanan","Kasir","Operasional","Keamanan"];
+const PRIORITAS_SOP=["Normal","Penting","Kritis"];
+const PRIORITAS_COLOR={Normal:"badge-muted",Penting:"badge-warning",Kritis:"badge-danger"};
+async function renderSopPage(isAdmin){
+  const sops=await fetchSop();const katFilter=state.sopKatFilter||"Semua";
+  const filteredSops=katFilter==="Semua"?sops:sops.filter(s=>s.kategori===katFilter);
+  const adminBar=isAdmin?`<div class="between" style="margin-bottom:16px;"><div></div><button class="btn btn-primary" onclick="openAddSopModal()"><i class="fa-solid fa-plus"></i> Tambah SOP/Info</button></div>`:"";
+  const katTabs=`<div class="sub-tabs" style="margin-bottom:14px;">${["Semua",...KATEGORI_SOP].map(k=>`<button class="${(state.sopKatFilter||"Semua")===k?"active":""}" onclick="setSopFilter('${k}')">${k}</button>`).join("")}</div>`;
+  const sopList=filteredSops.length?filteredSops.map(s=>`<div class="sop-card"><div class="sop-header" onclick="toggleSop('sop_body_${s.id}')">
+    <div style="width:36px;height:36px;border-radius:10px;background:#0d1930;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-file-lines" style="color:#6dd5c8;"></i></div>
+    <div class="sop-header-info"><b style="font-size:14px;">${s.judul}</b><div style="font-size:12px;color:#7a9ab8;margin-top:3px;"><span class="badge badge-teal" style="font-size:10px;">${s.kategori}</span><span class="badge ${PRIORITAS_COLOR[s.prioritas]||"badge-muted"}" style="font-size:10px;margin-left:4px;">${s.prioritas}</span><span style="margin-left:8px;">Oleh: ${s.dibuat_oleh} • ${s.tanggal}</span></div></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      ${isAdmin?`<button class="btn btn-info btn-xs" onclick="event.stopPropagation();openEditSopModal(${s.id})"><i class="fa-solid fa-pen"></i></button><button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteSop(${s.id})"><i class="fa-solid fa-trash"></i></button>`:""}
+      <i class="fa-solid fa-chevron-down" style="color:#6a8099;transition:.2s;"></i>
+    </div>
+  </div><div class="sop-body hidden" id="sop_body_${s.id}">${s.konten}</div></div>`).join(""):`<div class="card"><div class="placeholder">Belum ada SOP untuk kategori ini.</div></div>`;
+  return`<div class="card" style="margin-bottom:16px;"><h4><i class="fa-solid fa-book-open"></i>Pusat Informasi & SOP</h4><p>Peraturan operasional dan standar prosedur kerja. Baca dengan teliti.</p></div>${adminBar}${katTabs}${sopList}`;
+}
+function setSopFilter(k){state.sopKatFilter=k;renderAppPage();}
+function toggleSop(id){const el=document.getElementById(id);if(!el)return;el.classList.toggle("hidden");const arrow=el.previousElementSibling?.querySelector(".fa-chevron-down");if(arrow)arrow.style.transform=el.classList.contains("hidden")?"":"rotate(180deg)";}
+function openAddSopModal(){
+  document.getElementById("modalRoot").innerHTML=`<div class="modal"><div class="modal-box modal-box-lg"><div class="modal-head"><h3><i class="fa-solid fa-plus" style="color:#18c08f;"></i>Tambah SOP / Informasi</h3><button class="btn btn-dark btn-small" onclick="closeModal()">✕</button></div>
+  <div class="form-group"><label>Judul</label><input id="sopJudul" class="input" placeholder="Judul SOP atau informasi"></div>
+  <div class="grid grid-2"><div class="form-group"><label>Kategori</label><select id="sopKategori" class="select">${KATEGORI_SOP.map(k=>`<option>${k}</option>`).join("")}</select></div><div class="form-group"><label>Prioritas</label><select id="sopPrioritas" class="select">${PRIORITAS_SOP.map(p=>`<option>${p}</option>`).join("")}</select></div></div>
+  <div class="form-group"><label>Konten / Isi</label><textarea id="sopKonten" class="textarea" style="min-height:160px;" placeholder="Tulis isi SOP..."></textarea></div>
+  <div class="row" style="margin-top:12px;"><button class="btn btn-primary" onclick="saveSop()"><i class="fa-solid fa-save"></i> Simpan</button><button class="btn btn-dark" onclick="closeModal()">Batal</button></div>
+  </div></div>`;
+}
+async function saveSop(){const judul=document.getElementById("sopJudul").value.trim();const kategori=document.getElementById("sopKategori").value;const prioritas=document.getElementById("sopPrioritas").value;const konten=document.getElementById("sopKonten").value.trim();if(!judul||!konten){toast("Judul dan konten wajib diisi",true);return;}try{const r=await fetchJson("/api/sop",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({judul,kategori,prioritas,konten,dibuat_oleh:state.currentUser.nama})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}closeModal();toast("SOP berhasil ditambahkan");await renderAppPage();}catch{toast("Server error",true);}}
+async function openEditSopModal(id){const sops=await fetchSop();const s=sops.find(x=>x.id===id);if(!s)return;document.getElementById("modalRoot").innerHTML=`<div class="modal"><div class="modal-box modal-box-lg"><div class="modal-head"><h3><i class="fa-solid fa-pen" style="color:#3b82f6;"></i>Edit SOP</h3><button class="btn btn-dark btn-small" onclick="closeModal()">✕</button></div><div class="form-group"><label>Judul</label><input id="eSopJudul" class="input" value="${s.judul}"></div><div class="grid grid-2"><div class="form-group"><label>Kategori</label><select id="eSopKategori" class="select">${KATEGORI_SOP.map(k=>`<option ${s.kategori===k?"selected":""}>${k}</option>`).join("")}</select></div><div class="form-group"><label>Prioritas</label><select id="eSopPrioritas" class="select">${PRIORITAS_SOP.map(p=>`<option ${s.prioritas===p?"selected":""}>${p}</option>`).join("")}</select></div></div><div class="form-group"><label>Konten</label><textarea id="eSopKonten" class="textarea" style="min-height:160px;">${s.konten}</textarea></div><div class="row" style="margin-top:12px;"><button class="btn btn-primary" onclick="updateSop(${id})"><i class="fa-solid fa-save"></i> Simpan</button><button class="btn btn-dark" onclick="closeModal()">Batal</button></div></div></div>`;}
+async function updateSop(id){const judul=document.getElementById("eSopJudul").value.trim();const kategori=document.getElementById("eSopKategori").value;const prioritas=document.getElementById("eSopPrioritas").value;const konten=document.getElementById("eSopKonten").value.trim();try{const r=await fetchJson(`/api/sop/${id}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({judul,kategori,prioritas,konten})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}closeModal();toast("SOP berhasil diperbarui");await renderAppPage();}catch{toast("Server error",true);}}
+async function deleteSop(id){if(!confirm("Hapus SOP ini?"))return;try{const r=await fetchJson(`/api/sop/${id}`,{method:"DELETE"});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("SOP berhasil dihapus");await renderAppPage();}catch{toast("Server error",true);}}
+
+// ══════════════════════════════════════════════════════
+// KAS WEB
+// ══════════════════════════════════════════════════════
+async function renderKasWeb(isAdmin){
+  const kas=await fetchKas();const trx=kas.transaksi||[];const saldoAkhir=kas.saldoAkhir||0;
+  const totalMasuk=trx.filter(t=>t.tipe==="masuk").reduce((a,t)=>a+t.jumlah,0);
+  const totalKeluar=trx.filter(t=>t.tipe==="keluar").reduce((a,t)=>a+t.jumlah,0);
+  const canInput=isAdmin||boleh("inputTransaksi");const canDelete=isAdmin||boleh("hapusTransaksiKas");
+  const saldoAwalForm=isAdmin?`<div class="card" style="margin-bottom:14px;"><h4><i class="fa-solid fa-coins" style="color:#f59e0b;"></i>Atur Saldo Awal</h4><div class="row"><input id="inputSaldoAwal" type="number" class="input" style="max-width:220px;" placeholder="Nominal saldo awal" value="${kas.saldoAwal}"><button class="btn btn-warning" onclick="saveSaldoAwal()"><i class="fa-solid fa-save"></i> Simpan</button></div></div>`:"";
+  const inputTrxForm=canInput?`<div class="card" style="margin-bottom:14px;"><h4><i class="fa-solid fa-plus-circle" style="color:#18c08f;"></i>Input Transaksi</h4>
+    <div class="grid grid-2">
+      <div class="form-group"><label>Tipe</label><select id="trxTipe" class="select"><option value="masuk">💰 Pemasukan</option><option value="keluar">💸 Pengeluaran</option></select></div>
+      <div class="form-group"><label>Jumlah (Rp)</label><input id="trxJumlah" type="number" class="input" placeholder="Nominal"></div>
+      <div class="form-group"><label>Kategori</label><select id="trxKategori" class="select"><option>Operasional</option><option>ATK</option><option>Konsumsi</option><option>Transport</option><option>Utilitas</option><option>Lainnya</option></select></div>
+      <div class="form-group"><label>Keterangan</label><input id="trxKet" class="input" placeholder="Keterangan singkat"></div>
+    </div>
+    <div class="form-group"><label>Bukti (Upload Foto)</label><input type="file" accept="image/*" onchange="previewBukti(this)" class="input" style="padding:8px;"><div id="buktiPreviewContainer" style="margin-top:8px;"></div></div>
+    <div class="row" style="margin-top:10px;"><button class="btn btn-primary" onclick="saveTrx()"><i class="fa-solid fa-save"></i> Catat Transaksi</button></div>
+  </div>`:"";
+  return`${saldoAwalForm}
+  <div class="kas-stat-row">
+    <div class="kas-stat"><div class="ks-lbl">Saldo Awal</div><div class="ks-val" style="color:#f59e0b;">${formatRp(kas.saldoAwal)}</div></div>
+    <div class="kas-stat"><div class="ks-lbl">Total Pemasukan</div><div class="ks-val" style="color:#18e0a3;">+${formatRp(totalMasuk)}</div></div>
+    <div class="kas-stat"><div class="ks-lbl">Total Pengeluaran</div><div class="ks-val" style="color:#ef4444;">-${formatRp(totalKeluar)}</div></div>
+  </div>
+  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#0d1e38,#0a2a1e);border-color:${saldoAkhir>=0?"#1dbf97":"#ef4444"};">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div><div style="font-size:13px;color:#7a9ab8;">SALDO AKHIR</div><div style="font-size:32px;font-weight:bold;color:${saldoAkhir>=0?"#18e0a3":"#ef4444"};">${formatRp(saldoAkhir)}</div></div>
+      <i class="fa-solid fa-wallet" style="font-size:40px;color:${saldoAkhir>=0?"rgba(24,192,143,.2)":"rgba(239,68,68,.2)"};"></i>
+    </div>
+  </div>
+  ${inputTrxForm}
+  <div class="section-title"><i class="fa-solid fa-list"></i>Riwayat Transaksi</div>
+  <div class="table-wrap"><table><thead><tr><th>Tgl</th><th>Tipe</th><th>Kategori</th><th>Keterangan</th><th>Jumlah</th><th>Oleh</th><th>Bukti</th>${canDelete?"<th>Hapus</th>":""}</tr></thead>
+  <tbody>${trx.slice().reverse().length?trx.slice().reverse().map(t=>`<tr class="${t.tipe==="masuk"?"trx-masuk":"trx-keluar"}"><td style="white-space:nowrap;">${t.tanggal}</td><td><span class="badge ${t.tipe==="masuk"?"badge-success":"badge-danger"}">${t.tipe==="masuk"?"💰 Masuk":"💸 Keluar"}</span></td><td>${t.kategori}</td><td>${t.keterangan}</td><td style="font-weight:bold;color:${t.tipe==="masuk"?"#18e0a3":"#ef4444"};">${t.tipe==="masuk"?"+":"-"}${formatRp(t.jumlah)}</td><td>${t.dicatat_oleh}</td><td>${t.bukti?`<img src="${t.bukti}" class="bukti-thumb" onclick="lihatBukti('${t.bukti}')" title="Lihat bukti">`:"-"}</td>${canDelete?`<td><button class="btn btn-danger btn-xs" onclick="deleteTrx(${t.id})"><i class="fa-solid fa-trash"></i></button></td>`:""}</tr>`).join(""):`<tr><td colspan="${canDelete?8:7}" style="text-align:center;color:#8ca0be;">Belum ada transaksi.</td></tr>`}</tbody></table></div>`;
+}
+let buktiBase64="";
+function previewBukti(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){buktiBase64=e.target.result;const c=document.getElementById("buktiPreviewContainer");if(c)c.innerHTML=`<img src="${buktiBase64}" style="max-height:80px;border-radius:8px;border:1px solid #2e4260;">`;};reader.readAsDataURL(file);}
+async function saveSaldoAwal(){const saldoAwal=Number(document.getElementById("inputSaldoAwal").value);try{const r=await fetchJson("/api/kas/saldo-awal",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({saldoAwal})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Saldo awal diperbarui");await renderAppPage();}catch{toast("Server error",true);}}
+async function saveTrx(){const tipe=document.getElementById("trxTipe").value;const jumlah=Number(document.getElementById("trxJumlah").value);const kategori=document.getElementById("trxKategori").value;const keterangan=document.getElementById("trxKet").value.trim();if(!jumlah||!keterangan){toast("Jumlah dan keterangan wajib diisi",true);return;}try{const body={tipe,jumlah,kategori,keterangan,dicatat_oleh:state.currentUser.nama,bukti:buktiBase64||""};const r=await fetchJson("/api/kas/transaksi",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}buktiBase64="";toast("Transaksi berhasil dicatat");await renderAppPage();}catch{toast("Server error",true);}}
+async function deleteTrx(id){if(!confirm("Hapus transaksi ini?"))return;try{const r=await fetchJson(`/api/kas/transaksi/${id}`,{method:"DELETE"});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Transaksi dihapus");await renderAppPage();}catch{toast("Server error",true);}}
+function lihatBukti(src){document.getElementById("modalRoot").innerHTML=`<div class="modal" onclick="closeModal()"><div style="max-width:700px;width:100%;text-align:center;"><img src="${src}" style="max-width:100%;border-radius:14px;box-shadow:0 20px 40px rgba(0,0,0,.5);"><p style="color:#aaa;margin-top:10px;font-size:13px;">Klik di mana saja untuk menutup</p></div></div>`;}
+
+// ══════════════════════════════════════════════════════
+// SERAH TERIMA CS LINE
+// ══════════════════════════════════════════════════════
+async function renderSerahTerima(isAdmin){
+  const data=await fetchSerahTerima();
+  const statusOpts=["Normal","Ada Kendala","Perlu Perhatian","Kritis"];
+  const statusColor={"Normal":"badge-success","Ada Kendala":"badge-warning","Perlu Perhatian":"badge-orange","Kritis":"badge-danger"};
+  const formSection=!isAdmin?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(13,148,136,.4);background:linear-gradient(135deg,#071e2a,#0d2a1e);">
+      <h4><i class="fa-solid fa-pen-to-square" style="color:#81e6d9;"></i>Buat Laporan Serah Terima</h4>
+      <p>Isi laporan harian sebelum selesai shift.</p>
+      <div class="st-grid" style="margin-top:16px;">
+        <div class="form-group"><label>Shift Dari (Petugas Saat Ini)</label><input id="stDari" class="input" value="${state.currentUser.nama}" readonly></div>
+        <div class="form-group"><label>Shift Ke (Petugas Berikutnya)</label><input id="stKe" class="input" placeholder="Nama petugas CS LINE berikutnya"></div>
+        <div class="form-group"><label>Shift Dari</label><select id="stShiftDari" class="select"><option>Pagi</option><option>Siang</option><option>Sore</option><option>Malam</option></select></div>
+        <div class="form-group"><label>Shift Ke</label><select id="stShiftKe" class="select"><option>Pagi</option><option>Siang</option><option>Sore</option><option>Malam</option></select></div>
+      </div>
+      <div class="form-group"><label>Ringkasan Aktivitas Hari Ini <span style="color:#ef4444;">*</span></label><textarea id="stRingkasan" class="textarea" placeholder="Ceritakan aktivitas utama shift ini..."></textarea></div>
+      <div class="st-grid">
+        <div class="form-group"><label>Kendala yang Terjadi</label><textarea id="stKendala" class="textarea" style="min-height:70px;" placeholder="Tuliskan kendala jika ada (isi 'Tidak ada' jika lancar)">Tidak ada</textarea></div>
+        <div class="form-group"><label>Tindakan yang Sudah Diambil</label><textarea id="stTindakan" class="textarea" style="min-height:70px;" placeholder="Apa yang sudah dilakukan untuk menangani kendala?"></textarea></div>
+      </div>
+      <div class="st-grid">
+        <div class="form-group"><label>Status Sistem/Kondisi</label><select id="stStatus" class="select">${statusOpts.map(s=>`<option>${s}</option>`).join("")}</select></div>
+        <div class="form-group"><label>Catatan Tambahan</label><input id="stCatatan" class="input" placeholder="Info penting lainnya untuk shift berikutnya"></div>
+      </div>
+      <div class="row" style="margin-top:14px;">
+        <button class="btn btn-teal" onclick="saveSerahTerima()"><i class="fa-solid fa-handshake"></i> Kirim Laporan Serah Terima</button>
+      </div>
+    </div>`:"";
+  const adminBar=isAdmin?`<div class="between" style="margin-bottom:14px;"><div class="card" style="flex:1;"><h4><i class="fa-solid fa-handshake"></i>Serah Terima CS LINE</h4><p>Pantau laporan serah terima antar shift CS LINE.</p></div></div>`:"";
+  const cards=data.length?data.map(d=>`<div class="st-card">
+    <div class="st-meta">
+      <span class="badge badge-teal"><i class="fa-solid fa-calendar"></i> ${d.tanggal} • ${d.jam}</span>
+      <span class="badge ${statusColor[d.status_sistem]||"badge-muted"}">${d.status_sistem}</span>
+      <span class="badge badge-muted"><i class="fa-solid fa-person-walking-arrow-right"></i> ${d.shift_dari||"-"} → ${d.shift_ke||"-"}</span>
+    </div>
+    <div class="st-grid">
+      <div class="st-field"><label>Petugas Dari</label><p><b>${d.petugas_dari}</b> (Shift ${d.shift_dari})</p></div>
+      <div class="st-field"><label>Serah ke</label><p><b>${d.petugas_ke||"-"}</b> (Shift ${d.shift_ke})</p></div>
+      <div class="st-field" style="grid-column:1/-1;"><label>Ringkasan Aktivitas</label><p>${d.ringkasan}</p></div>
+      <div class="st-field"><label>Kendala</label><p style="color:${d.kendala==="Tidak ada"?"#89f2d4":"#ffe07a"};">${d.kendala}</p></div>
+      <div class="st-field"><label>Tindakan</label><p>${d.tindakan||"-"}</p></div>
+      ${d.catatan?`<div class="st-field" style="grid-column:1/-1;"><label>Catatan</label><p style="color:#b9d7ff;">${d.catatan}</p></div>`:""}
+    </div>
+    ${isAdmin?`<div style="margin-top:10px;text-align:right;"><button class="btn btn-danger btn-xs" onclick="deleteSerahTerima(${d.id})"><i class="fa-solid fa-trash"></i> Hapus</button></div>`:""}
+  </div>`).join(""):`<div class="card"><div class="placeholder"><i class="fa-solid fa-handshake" style="font-size:36px;margin-bottom:12px;display:block;color:#0d9488;"></i>Belum ada laporan serah terima.</div></div>`;
+  return`${adminBar}${formSection}<div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i>Riwayat Serah Terima</div>${cards}`;
+}
+async function saveSerahTerima(){
+  const petugas_dari=document.getElementById("stDari").value;const petugas_ke=document.getElementById("stKe").value.trim();const shift_dari=document.getElementById("stShiftDari").value;const shift_ke=document.getElementById("stShiftKe").value;const ringkasan=document.getElementById("stRingkasan").value.trim();const kendala=document.getElementById("stKendala").value.trim();const tindakan=document.getElementById("stTindakan").value.trim();const status_sistem=document.getElementById("stStatus").value;const catatan=document.getElementById("stCatatan").value.trim();
+  if(!ringkasan){toast("Ringkasan aktivitas wajib diisi",true);return;}
+  try{const r=await fetchJson("/api/serahterima",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({petugas_dari,petugas_ke,shift_dari,shift_ke,ringkasan,kendala,tindakan,status_sistem,catatan})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Laporan serah terima berhasil dikirim ✓");await renderAppPage();}catch{toast("Server error",true);}
+}
+async function deleteSerahTerima(id){if(!confirm("Hapus laporan ini?"))return;try{const r=await fetchJson(`/api/serahterima/${id}`,{method:"DELETE"});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Laporan dihapus");await renderAppPage();}catch{toast("Server error",true);}}
+
+// ══════════════════════════════════════════════════════
+// OTORITAS HAK AKSES
+// ══════════════════════════════════════════════════════
+const ALL_HAK=[
+  {grup:"Menu yang Dapat Diakses",items:[
+    {key:"menuDataStaff",    label:"Data Staff"},
+    {key:"menuDetailStaff",  label:"Detail Staff"},
+    {key:"menuAbsensi",      label:"Data Absensi"},
+    {key:"menuIzin",         label:"Izin Keluar Staff"},
+    {key:"menuShift",        label:"Shift Kerja"},
+    {key:"menuHistoryAbsensi",label:"History Absensi"},
+    {key:"menuHistoryIzin",  label:"History Izin"},
+    {key:"menuKas",          label:"Kas Web"},
+    {key:"menuSOP",          label:"Pusat Info & SOP"},
+    {key:"menuSerahTerima",  label:"Serah Terima CS LINE"},
+    {key:"menuJobDesk",      label:"Job Desk Kasir"}
+  ]},
+  {grup:"Aksi — Data Staff",items:[
+    {key:"tambahStaff",label:"Tambah Staff Baru"},
+    {key:"editStaff",  label:"Edit Data Staff"},
+    {key:"hapusStaff", label:"Hapus Staff"}
+  ]},
+  {grup:"Aksi — Shift & Absensi",items:[
+    {key:"setShift",   label:"Set / Ubah Shift Staff"},
+    {key:"resetAbsen", label:"Reset Absensi Staff"}
+  ]},
+  {grup:"Aksi — Kas Web",items:[
+    {key:"inputTransaksi",    label:"Input Transaksi"},
+    {key:"hapusTransaksiKas", label:"Hapus Transaksi Kas"}
+  ]},
+  {grup:"Aksi — SOP & Info",items:[
+    {key:"tambahSOP", label:"Tambah SOP / Info Baru"},
+    {key:"hapusSOP",  label:"Hapus SOP / Info"}
+  ]},
+  {grup:"Aksi — Job Desk",items:[
+    {key:"bukaJobDesk",label:"Set / Input Job Desk Staff"}
+  ]},
+  {grup:"Fitur Ekstra",items:[
+    {key:"aksesKirimBroadcast",label:"Kirim Broadcast Notifikasi"}
+  ]}
+];
+const JABATAN_OTORITAS=["Kapten","CS LINE","Kasir","CS"];
+async function renderOtoritas(){
+  const akses=await fetchAkses();const jabatan=state.currentAksesJabatan||"KAPTEN";const currentAkses=akses[jabatan]||{};
+  const jabatanTabs=JABATAN_OTORITAS.map(j=>`<button onclick="setAksesJabatan('${j}')" style="padding:8px 16px;border-radius:10px;border:1px solid ${j===jabatan?"#1dbf97":"var(--line)"};background:${j===jabatan?"#05353a":"transparent"};color:${j===jabatan?"#18e0a3":"var(--muted)"};cursor:pointer;font-size:13px;font-weight:600;">${j}</button>`).join("");
+  const aksesGrups=ALL_HAK.map(g=>`<div class="akses-group"><h5>${g.grup}</h5>${g.items.map(item=>`<div class="akses-item"><label for="ak_${item.key}">${item.label}</label><label class="toggle-switch"><input type="checkbox" id="ak_${item.key}" ${currentAkses[item.key]?"checked":""}><span class="toggle-slider"></span></label></div>`).join("")}</div>`).join("");
+  return`<div class="card" style="border-color:#8a2836;background:linear-gradient(135deg,#1a0a14,#1d2a44);margin-bottom:16px;"><div class="between"><div><h4><i class="fa-solid fa-lock" style="color:#ff6b6b;"></i>Otoritas Hak Akses Per Jabatan</h4><p>Atur hak akses menu dan fitur untuk setiap jabatan staff.</p><p style="color:#ffb9c2;font-size:12px;margin-top:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Jabatan ADMIN memiliki hak akses mutlak dan tidak dapat dibatasi.</p></div><button class="btn btn-gold" onclick="saveAkses()"><i class="fa-solid fa-save"></i> Simpan Hak Akses</button></div></div>
+  <div style="margin-bottom:20px;"><b style="font-size:13px;color:#8ca0be;display:block;margin-bottom:8px;">Pilih Jabatan untuk Diedit:</b><div style="display:flex;gap:8px;flex-wrap:wrap;">${jabatanTabs}</div></div>
+  <div class="akses-grid">${aksesGrups}</div>`;
+}
+function setAksesJabatan(j){state.currentAksesJabatan=j;renderAppPage();}
+async function saveAkses(){
+  const jabatan=state.currentAksesJabatan||"KAPTEN";const body={};
+  ALL_HAK.forEach(g=>g.items.forEach(item=>{const el=document.getElementById(`ak_${item.key}`);if(el)body[item.key]=el.checked;}));
+  try{const r=await fetchJson(`/api/akses/${encodeURIComponent(jabatan)}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast(`Hak akses ${jabatan} berhasil disimpan ✓`);}catch{toast("Server error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// SETTINGS (dengan tema berfungsi + broadcast)
+// ══════════════════════════════════════════════════════
+async function renderSettings(){
+  const tab=state.currentSettingsTab||"tema";const settings=await fetchSettings();const bc=await fetchBroadcast();
+  const tabHtml=`<div class="settings-tab">${[{k:"tema",l:"Tampilan & Tema",i:"fa-palette"},{k:"broadcast",l:"Broadcast & Notifikasi",i:"fa-bullhorn"},{k:"staff",l:"Manajemen Staff",i:"fa-users-gear"}].map(t=>`<button class="${tab===t.k?"active":""}" onclick="setSettingsTab('${t.k}')"><i class="fa-solid ${t.i}"></i> ${t.l}</button>`).join("")}</div>`;
+  let c="";
+  if(tab==="tema"){
+    const themes=[{id:"dark-blue",label:"Dark Blue",sidebar:"#020d22",main:"#071634"},{id:"dark-green",label:"Dark Green",sidebar:"#011208",main:"#04280f"},{id:"dark-purple",label:"Dark Purple",sidebar:"#0a0518",main:"#1a0a30"},{id:"midnight",label:"Midnight",sidebar:"#050505",main:"#111111"}];
+    const current=settings.theme||"dark-blue";
+    c=`<div class="card"><h4><i class="fa-solid fa-palette"></i>Pengaturan Tampilan & Tema</h4><p>Pilih tema warna dashboard. Perubahan langsung diterapkan saat disimpan.</p>
+    <div class="theme-swatch-row">${themes.map(t=>`<div class="theme-swatch ${current===t.id?"selected":""}" onclick="previewTheme('${t.id}')" id="swatch_${t.id}">
+      <div class="swatch-preview"><div class="swatch-sidebar" style="background:${t.sidebar};"></div><div class="swatch-main" style="background:${t.main};"></div></div>
+      <div class="swatch-label">${t.label}</div>
+    </div>`).join("")}</div>
+    <input type="hidden" id="selectedTheme" value="${current}">
+    <div class="row" style="margin-top:18px;"><button class="btn btn-primary" onclick="saveSettingTheme()"><i class="fa-solid fa-save"></i> Simpan & Terapkan Tema</button></div></div>`;
+  }else if(tab==="broadcast"){
+    c=`<div class="card" style="margin-bottom:14px;border-color:rgba(245,158,11,.3);">
+      <h4><i class="fa-solid fa-bullhorn" style="color:#f59e0b;"></i>Broadcast Pesan ke Semua Pengguna</h4>
+      <p>Pesan broadcast akan tampil sebagai teks berjalan di bagian atas dashboard semua pengguna yang sedang login.</p>
+      <div style="margin-top:16px;">
+        <div class="form-group"><label>Pesan Broadcast</label><textarea id="broadcastPesan" class="textarea" placeholder="Tulis pesan broadcast di sini...">${bc.pesan||""}</textarea></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <span style="font-size:13px;color:#b9c8dc;">Status saat ini:</span>
+          <span class="badge ${bc.aktif?"badge-warning":"badge-muted"}">${bc.aktif?"🔴 BROADCAST AKTIF":"⚫ Tidak Aktif"}</span>
+          ${bc.aktif?`<span style="font-size:12px;color:#7a9ab8;">Dibuat oleh: ${bc.dibuat_oleh}</span>`:""}
+        </div>
+        ${bc.aktif&&bc.pesan?`<div class="broadcast-bar" style="border-radius:10px;margin-bottom:14px;"><div class="broadcast-bar-label"><i class="fa-solid fa-eye"></i> Preview</div><div class="broadcast-bar-text"><div class="broadcast-bar-inner">📢 ${bc.pesan} 📢 ${bc.pesan}</div></div></div>`:""}
+        <div class="row">
+          <button class="btn btn-warning" onclick="sendBroadcast()"><i class="fa-solid fa-bullhorn"></i> Aktifkan Broadcast</button>
+          <button class="btn btn-dark" onclick="stopBroadcast()"><i class="fa-solid fa-stop"></i> Nonaktifkan</button>
+        </div>
+      </div>
+    </div>`;
+  }else if(tab==="staff"){
+    const users=await fetchStaff();
+    c=`<div class="card"><h4><i class="fa-solid fa-users-gear"></i>Manajemen Staff</h4><div class="table-wrap" style="margin-top:14px;"><table><thead><tr><th>Nama</th><th>Username</th><th>Jabatan</th><th>Status</th><th>Aksi</th></tr></thead><tbody>${users.map(u=>`<tr><td><b>${u.nama}</b></td><td>${u.username}</td><td>${u.jabatan}</td><td><span class="badge ${u.active?"badge-success":"badge-danger"}">${u.active?"Aktif":"Nonaktif"}</span></td><td><div class="actions"><button class="btn ${u.active?"btn-warning":"btn-success"} btn-xs" onclick="toggleStaffActive(${u.id},${u.active})">${u.active?'<i class="fa-solid fa-ban"></i> Nonaktifkan':'<i class="fa-solid fa-check"></i> Aktifkan'}</button><button class="btn btn-danger btn-xs" onclick="deleteStaff(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i> Hapus</button></div></td></tr>`).join("")}</tbody></table></div></div>`;
+  }
+  return tabHtml+c;
+}
+function setSettingsTab(t){state.currentSettingsTab=t;renderAppPage();}
+let pendingTheme="";
+function previewTheme(themeId){
+  // Hapus selected dari semua swatch
+  document.querySelectorAll(".theme-swatch").forEach(el=>el.classList.remove("selected"));
+  const sw=document.getElementById("swatch_"+themeId);if(sw)sw.classList.add("selected");
+  const input=document.getElementById("selectedTheme");if(input)input.value=themeId;
+  // Preview langsung di body
+  applyTheme(themeId);pendingTheme=themeId;
+}
+async function saveSettingTheme(){
+  const theme=document.getElementById("selectedTheme")?.value||pendingTheme||"dark-blue";
+  try{
+    const r=await fetchJson("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({theme})});
+    if(r.status!=="success"){toast("Gagal simpan tema",true);return;}
+    applyTheme(theme);toast("Tema berhasil disimpan & diterapkan ✓");
+  }catch{toast("Server error",true);}
+}
+async function sendBroadcast(){
+  const pesan=document.getElementById("broadcastPesan").value.trim();
+  if(!pesan){toast("Pesan broadcast wajib diisi",true);return;}
+  try{const r=await fetchJson("/api/broadcast",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({aktif:true,pesan,dibuat_oleh:state.currentUser.nama})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Broadcast diaktifkan! Semua pengguna akan melihat pesan ini.");await renderAppPage();}catch{toast("Server error",true);}
+}
+async function stopBroadcast(){
+  try{const r=await fetchJson("/api/broadcast",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({aktif:false,pesan:"",dibuat_oleh:""})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Broadcast dinonaktifkan");await renderAppPage();}catch{toast("Server error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// STAFF PAGES
+// ══════════════════════════════════════════════════════
+async function renderAbsenSaya(){
+  const me=state.currentUser;
+  return`<div class="staff-hero center-card">
+    <div class="hero-avatar" onclick="setMenu('profilSaya')" title="Edit Profil">
+      ${me.profile?.avatarImage?`<img src="${me.profile.avatarImage}">`:(me.profile?.avatarText||me.nama.charAt(0)).slice(0,1).toUpperCase()}
+    </div>
+    <h4 style="font-size:30px;">Selamat Datang 👋</h4>
+    <p style="font-size:20px;color:#f5e4af;font-weight:bold;">${me.profile?.nickname||me.nama}</p>
+    <p>${me.profile?.motto||"Siap bertugas hari ini?"}</p>
+    <p style="margin-top:8px;font-size:13px;color:#9fb0c7;">${new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</p>
+    <div style="margin-top:12px;"><span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${me.shift} • ${me.shiftStartTime}</span></div>
+    <div style="margin-top:20px;"><button class="btn btn-gold" style="font-size:18px;min-width:270px;" onclick="absenSekarang()"><i class="fa-solid fa-fingerprint"></i> SAYA MULAI BERTUGAS</button></div>
+  </div>`;
+}
+async function absenSekarang(){try{const r=await fetchJson("/api/absensi",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:state.currentUser.id})});if(r.status!=="success"){showCenterAlert({title:"PERINGATAN!",message:r.message||"Gagal absensi.",confirmText:"MENGERTI",icon:"⚠",danger:true});return;}showCenterAlert({title:"Mantap!",message:"Absensi berhasil dicatat ✓",submessage:"Tetap semangat dan fokus bertugas.",confirmText:"SIAP",icon:"☀",danger:false});}catch{toast("Server gagal mencatat absensi",true);}}
+async function renderIzinSaya(){
+  const status=await fetchIzinStatus(state.currentUser.id);const used=status?status.used:0;
+  return`<div class="grid grid-2">
+    <div class="card">
+      <h4><i class="fa-solid fa-person-walking-arrow-right"></i>Izin Keluar Saya</h4>
+      <p>Maks 4 kali sehari. Durasi maks 15 menit per izin.</p>
+      <div style="margin-top:14px;"><div class="between" style="margin-bottom:6px;"><b>Kuota Hari Ini</b><b style="color:${used>=4?"#ef4444":"#18e0a3"};">${used}/4</b></div><div class="quota-bar"><div class="quota-fill" style="width:${(used/4)*100}%;background:${used>=4?"#ef4444":used>=3?"#f59e0b":"linear-gradient(90deg,#18c08f,#22d3ae)"};"></div></div></div>
+      <div style="margin-top:16px;" class="row">
+        <button class="btn btn-warning" onclick="mulaiIzinKeluar()"><i class="fa-solid fa-door-open"></i> MULAI IZIN KELUAR</button>
+        <button class="btn btn-info" onclick="selesaiIzinKeluar()"><i class="fa-solid fa-door-closed"></i> SELESAI IZIN</button>
+      </div>
+      ${status&&status.active?`<div class="izin-warning-box" style="margin-top:14px;"><b><i class="fa-solid fa-circle-dot" style="color:#ff6b6b;"></i> Izin Sedang Aktif</b><br>Keluar: ${status.izin.jamKeluar} | Durasi: <b>${status.izin.durasiMenit} menit</b><br>Sisa waktu: <b style="color:${status.izin.remainingMinutes<=2?"#ff6b6b":"#ffd979"};">${status.izin.remainingMinutes} menit</b></div>`:`<div style="margin-top:14px;"><span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Tidak ada izin aktif</span></div>`}
+    </div>
+    <div class="card">
+      <h4><i class="fa-solid fa-circle-info"></i>Aturan Izin</h4>
+      <div style="margin-top:10px;">
+        <div style="padding:9px 0;border-bottom:1px solid var(--table-border);font-size:13.5px;"><i class="fa-solid fa-star" style="color:#ffd979;"></i> Kapten: maks 1 orang</div>
+        <div style="padding:9px 0;border-bottom:1px solid var(--table-border);font-size:13.5px;"><i class="fa-solid fa-cash-register" style="color:#89f2d4;"></i> Kasir: maks 2 orang</div>
+        <div style="padding:9px 0;border-bottom:1px solid var(--table-border);font-size:13.5px;"><i class="fa-solid fa-headset" style="color:#b9d7ff;"></i> CS: maks 1 orang</div>
+        <div style="padding:9px 0;font-size:13.5px;"><i class="fa-solid fa-phone-volume" style="color:#81e6d9;"></i> CS LINE: maks 1 orang</div>
+      </div>
+      <div style="margin-top:12px;background:#0b1730;border-radius:12px;padding:12px;">
+        <p style="font-size:13px;"><i class="fa-solid fa-clock"></i> Maks durasi: <b>15 menit</b></p>
+        <p style="font-size:13px;"><i class="fa-solid fa-repeat"></i> Maks per hari: <b>4 kali</b></p>
+        <p style="font-size:13px;color:#ffb9c2;margin-top:8px;"><i class="fa-solid fa-desktop"></i> Menu ini hanya dapat diakses dari PC</p>
+      </div>
+    </div>
+  </div>`;
+}
+async function mulaiIzinKeluar(){try{const r=await fetchJson("/api/izin/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:state.currentUser.id})});if(r.status==="blocked"){showCenterAlert({title:"TIDAK BISA KELUAR",message:r.detail||"Ada staff yang sama sedang keluar.",submessage:r.subdetail||"Tunggu giliran.",confirmText:"MENGERTI",icon:"🚫",danger:true});return;}if(r.status!=="success"){showCenterAlert({title:"PERINGATAN!",message:r.message||"Gagal memulai izin.",confirmText:"MENGERTI",icon:"⚠",danger:true});return;}state.izinWarn14Shown=false;state.izinOverShown=false;toast("Izin keluar dimulai ✓");await renderAppPage();}catch(e){console.error(e);toast("Server gagal memulai izin keluar",true);}}
+async function selesaiIzinKeluar(){try{const r=await fetchJson("/api/izin/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:state.currentUser.id})});if(r.status!=="success"){toast(r.message||"Gagal menyelesaikan izin",true);return;}toast("Izin keluar selesai ✓");state.izinWarn14Shown=false;state.izinOverShown=false;await renderAppPage();}catch(e){console.error(e);toast("Server gagal menyelesaikan izin",true);}}
+async function renderShiftSaya(){
+  const staff=await fetchStaff();const me=staff.find(u=>Number(u.id)===Number(state.currentUser.id))||state.currentUser;
+  const roster=["Pagi","Siang","Sore","Malam"].map(shift=>{const rows=staff.filter(u=>u.role==="staff"&&u.shift===shift);return`<div class="card"><h4 style="font-size:15px;"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i>${shift}</h4>${rows.length?rows.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--table-border);"><div class="member-avatar" style="width:28px;height:28px;font-size:12px;">${r.profile?.avatarImage?`<img src="${r.profile.avatarImage}">`:r.nama.charAt(0).toUpperCase()}</div><div><b style="font-size:13px;">${r.nama}${r.id===me.id?" (Saya)":""}</b><br><span style="color:#b8c6d8;font-size:12px;">${r.jabatan} • ${r.shiftStartTime}</span></div></div>`).join(""):"<p>Belum ada staff.</p>"}</div>`;}).join("");
+  return`<div class="card"><h4><i class="fa-solid fa-calendar"></i>Shift Saya</h4><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;"><span class="badge badge-info" style="font-size:14px;padding:8px 16px;"><i class="fa-solid fa-clock"></i> ${me.shift}</span><span class="badge badge-gold" style="font-size:14px;padding:8px 16px;"><i class="fa-solid fa-hourglass-start"></i> Jam Masuk: ${me.shiftStartTime}</span></div></div><div class="section-title"><i class="fa-solid fa-users"></i>Shift Rekan Kerja</div><div class="grid grid-4">${roster}</div>`;
+}
+async function renderHistorySaya(){
+  const absensi=await fetchAbsensi();const izin=await fetchIzinHistory();
+  const myAbs=absensi.filter(r=>Number(r.userId)===Number(state.currentUser.id));const myIzin=izin.filter(r=>Number(r.userId)===Number(state.currentUser.id));
+  return`<div class="card"><h4><i class="fa-solid fa-clock-rotate-left"></i>History Absensi Saya</h4><p>Total ${myAbs.length} record.</p></div>
+  <div class="table-wrap"><table><thead><tr><th>ID</th><th>Shift</th><th>Jam Kerja</th><th>Tanggal</th><th>Jam Masuk</th><th>Status</th></tr></thead><tbody>${myAbs.length?myAbs.map(r=>`<tr><td>${r.id}</td><td>${r.shiftTerdaftar}</td><td>${r.shiftStartTime||"-"}</td><td>${r.tanggal}</td><td>${r.jamMasuk}</td><td><span class="badge ${r.status==="Terlambat"?"badge-warning":"badge-success"}">${r.status||"Hadir"}</span></td></tr>`).join(""):`<tr><td colspan="6" style="text-align:center;color:#8ca0be;">Belum ada history absensi.</td></tr>`}</tbody></table></div>
+  <div class="section-title" style="margin-top:20px;"><i class="fa-solid fa-door-open"></i>History Izin Keluar Saya</div>
+  <div class="table-wrap"><table><thead><tr><th>ID</th><th>Tanggal</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th></tr></thead><tbody>${myIzin.length?myIzin.map(r=>`<tr><td>${r.id}</td><td>${r.tanggal}</td><td>${r.jamKeluar}</td><td>${r.jamKembali||"-"}</td><td>${r.durasiMenit||0} mnt</td><td><span class="badge ${r.status==="Melewati Batas"?"badge-danger":r.status==="Aktif"?"badge-warning":"badge-success"}">${r.status}</span></td></tr>`).join(""):`<tr><td colspan="6" style="text-align:center;color:#8ca0be;">Belum ada history izin.</td></tr>`}</tbody></table></div>`;
+}
+async function renderProfilSaya(){
+  const me=state.currentUser;const p=me.profile||{};const avatarEl=p.avatarImage?`<img src="${p.avatarImage}">`:(p.avatarText||me.nama.charAt(0)).toUpperCase().slice(0,1);
+  return`<div class="grid grid-2">
+    <div class="card">
+      <h4><i class="fa-solid fa-circle-user"></i>Edit Profil Saya</h4><p>Kustomisasi profil dan avatar Anda.</p>
+      <div style="margin-top:20px;text-align:center;">
+        <div class="avatar-upload-zone"><div class="avatar-preview" id="avatarPreview">${avatarEl}</div><div class="upload-overlay"><i class="fa-solid fa-camera"></i></div><input type="file" accept="image/*" onchange="previewAvatar(this)"></div>
+        <p style="font-size:12px;color:#6a8099;margin-top:6px;">Klik avatar untuk ganti foto</p>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="form-group"><label>Nama Panggilan</label><input id="pNick" class="input" value="${p.nickname||me.nama}"></div>
+        <div class="form-group"><label>Nomor Telepon</label><input id="pPhone" class="input" value="${p.phone||""}" placeholder="Nomor HP"></div>
+        <div class="form-group"><label>Motto</label><input id="pMotto" class="input" value="${p.motto||""}" placeholder="Motto kerja"></div>
+        <div class="form-group"><label>Bio</label><textarea id="pBio" class="textarea" placeholder="Ceritakan tentang diri Anda">${p.bio||""}</textarea></div>
+        <div class="form-group"><label>Teks Avatar (jika tidak ada foto)</label><input id="pAvatarText" class="input" value="${p.avatarText||me.nama.charAt(0)}" maxlength="2"></div>
+      </div>
+      <div class="row"><button class="btn btn-primary" onclick="saveMyProfile()"><i class="fa-solid fa-save"></i> Simpan Profil</button></div>
+    </div>
+    <div>
+      <div class="card"><h4><i class="fa-solid fa-lock"></i>Ganti Password</h4><p>Ubah password akun Anda sendiri.</p>
+        <div style="margin-top:14px;">
+          <div class="form-group"><label>Password Lama</label><input id="cpOld" type="password" class="input" placeholder="Password saat ini"></div>
+          <div class="form-group"><label>Password Baru</label><input id="cpNew" type="password" class="input" placeholder="Min. 4 karakter"></div>
+          <div class="form-group"><label>Konfirmasi Password</label><input id="cpConfirm" type="password" class="input" placeholder="Ulangi password baru"></div>
+        </div>
+        <button class="btn btn-warning" onclick="changeMyPassword()"><i class="fa-solid fa-key"></i> Ganti Password</button>
+      </div>
+      <div class="card" style="margin-top:16px;"><h4><i class="fa-solid fa-id-badge"></i>Informasi Akun</h4>
+        <p><b>Nama:</b> ${me.nama}</p><p><b>Username:</b> ${me.username}</p>
+        <p><b>Jabatan:</b> ${me.jabatan}</p><p><b>Shift:</b> ${me.shift} • ${me.shiftStartTime}</p>
+      </div>
+    </div>
+  </div>`;
+}
+let avatarBase64="";
+function previewAvatar(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){avatarBase64=e.target.result;const p=document.getElementById("avatarPreview");if(p)p.innerHTML=`<img src="${avatarBase64}">`;};reader.readAsDataURL(file);}
+async function saveMyProfile(){
+  const nickname=document.getElementById("pNick").value.trim();const phone=document.getElementById("pPhone").value.trim();const bio=document.getElementById("pBio").value.trim();const motto=document.getElementById("pMotto").value.trim();const avatarText=document.getElementById("pAvatarText").value.trim();const body={nickname,phone,bio,motto,avatarText};if(avatarBase64)body.avatarImage=avatarBase64;
+  try{const r=await fetchJson(`/api/staff/${state.currentUser.id}/profile`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}state.currentUser=r.data;saveStoredUser(r.data);avatarBase64="";toast("Profil berhasil diperbarui ✓");await renderAppPage();}catch{toast("Server error",true);}
+}
+async function changeMyPassword(){
+  const oldPw=document.getElementById("cpOld").value.trim();const newPw=document.getElementById("cpNew").value.trim();const confPw=document.getElementById("cpConfirm").value.trim();
+  if(!oldPw||!newPw||!confPw){toast("Semua field wajib diisi",true);return;}if(newPw.length<4){toast("Password baru minimal 4 karakter",true);return;}if(newPw!==confPw){toast("Konfirmasi password tidak sama",true);return;}
+  try{const r=await fetchJson(`/api/staff/${state.currentUser.id}/change-password`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({oldPassword:oldPw,newPassword:newPw})});if(r.status!=="success"){toast(r.message||"Gagal",true);return;}toast("Password berhasil diubah ✓");["cpOld","cpNew","cpConfirm"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});}catch{toast("Server error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// TIMERS
+// ══════════════════════════════════════════════════════
+function startLiveClock(){stopLiveClock();const update=()=>{const el=document.getElementById("liveClock");if(el)el.textContent=new Date().toLocaleTimeString("id-ID");updateAnalogClock();};update();state.clockTimer=setInterval(update,1000);}
+function stopLiveClock(){if(state.clockTimer){clearInterval(state.clockTimer);state.clockTimer=null;}}
+function startIzinStatusTimer(){
+  stopIzinStatusTimer();if(!state.currentUser||state.currentUser.role==="admin")return;
+  state.izinStatusTimer=setInterval(async()=>{
+    const status=await fetchIzinStatus(state.currentUser.id);if(!status||!status.active){state.izinWarn14Shown=false;state.izinOverShown=false;return;}
+    if(status.izin.nearLimit&&!state.izinWarn14Shown){state.izinWarn14Shown=true;showCenterAlert({title:"⚠ PERINGATAN WAKTU!",message:"Durasi izin Anda mendekati batas 15 menit.",submessage:`Sisa: ${status.izin.remainingMinutes} menit. Segera kembali!`,confirmText:"MENGERTI",icon:"⚠",danger:true});}
+    if(status.izin.overLimit&&!state.izinOverShown){state.izinOverShown=true;showCenterAlert({title:"🚨 BATAS WAKTU HABIS!",message:"Durasi izin Anda sudah melewati batas 15 menit!",submessage:"Segera kembali dan selesaikan izin keluar sekarang.",confirmText:"SEGERA KEMBALI",icon:"🚨",danger:true});}
+  },10000);
+}
+function stopIzinStatusTimer(){if(state.izinStatusTimer){clearInterval(state.izinStatusTimer);state.izinStatusTimer=null;}}
+
+// Broadcast auto-refresh setiap 30 detik
+function startBroadcastTimer(){
+  stopBroadcastTimer();
+  state.broadcastTimer=setInterval(async()=>{
+    const bc=await fetchBroadcast();
+    const bar=document.querySelector(".broadcast-bar");
+    const mainEl=document.querySelector(".main");
+    if(!mainEl)return;
+    if(bc&&bc.aktif&&bc.pesan){
+      if(!bar){
+        const newBar=document.createElement("div");
+        newBar.className="broadcast-bar";
+        newBar.innerHTML=`<div class="broadcast-bar-label"><i class="fa-solid fa-bullhorn"></i> BROADCAST</div><div class="broadcast-bar-text"><div class="broadcast-bar-inner">📢 ${bc.pesan} 📢 ${bc.pesan} 📢 ${bc.pesan}</div></div>`;
+        mainEl.insertBefore(newBar,mainEl.firstChild);
+      }
+    }else{if(bar)bar.remove();}
+  },30000);
+}
+function stopBroadcastTimer(){if(state.broadcastTimer){clearInterval(state.broadcastTimer);state.broadcastTimer=null;}}
+
+// ══════════════════════════════════════════════════════
+// JOB DESK
+// ══════════════════════════════════════════════════════
+const JD_ITEMS=[
+  {label:"DEPO BCA",icon:"🏦",color:"#60a5fa",bg:"rgba(96,165,250,.15)"},
+  {label:"DEPO BNI",icon:"🏦",color:"#fb923c",bg:"rgba(251,146,60,.15)"},
+  {label:"DEPO BRI",icon:"🏦",color:"#4ade80",bg:"rgba(74,222,128,.15)"},
+  {label:"DEPO DANA",icon:"💙",color:"#38bdf8",bg:"rgba(56,189,248,.15)"},
+  {label:"DEPO MANUAL",icon:"✍️",color:"#f59e0b",bg:"rgba(245,158,11,.15)"},
+  {label:"BUKTI BANK",icon:"🧾",color:"#22d3ee",bg:"rgba(34,211,238,.15)"},
+  {label:"OVO, GOPAY, LINKAJA",icon:"📱",color:"#a78bfa",bg:"rgba(167,139,250,.15)"},
+  {label:"OPERATOR",icon:"🎮",color:"#18c08f",bg:"rgba(24,192,143,.15)"},
+  {label:"PINDAH DANA",icon:"🔄",color:"#f472b6",bg:"rgba(244,114,182,.15)"},
+  {label:"WD ALL BANK",icon:"💸",color:"#34d399",bg:"rgba(52,211,153,.15)"},
+  {label:"SORONG BK BCA",icon:"📤",color:"#93c5fd",bg:"rgba(147,197,253,.15)"},
+  {label:"SORONG BK BNI",icon:"📤",color:"#fdba74",bg:"rgba(253,186,116,.15)"},
+  {label:"SORONG BK BRI",icon:"📤",color:"#86efac",bg:"rgba(134,239,172,.15)"},
+  {label:"SORONG BK DANA",icon:"📤",color:"#7dd3fc",bg:"rgba(125,211,252,.15)"},
+  {label:"ALL BK DAN DURASI ANTRIAN",icon:"⏱️",color:"#fbbf24",bg:"rgba(251,191,36,.15)"},
+  {label:"BUKTI EWALLET",icon:"📲",color:"#c084fc",bg:"rgba(192,132,252,.15)"},
+  {label:"VALIDASI",icon:"✅",color:"#86efac",bg:"rgba(134,239,172,.15)"},
+  {label:"KAS DAN PENDINGAN",icon:"💰",color:"#fde68a",bg:"rgba(253,230,138,.15)"},
+  {label:"TEMBAK SCATTER",icon:"🎯",color:"#f87171",bg:"rgba(248,113,113,.15)"},
+  {label:"WD CIMB",icon:"💸",color:"#a3e635",bg:"rgba(163,230,53,.15)"}
+];
+
+const jdState={};
+function jdGetTags(uid){return jdState[uid]||[];}
+function jdSetTags(uid,tags){jdState[uid]=tags;}
+function jdInit(input){
+  const uid=input.dataset.userid;
+  if(jdState[uid]!==undefined)return;
+  const ex=input.dataset.tags||"";
+  jdState[uid]=ex?ex.split(",").map(t=>t.trim()).filter(Boolean):[];
+}
+
+function jdShowDropdown(input){
+  jdInit(input);
+  const val=input.value.trim();
+  const uid=input.dataset.userid;
+  const dd=document.getElementById("jd_dd_"+uid);
+  if(!dd)return;
+  const q=val.replace(/^#/,"").toLowerCase();
+  const filtered=q===""?JD_ITEMS:JD_ITEMS.filter(i=>i.label.toLowerCase().includes(q));
+  if(!filtered.length){dd.style.display="none";return;}
+  const cur=jdGetTags(uid);
+  dd.innerHTML=filtered.map(item=>{
+    const sel=cur.includes(item.label);
+    return`<div class="jd-dropdown-item" style="${sel?"background:rgba(24,192,143,.1);":""}">
+      <div class="jd-item-icon" style="background:${item.bg};">${item.icon}</div>
+      <span style="flex:1;">${item.label}</span>
+      ${sel?`<i class="fa-solid fa-check" style="color:#18c08f;font-size:11px;"></i>`:""}
+    </div>`;
+  }).join("");
+  dd.style.display="block";
+  // Pasang click listener ke setiap item
+  Array.from(dd.children).forEach((el,i)=>{
+    el._lbl=filtered[i].label;
+    el._uid=uid;
+    el.addEventListener("click",function(){
+      const tags=jdGetTags(this._uid);
+      if(tags.includes(this._lbl))jdSetTags(this._uid,tags.filter(t=>t!==this._lbl));
+      else jdSetTags(this._uid,[...tags,this._lbl]);
+      const inp=document.getElementById("jd_txt_"+this._uid);
+      if(inp){inp.value="";jdRefreshTags(inp);jdShowDropdown(inp);inp.focus();}
+    });
+  });
+}
+
+function jdRefreshTags(input){
+  const uid=input.dataset.userid;
+  const tags=jdGetTags(uid);
+  const c=document.getElementById("jd_tags_"+uid);
+  if(!c)return;
+  c.innerHTML=tags.map(tag=>{
+    const item=JD_ITEMS.find(i=>i.label===tag)||{icon:"📌",color:"#18c08f",bg:"rgba(24,192,143,.12)"};
+    return`<span class="jd-tag" style="background:${item.bg};color:${item.color};border:1px solid ${item.color}40;">
+      ${item.icon} ${tag}
+      <button onclick="jdRemoveTag('${uid}',${JSON.stringify(tag)})" style="color:${item.color};">✕</button>
+    </span>`;
+  }).join("");
+  input.dataset.tags=tags.join(",");
+}
+
+function jdRemoveTag(uid,label){
+  jdSetTags(uid,jdGetTags(uid).filter(t=>t!==label));
+  const inp=document.getElementById("jd_txt_"+uid);
+  if(inp)jdRefreshTags(inp);
+}
+
+function jdRenderCards(jobdesk,color){
+  if(!jobdesk)return"";
+  return jobdesk.split(",").map(t=>t.trim()).filter(Boolean).map(tag=>{
+    const item=JD_ITEMS.find(i=>i.label===tag)||{icon:"📌",color:color||"#18c08f",bg:"rgba(24,192,143,.12)"};
+    return`<div class="jd-card"><div class="jd-card-icon" style="background:${item.bg};">${item.icon}</div><div class="jd-card-label" style="color:${item.color};">${tag}</div></div>`;
+  }).join("");
+}
+
+async function fetchJobDesk(){try{const r=await fetchJsonCached("/api/jobdesk");return r.data||[];}catch{return[];}}
+
+async function renderJobDesk(isAdmin){
+  const users=await fetchStaff();
+  const allJD=await fetchJobDesk();
+  const today=new Date().toISOString().split("T")[0];
+  const staffList=users.filter(u=>u.role==="staff"&&u.active);
+  const todayJD=allJD.filter(j=>j.tanggal===today);
+  const canEdit=isAdmin||boleh("bukaJobDesk");
+  const SHIFTS=[
+    {nama:"Pagi",icon:"fa-sun",color:"#f59e0b",bg:"rgba(245,158,11,.08)",border:"rgba(245,158,11,.25)"},
+    {nama:"Siang",icon:"fa-cloud-sun",color:"#22d3ee",bg:"rgba(34,211,238,.08)",border:"rgba(34,211,238,.25)"},
+    {nama:"Sore",icon:"fa-cloud",color:"#a78bfa",bg:"rgba(167,139,250,.08)",border:"rgba(167,139,250,.25)"},
+    {nama:"Malam",icon:"fa-moon",color:"#818cf8",bg:"rgba(129,140,248,.08)",border:"rgba(129,140,248,.25)"}
+  ];
+
+  if(!canEdit){
+    // Read-only view
+    const sections=SHIFTS.map(sh=>{
+      const ss=staffList.filter(u=>u.shift===sh.nama);
+      if(!ss.length)return"";
+      return`<div style="margin-bottom:16px;border-radius:16px;border:1px solid ${sh.border};overflow:hidden;">
+        <div style="padding:12px 18px;background:${sh.bg};display:flex;align-items:center;gap:10px;border-bottom:1px solid ${sh.border};">
+          <i class="fa-solid ${sh.icon}" style="color:${sh.color};font-size:17px;"></i>
+          <b style="color:${sh.color};font-size:15px;">Shift ${sh.nama}</b>
+          <span style="margin-left:auto;font-size:12px;color:${sh.color};opacity:.7;">${ss.length} staff</span>
+        </div>
+        ${ss.map(u=>{
+          const jd=todayJD.find(j=>Number(j.userId)===Number(u.id));
+          return`<div style="padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:12px;">
+            <div class="member-avatar" style="width:36px;height:36px;font-size:14px;flex-shrink:0;border-color:${sh.color};">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                <b style="font-size:14px;">${u.nama}</b>
+                <span class="badge badge-muted" style="font-size:11px;">${u.jabatan}</span>
+                <span style="font-size:11px;color:#6a8099;">⏰ ${u.shiftStartTime||"08:00"}</span>
+                <span class="badge ${jd?"badge-success":"badge-muted"}" style="margin-left:auto;">${jd?"✅ Ada":"⏳ Belum"}</span>
+              </div>
+              ${jd?`<div class="jd-card-grid">${jdRenderCards(jd.jobdesk,sh.color)}</div>
+                <div style="font-size:11px;color:#4a6080;margin-top:6px;">Oleh: ${jd.dibuat_oleh}</div>`
+              :`<div style="padding:8px 12px;border-radius:8px;border:1px dashed rgba(255,255,255,.08);color:#4a6080;font-size:13px;font-style:italic;">Belum ada job desk hari ini.</div>`}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>`;
+    }).join("");
+    return`<div class="card" style="margin-bottom:16px;"><h4><i class="fa-solid fa-list-check"></i>Job Desk Hari Ini — ${today}</h4></div>${sections}`;
+  }
+
+  // Edit view: summary + per shift
+  const summaryBar=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    ${SHIFTS.map(sh=>{
+      const ss=staffList.filter(u=>u.shift===sh.nama);
+      const done=ss.filter(u=>todayJD.find(j=>Number(j.userId)===Number(u.id))).length;
+      const pct=ss.length?Math.round((done/ss.length)*100):0;
+      return`<div style="background:#0b1730;border-radius:12px;padding:14px;border:1px solid ${sh.border};text-align:center;">
+        <i class="fa-solid ${sh.icon}" style="color:${sh.color};font-size:20px;margin-bottom:6px;display:block;"></i>
+        <b style="font-size:13px;color:${sh.color};">Shift ${sh.nama}</b>
+        <div style="font-size:26px;font-weight:bold;margin:5px 0;color:${pct===100?"#18c08f":pct>0?"#f59e0b":"#6a8099"};">${done}<span style="font-size:14px;color:#6a8099;">/${ss.length}</span></div>
+        <div style="height:5px;background:#1a2a40;border-radius:999px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${pct===100?"#18c08f":"#f59e0b"};border-radius:999px;"></div></div>
+        <div style="font-size:11px;color:#6a8099;margin-top:4px;">${pct}% selesai</div>
+      </div>`;
+    }).join("")}
+  </div>`;
+
+  const shiftSections=SHIFTS.map(sh=>{
+    const ss=staffList.filter(u=>u.shift===sh.nama);
+    if(!ss.length)return"";
+    const done=ss.filter(u=>todayJD.find(j=>Number(j.userId)===Number(u.id))).length;
+    return`<div style="margin-bottom:20px;border-radius:16px;border:1px solid ${sh.border};overflow:hidden;">
+      <div style="padding:13px 20px;background:${sh.bg};display:flex;align-items:center;gap:12px;border-bottom:1px solid ${sh.border};">
+        <i class="fa-solid ${sh.icon}" style="color:${sh.color};font-size:19px;"></i>
+        <div><b style="font-size:15px;color:${sh.color};">Shift ${sh.nama}</b><div style="font-size:12px;color:#6a8099;">${ss.length} staff • ${done} sudah ada job desk</div></div>
+        <button class="btn btn-xs" style="margin-left:auto;background:${sh.bg};border:1px solid ${sh.border};color:${sh.color};" onclick="saveShiftJobDesk('${sh.nama}')">
+          <i class="fa-solid fa-save"></i> Simpan Shift Ini
+        </button>
+      </div>
+      ${ss.map(u=>{
+        const jd=todayJD.find(j=>Number(j.userId)===Number(u.id));
+        return`<div style="display:grid;grid-template-columns:210px 1fr 60px;border-bottom:1px solid rgba(255,255,255,.04);">
+          <div style="padding:12px 16px;display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.12);border-right:1px solid rgba(255,255,255,.05);">
+            <div class="member-avatar" style="width:32px;height:32px;font-size:12px;flex-shrink:0;border-color:${sh.color};">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div style="min-width:0;overflow:hidden;">
+              <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.nama}</b>
+              <span style="font-size:11px;color:#6a8099;">${u.jabatan}</span><br>
+              <span style="font-size:11px;color:${sh.color};">⏰ ${u.shiftStartTime||"08:00"}</span>
+            </div>
+          </div>
+          <div style="padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:6px;">
+            <div class="jd-input-wrap">
+              <input type="text" id="jd_txt_${u.id}"
+                data-userid="${u.id}" data-nama="${u.nama.replace(/"/g,"&quot;")}"
+                data-jabatan="${u.jabatan}" data-shift="${u.shift}"
+                data-tags="${jd?jd.jobdesk.replace(/"/g,"&quot;"):""}"
+                style="width:100%;background:${jd?"rgba(24,192,143,.05)":"rgba(7,17,36,.7)"};border:1px solid ${jd?"#18c08f":"#1e3a5f"};border-radius:9px;color:white;padding:9px 12px;font-size:13px;outline:none;font-family:'Segoe UI',Arial,sans-serif;"
+                placeholder="# atau ketik tugas..." autocomplete="off"
+                oninput="jdShowDropdown(this)"
+                onfocus="jdShowDropdown(this)"
+                onblur="setTimeout(()=>{const d=document.getElementById('jd_dd_${u.id}');if(d)d.style.display='none';},200)"
+                onkeydown="if(event.key==='Escape'){const d=document.getElementById('jd_dd_${u.id}');if(d)d.style.display='none';}"
+              >
+              <div id="jd_dd_${u.id}" class="jd-dropdown" style="display:none;"></div>
+            </div>
+            <div id="jd_tags_${u.id}" class="jd-tags">${jd?jdRenderTagsInit(jd.jobdesk,u.id,sh.color):""}</div>
+          </div>
+          <div style="padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(0,0,0,.1);">
+            <span class="badge ${jd?"badge-success":"badge-muted"}" id="jd_status_${u.id}" style="font-size:14px;">${jd?"✅":"—"}</span>
+            ${jd&&isAdmin?`<button class="btn btn-danger btn-xs" onclick="deleteJobDesk(${jd.id})"><i class="fa-solid fa-trash"></i></button>`:""}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("");
+
+  return`<div class="card" style="background:linear-gradient(135deg,#071e2a,#0d2a1e);border-color:rgba(24,192,143,.2);">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+      <div><h4 style="font-size:18px;"><i class="fa-solid fa-list-check" style="color:#18c08f;"></i>Job Desk — Per Shift</h4>
+        <p style="font-size:13px;color:#7a9ab8;">Isi tugas tiap staff. Klik item dari dropdown atau ketik nama tugas.</p></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <input type="date" id="jdTanggal" class="input" style="max-width:160px;" value="${today}" onchange="renderAppPage()">
+        <button class="btn btn-primary" onclick="saveAllJobDesk()"><i class="fa-solid fa-save"></i> Simpan Semua</button>
+        <button class="btn btn-dark" onclick="document.querySelectorAll('[id^=jd_txt_]').forEach(i=>{i.value='';const uid=i.dataset.userid;jdSetTags(uid,[]);jdRefreshTags(i);})"><i class="fa-solid fa-eraser"></i> Kosongkan</button>
+      </div>
+    </div>
+    ${summaryBar}${shiftSections}
+    <div style="display:flex;justify-content:flex-end;margin-top:6px;">
+      <button class="btn btn-primary" onclick="saveAllJobDesk()"><i class="fa-solid fa-save"></i> Simpan Semua Job Desk</button>
+    </div>
+  </div>`;
+}
+
+function jdRenderTagsInit(jobdesk,uid,color){
+  // Render awal tags dari data tersimpan (sebelum user interaksi)
+  if(!jobdesk)return"";
+  jdState[uid]=jobdesk.split(",").map(t=>t.trim()).filter(Boolean);
+  return jdState[uid].map(tag=>{
+    const item=JD_ITEMS.find(i=>i.label===tag)||{icon:"📌",color:color||"#18c08f",bg:"rgba(24,192,143,.12)"};
+    return`<span class="jd-tag" style="background:${item.bg};color:${item.color};border:1px solid ${item.color}40;">
+      ${item.icon} ${tag}
+      <button onclick="jdRemoveTag('${uid}',${JSON.stringify(tag)})" style="color:${item.color};">✕</button>
+    </span>`;
+  }).join("");
+}
+
+async function renderJobDeskSaya(){
+  const me=state.currentUser;
+  const allJD=await fetchJobDesk();
+  const today=new Date().toISOString().split("T")[0];
+  const myJDToday=allJD.find(j=>Number(j.userId)===Number(me.id)&&j.tanggal===today);
+  const myJDHistory=allJD.filter(j=>Number(j.userId)===Number(me.id)).sort((a,b)=>b.id-a.id).slice(0,5);
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const sc=shiftColor[me.shift]||"#18c08f";
+  return`<div class="card" style="border-color:${myJDToday?"rgba(24,192,143,.4)":"rgba(100,116,139,.2)"};background:${myJDToday?"linear-gradient(135deg,#071e2a,#0a2a1a)":"var(--card-bg)"};">
+    <h4><i class="fa-solid fa-list-check" style="color:${myJDToday?"#18c08f":"#6a8099"};"></i>Job Desk Saya Hari Ini</h4>
+    <p style="font-size:13px;color:#7a9ab8;">${today} • ${me.jabatan} • <span style="color:${sc};">Shift ${me.shift} ⏰ ${me.shiftStartTime||"08:00"}</span></p>
+    ${myJDToday
+      ?`<div class="jd-card-grid" style="margin-top:14px;">${jdRenderCards(myJDToday.jobdesk,sc)}</div>
+         <div style="margin-top:10px;font-size:12px;color:#6a8099;"><i class="fa-solid fa-circle-check" style="color:#18c08f;"></i> Dibuat oleh: <b>${myJDToday.dibuat_oleh}</b></div>`
+      :`<div style="text-align:center;padding:32px 20px;">
+          <i class="fa-solid fa-clipboard" style="font-size:40px;color:#2a3e5e;margin-bottom:12px;display:block;"></i>
+          <p style="color:#6a8099;">Belum ada job desk untuk Anda hari ini.</p>
+          <p style="color:#4a6080;font-size:13px;margin-top:5px;">Hubungi Kapten / Admin.</p>
+        </div>`
+    }
+  </div>
+  ${myJDHistory.length>1?`
+    <div class="section-title" style="margin-top:18px;"><i class="fa-solid fa-clock-rotate-left"></i>Riwayat Job Desk</div>
+    <div class="grid grid-2">
+      ${myJDHistory.map(j=>`<div class="card" style="opacity:${j.tanggal===today?"1":"0.75"};">
+        <div class="between" style="margin-bottom:8px;">
+          <b style="font-size:13px;">${j.tanggal}</b>
+          ${j.tanggal===today?`<span class="badge badge-success">Hari Ini</span>`:`<span class="badge badge-muted">Lalu</span>`}
+        </div>
+        <div class="jd-card-grid">${jdRenderCards(j.jobdesk,sc)}</div>
+      </div>`).join("")}
+    </div>`:""}`;
+}
+
+async function saveAllJobDesk(){
+  const tanggal=document.getElementById("jdTanggal")?.value||new Date().toISOString().split("T")[0];
+  const inputs=document.querySelectorAll("[id^='jd_txt_']");
+  let saved=0;
+  await Promise.all(Array.from(inputs).map(async inp=>{
+    const uid=inp.dataset.userid;
+    jdInit(inp);
+    const tags=jdGetTags(uid);
+    if(!tags.length)return;
+    const r=await fetchJson("/api/jobdesk",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({userId:uid,nama:inp.dataset.nama,jabatan:inp.dataset.jabatan,jobdesk:tags.join(", "),tanggal,dibuat_oleh:state.currentUser.nama})});
+    if(r.status==="success"){saved++;const s=document.getElementById("jd_status_"+uid);if(s){s.className="badge badge-success";s.textContent="✅";}}
+  }));
+  toast(saved?`${saved} job desk tersimpan ✓`:"Tidak ada yang diisi",!saved);
+}
+
+async function saveShiftJobDesk(shiftNama){
+  const tanggal=document.getElementById("jdTanggal")?.value||new Date().toISOString().split("T")[0];
+  const inputs=document.querySelectorAll(`[data-shift="${shiftNama}"]`);
+  let saved=0;
+  await Promise.all(Array.from(inputs).map(async inp=>{
+    const uid=inp.dataset.userid;jdInit(inp);
+    const tags=jdGetTags(uid);if(!tags.length)return;
+    const r=await fetchJson("/api/jobdesk",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({userId:uid,nama:inp.dataset.nama,jabatan:inp.dataset.jabatan,jobdesk:tags.join(", "),tanggal,dibuat_oleh:state.currentUser.nama})});
+    if(r.status==="success"){saved++;const s=document.getElementById("jd_status_"+uid);if(s){s.className="badge badge-success";s.textContent="✅";}}
+  }));
+  toast(`Shift ${shiftNama}: ${saved} tersimpan ✓`);
+}
+
+async function deleteJobDesk(id){
+  if(!confirm("Hapus job desk ini?"))return;
+  try{const r=await fetchJson(`/api/jobdesk/${id}`,{method:"DELETE"});if(r.status==="success"){toast("Dihapus");await renderAppPage();}else toast(r.message,true);}catch{toast("Error",true);}
+}
+
+// ══════════════════════════════════════════════════════
+// STAFF VIEW FUNCTIONS (view-only untuk Kasir & CS)
+// ══════════════════════════════════════════════════════
+
+// Data Staff — view sesuai aksi yang dibolehkan
+async function renderStaffView(){
+  const canAdd=boleh("tambahStaff");
+  const canEdit=boleh("editStaff");
+  const canDel=boleh("hapusStaff");
+  const users=await fetchStaff();
+  const addBtn=canAdd?`<button class="btn btn-primary" onclick="openAddStaffModal()"><i class="fa-solid fa-user-plus"></i> Tambah Staff</button>`:"";
+  return`<div class="between">
+    <div class="card" style="flex:1;"><h4><i class="fa-solid fa-users"></i>Data Staff</h4><p>Daftar semua staff terdaftar.</p></div>
+    ${addBtn}
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Foto</th><th>Nama</th><th>Jabatan</th><th>Shift</th><th>Jam</th><th>Status</th>${canEdit||canDel?"<th>Aksi</th>":""}</tr></thead>
+    <tbody>${users.map(u=>`<tr>
+      <td><div class="member-avatar" style="width:30px;height:30px;font-size:12px;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div></td>
+      <td><b>${u.nama}</b><br><span style="font-size:11px;color:#6a8099;">${u.username}</span></td>
+      <td>${u.jabatan}</td><td>${u.shift}</td><td>${u.shiftStartTime||"-"}</td>
+      <td><span class="badge ${u.active?"badge-success":"badge-danger"}">${u.active?"Aktif":"Nonaktif"}</span></td>
+      ${canEdit||canDel?`<td><div class="actions">
+        ${canEdit?`<button class="btn btn-info btn-xs" onclick="openEditStaffModal(${u.id})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-warning btn-xs" onclick="openResetPasswordModal(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-key"></i></button>`:""}
+        ${canDel?`<button class="btn btn-danger btn-xs" onclick="deleteStaff(${u.id},'${u.nama.replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>`:""}
+      </div></td>`:""}
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+// Izin Keluar Staff — view only (tanpa aksi)
+async function renderIzinView(){
+  const active=await fetchIzinActive();
+  return`<div class="card"><h4><i class="fa-solid fa-door-open"></i>Staff Sedang Keluar</h4><p>Pantau real-time staff yang sedang izin keluar.</p></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Nama</th><th>Jabatan</th><th>Tanggal</th><th>Jam Keluar</th><th>Status</th></tr></thead>
+    <tbody>${active.length?active.map(i=>`<tr>
+      <td><b>${i.nama}</b></td><td>${i.jabatan}</td>
+      <td>${i.tanggal}</td><td>${i.jamKeluar}</td>
+      <td><span class="badge badge-warning">${i.status}</span></td>
+    </tr>`).join(""):`<tr><td colspan="5" style="text-align:center;color:#8ca0be;">Tidak ada staff yang sedang keluar.</td></tr>`}
+    </tbody>
+  </table></div>`;
+}
+
+// Shift Kerja — view + set jika punya setShift
+async function renderShiftView(){
+  const canSet=boleh("setShift");
+  const users=await fetchStaff();
+  return`<div class="card" style="margin-bottom:16px;"><h4><i class="fa-solid fa-calendar-days"></i>Shift Kerja Staff</h4>
+    <p style="font-size:13px;color:#7a9ab8;">${canSet?"Anda dapat mengubah shift staff.":"Tampilan shift kerja semua staff."}</p>
+  </div>
+  <div class="grid grid-2">${["Pagi","Siang","Sore","Malam"].map(shift=>{
+    const su=users.filter(u=>u.role==="staff"&&u.shift===shift);
+    const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+    const sc=shiftColor[shift];
+    return`<div class="card" style="border-color:${sc}33;">
+      <h4 style="font-size:15px;color:${sc};"><i class="fa-solid fa-clock"></i> Shift ${shift}</h4>
+      ${su.length?`<div class="table-wrap"><table style="min-width:100%;"><thead><tr><th>Nama</th><th>Jam</th>${canSet?"<th>Ubah</th>":""}</tr></thead>
+      <tbody>${su.map(u=>`<tr>
+        <td><b>${u.nama}</b><br><span style="font-size:11px;color:#6a8099;">${u.jabatan}</span></td>
+        <td>${u.shiftStartTime||"-"}</td>
+        ${canSet?`<td><div class="row">
+          <select id="sh_${u.id}" class="select" style="max-width:100px;padding:6px;">
+            ${["Pagi","Siang","Sore","Malam"].map(s=>`<option ${u.shift===s?"selected":""}>${s}</option>`).join("")}
+          </select>
+          <input id="sh_t_${u.id}" type="time" class="input" style="max-width:100px;" value="${u.shiftStartTime||"08:00"}">
+          <button class="btn btn-info btn-xs" onclick="updateShift(${u.id})"><i class="fa-solid fa-save"></i></button>
+        </div></td>`:""}
+      </tr>`).join("")}</tbody></table></div>`:`<p style="color:#6a8099;font-size:13px;">Belum ada staff.</p>`}
+    </div>`;
+  }).join("")}`;
+}
+
+// ══════════════════════════════════════════════════════
+// STAFF VIEW: HISTORY IZIN & ABSENSI (READ-ONLY)
+// ══════════════════════════════════════════════════════
+
+// History Izin — view untuk Kapten, CS LINE, Kasir, CS (read-only, tanpa hapus)
+async function renderHistoryIzinView(){
+  const rows=await fetchIzinHistory();
+  const filter=state.izinViewFilter||"harian";
+  const today=new Date().toISOString().split("T")[0];
+
+  function getFiltered(){
+    if(filter==="harian")return rows.filter(r=>r.tanggal===today);
+    if(filter==="mingguan"){const d=new Date();d.setDate(d.getDate()-7);return rows.filter(r=>new Date(r.tanggal)>=d);}
+    if(filter==="bulanan")return rows.filter(r=>r.tanggal.startsWith(today.slice(0,7)));
+    return rows;
+  }
+  const filtered=getFiltered().sort((a,b)=>b.id-a.id);
+
+  // Kuota hari ini (read-only)
+  const izinHariIni=rows.filter(r=>r.tanggal===today);
+  const perStaff={};
+  izinHariIni.forEach(r=>{
+    if(!perStaff[r.userId])perStaff[r.userId]={nama:r.nama,jabatan:r.jabatan,used:0,melewati:0};
+    perStaff[r.userId].used++;
+    if(r.status==="Melewati Batas")perStaff[r.userId].melewati++;
+  });
+
+  const filterTabs=`<div class="sub-tabs" style="margin-bottom:16px;">
+    ${[{k:"harian",l:"Hari Ini"},{k:"mingguan",l:"Minggu Ini"},{k:"bulanan",l:"Bulan Ini"},{k:"semua",l:"Semua"}].map(t=>
+      `<button class="${filter===t.k?"active":""}" onclick="state.izinViewFilter='${t.k}';renderAppPage()">${t.l}</button>`
+    ).join("")}
+  </div>`;
+
+  const quotaSection=Object.keys(perStaff).length?`
+    <div class="card" style="margin-bottom:16px;border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,#1a1000,#1d2a44);">
+      <h4><i class="fa-solid fa-gauge" style="color:#f59e0b;"></i>Kuota Izin Hari Ini</h4>
+      <p style="font-size:13px;color:#7a9ab8;">Pantau penggunaan izin staff — maks 4x per hari.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+        ${Object.values(perStaff).map(s=>{
+          const sisa=4-s.used;
+          return`<div style="background:#0b1730;border-radius:12px;padding:12px 16px;border:1px solid ${sisa===0?"rgba(239,68,68,.5)":sisa===1?"rgba(245,158,11,.4)":"rgba(30,58,95,.5)"};">
+            <b style="font-size:13px;">${s.nama}</b><br>
+            <span style="font-size:11px;color:#7a9ab8;">${s.jabatan}</span><br>
+            <div style="display:flex;gap:5px;align-items:center;margin-top:6px;">
+              ${[1,2,3,4].map(n=>`<div style="width:16px;height:16px;border-radius:4px;background:${n<=s.used?"#ef4444":"#1a2a40"};border:1px solid ${n<=s.used?"#ef4444":"#30415d"};"></div>`).join("")}
+              <span style="font-size:12px;color:${sisa===0?"#ef4444":sisa===1?"#f59e0b":"#18c08f"};">${s.used}/4</span>
+              ${s.melewati?`<span class="badge badge-danger" style="font-size:10px;">${s.melewati}x Lewat Batas</span>`:""}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`:"";
+
+  // Kelompokkan per tanggal (read-only)
+  const grouped={};
+  filtered.forEach(r=>{if(!grouped[r.tanggal])grouped[r.tanggal]=[];grouped[r.tanggal].push(r);});
+  const sortedDates=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+
+  const tables=sortedDates.map(tgl=>{
+    const dayRows=grouped[tgl];
+    const melewati=dayRows.filter(r=>r.status==="Melewati Batas").length;
+    return`<div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <b style="font-size:14px;color:#d6e4f7;">${tgl}</b>
+        <span class="badge badge-info">${dayRows.length} izin</span>
+        ${melewati?`<span class="badge badge-danger">${melewati} melewati batas</span>`:""}
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nama</th><th>Jabatan</th><th>Keluar</th><th>Kembali</th><th>Durasi</th><th>Status</th></tr></thead>
+        <tbody>${dayRows.map(i=>`<tr>
+          <td><b>${i.nama}</b></td><td>${i.jabatan}</td>
+          <td>${i.jamKeluar}</td><td>${i.jamKembali||"-"}</td>
+          <td>${i.durasiMenit||0} mnt</td>
+          <td><span class="badge ${i.status==="Melewati Batas"?"badge-danger":i.status==="Aktif"?"badge-warning":"badge-success"}">${i.status}</span></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </div>`;
+  }).join("");
+
+  return`<div class="card" style="margin-bottom:14px;">
+    <h4><i class="fa-solid fa-door-open"></i>History Izin Keluar</h4>
+    <p style="font-size:13px;color:#7a9ab8;">Pantau izin keluar staff. View only — hanya Admin yang dapat hapus data.</p>
+  </div>
+  ${filterTabs}${quotaSection}
+  <div style="margin-bottom:10px;"><b style="font-size:13px;">${filtered.length} record ditemukan</b></div>
+  ${tables||`<div class="card"><div class="placeholder">Tidak ada data untuk periode ini.</div></div>`}`;
+}
+
+// Data Absensi — view untuk staff dengan hak bukaAbsensiView (read-only)
+async function renderAbsensiView(){
+  const rows=await fetchAbsensi();
+  const users=await fetchStaff();
+  const today=new Date().toISOString().split("T")[0];
+  const activeStaff=users.filter(u=>u.active&&u.role==="staff");
+  const todayAbs=rows.filter(r=>r.tanggal===today);
+
+  const SHIFTS=["Pagi","Siang","Sore","Malam"];
+  const shiftColor={Pagi:"#f59e0b",Siang:"#22d3ee",Sore:"#a78bfa",Malam:"#818cf8"};
+  const shiftIcon={Pagi:"fa-sun",Siang:"fa-cloud-sun",Sore:"fa-cloud",Malam:"fa-moon"};
+
+  const totalHadir=todayAbs.length;
+  const totalBelum=activeStaff.length-totalHadir;
+  const totalTelat=todayAbs.filter(r=>r.status==="Terlambat").length;
+
+  const shiftCards=SHIFTS.map(sh=>{
+    const shiftStaff=activeStaff.filter(u=>u.shift===sh);
+    if(!shiftStaff.length)return"";
+    const sudah=shiftStaff.filter(u=>todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const belum=shiftStaff.filter(u=>!todayAbs.find(a=>Number(a.userId)===Number(u.id)));
+    const pct=shiftStaff.length?Math.round((sudah.length/shiftStaff.length)*100):0;
+    const sc=shiftColor[sh];
+    return`<div style="border-radius:14px;border:1px solid ${sc}33;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:11px 16px;background:${sc}11;display:flex;align-items:center;gap:10px;border-bottom:1px solid ${sc}22;">
+        <i class="fa-solid ${shiftIcon[sh]}" style="color:${sc};font-size:16px;"></i>
+        <b style="color:${sc};font-size:14px;">Shift ${sh}</b>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+          <span class="badge badge-success">${sudah.length} Hadir</span>
+          <span class="badge badge-danger">${belum.length} Belum</span>
+          <div style="width:60px;height:5px;background:#1a2a40;border-radius:999px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${sc};border-radius:999px;"></div>
+          </div>
+        </div>
+      </div>
+      ${belum.length?`<div style="padding:10px 16px;border-bottom:1px solid rgba(239,68,68,.1);background:rgba(239,68,68,.03);">
+        <div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:7px;">⏳ BELUM ABSEN — Perlu Dicek</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          ${belum.map(u=>`<div style="display:flex;align-items:center;gap:6px;background:#0b1730;border-radius:9px;padding:6px 11px;border:1px solid rgba(239,68,68,.2);">
+            <div class="member-avatar" style="width:24px;height:24px;font-size:10px;border-color:#ef4444;">${u.profile?.avatarImage?`<img src="${u.profile.avatarImage}">`:u.nama.charAt(0).toUpperCase()}</div>
+            <div><b style="font-size:12px;">${u.nama}</b><br><span style="font-size:10px;color:#6a8099;">${u.jabatan} • ⏰${u.shiftStartTime||"08:00"}</span></div>
+          </div>`).join("")}
+        </div>
+      </div>`:""}
+      ${sudah.length?`<div style="padding:10px 16px;">
+        <div style="font-size:11px;font-weight:700;color:#18c08f;margin-bottom:6px;">✅ SUDAH ABSEN</div>
+        <div style="overflow:auto;"><table style="width:100%;border-collapse:collapse;min-width:350px;">
+          <thead><tr style="background:#0b1730;">
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Nama</th>
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Jabatan</th>
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Jam Masuk</th>
+            <th style="padding:6px 10px;text-align:left;font-size:11px;color:#6a8099;">Status</th>
+          </tr></thead>
+          <tbody>${sudah.map(u=>{
+            const ab=todayAbs.find(a=>Number(a.userId)===Number(u.id));
+            return`<tr style="border-bottom:1px solid #1a2a40;">
+              <td style="padding:6px 10px;"><b style="font-size:12.5px;">${u.nama}</b></td>
+              <td style="padding:6px 10px;font-size:12px;">${u.jabatan}</td>
+              <td style="padding:6px 10px;font-weight:bold;color:${ab?.status==="Terlambat"?"#ffd979":"#18c08f"};">${ab?.jamMasuk||"-"}</td>
+              <td style="padding:6px 10px;"><span class="badge ${ab?.status==="Terlambat"?"badge-warning":"badge-success"}" style="font-size:11px;">${ab?.status||"Hadir"}</span></td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table></div>
+      </div>`:""}
+    </div>`;
+  }).join("");
+
+  return`<div class="grid grid-3" style="margin-bottom:14px;">
+    <div class="card stat" style="text-align:center;">
+      <div style="font-size:26px;">✅</div>
+      <div style="font-size:12px;color:#7a9ab8;margin-top:4px;">Sudah Absen</div>
+      <div style="font-size:30px;font-weight:bold;color:#18c08f;">${totalHadir}</div>
+    </div>
+    <div class="card stat" style="text-align:center;">
+      <div style="font-size:26px;">⏳</div>
+      <div style="font-size:12px;color:#7a9ab8;margin-top:4px;">Belum Absen</div>
+      <div style="font-size:30px;font-weight:bold;color:#ef4444;">${totalBelum}</div>
+    </div>
+    <div class="card stat" style="text-align:center;">
+      <div style="font-size:26px;">⚠️</div>
+      <div style="font-size:12px;color:#7a9ab8;margin-top:4px;">Terlambat</div>
+      <div style="font-size:30px;font-weight:bold;color:#f59e0b;">${totalTelat}</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <h4><i class="fa-solid fa-clipboard-list"></i>Data Absensi Hari Ini — ${today}</h4>
+    <p style="font-size:13px;color:#7a9ab8;">View only — hanya Admin yang dapat mengelola data absensi.</p>
+  </div>
+  ${shiftCards}`;
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+async function init(){
+  state.currentUser=getStoredUser();
+  if(state.currentUser){
+    // Selalu ambil hakAkses fresh dari server agar perubahan otoritas langsung berlaku
+    try{
+      const [ar,settings]=await Promise.all([
+        fetch("/api/akses").then(r=>r.json()).catch(()=>({status:"error"})),
+        fetchSettings().catch(()=>({theme:"dark-blue"}))
+      ]);
+      applyTheme(settings.theme||"dark-blue");
+      if(ar.status==="success"&&state.currentUser.role!=="admin"){
+        const jab=state.currentUser.jabatan;
+        const jk=Object.keys(ar.data).find(k=>k.toLowerCase()===jab.toLowerCase())||"Staff";
+        state.hakAkses=ar.data[jk]||ar.data["Staff"]||{};
+        saveStoredAkses(state.hakAkses);
+      }else{
+        state.hakAkses=getStoredAkses();
+        try{const s=await fetchSettings();applyTheme(s.theme||"dark-blue");}catch{}
+      }
+    }catch{
+      state.hakAkses=getStoredAkses();
+      try{const s=await fetchSettings();applyTheme(s.theme||"dark-blue");}catch{}
+    }
+  }
+  renderApp();
+}
+init();
+</script>
+</body>
+</html>
